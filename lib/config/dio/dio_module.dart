@@ -1,0 +1,36 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:injectable/injectable.dart';
+import 'package:tracking_app/config/interceptors/auth_interceptor.dart';
+import 'package:tracking_app/core/const/endpoints.dart';
+
+@module
+abstract class DioModule {
+  @lazySingleton
+  Dio dio(AuthInterceptor authInterceptor) {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: Endpoints.baseUrl,
+        sendTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
+
+    dio.interceptors.add(authInterceptor);
+
+    if (kDebugMode) {
+      dio.interceptors.add(
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,
+          responseHeader: false,
+          responseBody: true,
+          error: true,
+        ),
+      );
+    }
+
+    return dio;
+  }
+}

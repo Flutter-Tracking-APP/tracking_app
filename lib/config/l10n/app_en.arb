@@ -1,0 +1,18 @@
+{
+    "generalValidationError": "Invalid input",
+    "emptyValidationError": "This field is required",
+    "generalErrorMessage": "Something went wrong. Please try again later.",
+    "connectionErrorMessage": "Connection timeout. Please check your internet connection and try again.",
+    "noConnectionErrorMessage": "No internet connection. Please check your network and try again.",
+    "securityErrorMessage": "Security error. Please try again later.",
+    "cancelErrorMessage": "Request was cancelled.",
+    "code400Message": "Invalid information. Please check your details and try again.",
+    "code401Message": "Session expired or invalid credentials. Please log in again.",
+    "code403Message": "You don't have permission to perform this action.",
+    "code404Message": "Requested resource not found. Please try again later.",
+    "code409Message": "This account already exists. Try logging in instead.",
+    "code422Message": "Please check your information and try again.",
+    "code429Message": "Too many attempts. Please wait a moment before trying again.",
+    "code500sMessage": "Server is temporarily unavailable. Please try again in a few moments.",
+    "addressNotFoundMessage": "We couldn't find a specific address for this location. Please try entering it manually."
+}
