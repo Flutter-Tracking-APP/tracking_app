@@ -1,13 +1,13 @@
-import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:tracking_app/config/session/session_service.dart';
+import 'package:tracking_app/config/interceptors/auth_interceptor.dart';
 import 'package:tracking_app/core/const/endpoints.dart';
 
 @module
 abstract class DioModule {
   @lazySingleton
-  Dio dio(SessionService sessionService) {
+  Dio dio(AuthInterceptor authInterceptor) {
     final dio = Dio(
       BaseOptions(
         baseUrl: Endpoints.baseUrl,
@@ -16,39 +16,20 @@ abstract class DioModule {
       ),
     );
 
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          try {
-            final token = await sessionService.getToken();
+    dio.interceptors.add(authInterceptor);
 
-            if (token.isNotEmpty) {
-              options.headers['Authorization'] = 'Bearer $token';
-            }
-          } catch (error, stackTrace) {
-            log(
-              'Failed to retrieve authentication token',
-              error: error,
-              stackTrace: stackTrace,
-            );
-          }
-
-          handler.next(options);
-        },
-      ),
-    );
-
-    dio.interceptors.add(
-      LogInterceptor(
-        request: true,
-        requestHeader: true,
-        requestBody: true,
-        responseHeader: false,
-        responseBody: true,
-        error: true,
-        logPrint: (obj) => log(obj.toString()),
-      ),
-    );
+    if (kDebugMode) {
+      dio.interceptors.add(
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,
+          responseHeader: false,
+          responseBody: true,
+          error: true,
+        ),
+      );
+    }
 
     return dio;
   }

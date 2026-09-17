@@ -17,7 +17,7 @@ abstract final class AppTheme {
 
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       selectedItemColor: AppColors.purpleBase,
-      unselectedItemColor: AppColors.white80,
+      unselectedItemColor: AppColors.white[800],
     ),
 
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -46,21 +46,21 @@ abstract final class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       floatingLabelStyle: WidgetStateTextStyle.resolveWith((states) {
         if (states.contains(WidgetState.error)) {
-          return const TextStyle(color: AppColors.red);
+          return const TextStyle(color: AppColors.error);
         }
         return const TextStyle(color: AppColors.grey);
       }),
 
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: BorderSide(color: AppColors.red, width: 1),
+        borderSide: BorderSide(color: AppColors.error, width: 1),
       ),
 
-      errorStyle: TextStyle(color: AppColors.red),
+      errorStyle: TextStyle(color: AppColors.error),
 
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: BorderSide(color: AppColors.red, width: 1),
+        borderSide: BorderSide(color: AppColors.error, width: 1),
       ),
 
       floatingLabelBehavior: FloatingLabelBehavior.always,

@@ -12,10 +12,3 @@ final getIt = GetIt.instance;
   asExtension: true, // default
 )
 void configureDependencies() => getIt.init();
-
-@module
-abstract class StorageModule {
-  @lazySingleton
-  FlutterSecureStorage provideFlutterSecureStorage() =>
-      const FlutterSecureStorage();
-}

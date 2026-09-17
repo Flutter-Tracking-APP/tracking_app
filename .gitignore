@@ -69,6 +69,7 @@ android/fastlane/*-adminsdk-*.json
 android/key.properties
 *.jks
 *.keystore
+*.html
 
 # Fastlane
 android/fastlane/report.xml
