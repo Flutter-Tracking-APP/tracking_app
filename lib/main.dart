@@ -30,7 +30,6 @@ class TrackingApp extends StatelessWidget {
       supportedLocales: const [Locale('en')],
       theme: AppTheme.lightTheme,
       routerConfig: AppRouter.router,
-
     );
   }
 }

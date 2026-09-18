@@ -19,8 +19,6 @@ class SessionService {
     return value == 'true';
   }
 
-
-
   Future<void> saveToken(String token, {bool rememberMe = false}) async {
     _inMemoryToken = token;
     if (rememberMe) {
@@ -46,6 +44,5 @@ class SessionService {
     await _secureStorage.delete(AppConstants.storageTokenKey);
 
     await _secureStorage.delete(AppConstants.rememberMeKey);
-
   }
 }

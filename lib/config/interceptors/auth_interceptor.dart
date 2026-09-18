@@ -15,6 +15,10 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (options.extra['requiresToken'] == false) {
+      return handler.next(options);
+    }
+
     try {
       final token = await _sessionService.getToken();
 
