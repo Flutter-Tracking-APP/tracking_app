@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
 
 // ignore_for_file: type=lint
@@ -92,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+  ];
 
   /// No description provided for @generalValidationError.
   ///
@@ -189,6 +193,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn\'t find a specific address for this location. Please try entering it manually.'**
   String get addressNotFoundMessage;
+
+  /// No description provided for @applyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get applyTitle;
+
+  /// No description provided for @applyWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!!'**
+  String get applyWelcomeTitle;
+
+  /// No description provided for @applyWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You want to be a delivery man?\nJoin our team'**
+  String get applyWelcomeSubtitle;
+
+  /// No description provided for @countryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get countryLabel;
+
+  /// No description provided for @countryEgypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Egypt'**
+  String get countryEgypt;
+
+  /// No description provided for @firstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First legal name'**
+  String get firstNameLabel;
+
+  /// No description provided for @firstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter first legal name'**
+  String get firstNameHint;
+
+  /// No description provided for @lastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Second legal name'**
+  String get lastNameLabel;
+
+  /// No description provided for @lastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter second legal name'**
+  String get lastNameHint;
+
+  /// No description provided for @vehicleTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle type'**
+  String get vehicleTypeLabel;
+
+  /// No description provided for @vehicleTypeSelectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select vehicle type'**
+  String get vehicleTypeSelectHint;
+
+  /// No description provided for @vehicleNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle number'**
+  String get vehicleNumberLabel;
+
+  /// No description provided for @vehicleNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter vehicle number'**
+  String get vehicleNumberHint;
+
+  /// No description provided for @vehicleLicenseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle license'**
+  String get vehicleLicenseLabel;
+
+  /// No description provided for @vehicleLicenseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload license photo'**
+  String get vehicleLicenseHint;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter you email'**
+  String get emailHint;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get phoneHint;
+
+  /// No description provided for @nidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number'**
+  String get nidLabel;
+
+  /// No description provided for @nidHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter national ID number'**
+  String get nidHint;
+
+  /// No description provided for @nidImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID image'**
+  String get nidImageLabel;
+
+  /// No description provided for @nidImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload ID image'**
+  String get nidImageHint;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password'**
+  String get passwordHint;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @confirmPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordHint;
+
+  /// No description provided for @genderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get genderLabel;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @successApplyHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your application has been submitted!'**
+  String get successApplyHeadline;
+
+  /// No description provided for @successApplyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for providing your application, we will review your application and will get back to you soon.'**
+  String get successApplyBody;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginButton;
+
+  /// No description provided for @invalidEmailError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get invalidEmailError;
+
+  /// No description provided for @invalidPhoneError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid Egyptian phone number'**
+  String get invalidPhoneError;
+
+  /// No description provided for @passwordMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordMismatchError;
+
+  /// No description provided for @weakPasswordError.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters with uppercase, lowercase, number and special character'**
+  String get weakPasswordError;
+
+  /// No description provided for @nationalIdError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid 14-digit national ID'**
+  String get nationalIdError;
+
+  /// No description provided for @licenseImageRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your vehicle license photo'**
+  String get licenseImageRequiredError;
+
+  /// No description provided for @nidImageRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your ID photo'**
+  String get nidImageRequiredError;
+
+  /// No description provided for @vehicleTypeRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a vehicle type'**
+  String get vehicleTypeRequiredError;
 }
 
 class _AppLocalizationsDelegate
@@ -202,7 +458,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -211,6 +467,8 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
   }
