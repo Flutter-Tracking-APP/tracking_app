@@ -56,10 +56,29 @@ class FakeWidgetSessionService implements SessionService {
   Future<String> getToken() async => '';
 
   @override
+  Future<String> getRefreshToken() async => '';
+
+  @override
   Future<bool> isRemembered() async => false;
 
   @override
-  Future<void> saveToken(String token, {bool rememberMe = false}) async {}
+  Future<bool> isGuest() async => false;
+
+  @override
+  Future<void> setGuestMode(bool value) async {}
+
+  @override
+  Future<void> saveTokens({
+    required String token,
+    required String refreshToken,
+    bool rememberMe = true,
+  }) async {}
+
+  @override
+  Future<void> updateTokens({
+    required String token,
+    required String refreshToken,
+  }) async {}
 
   @override
   Future<void> setRememberMe(bool value) async {}
