@@ -9,6 +9,15 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get floweryriderapp => 'Flowery rider app';
+
+  @override
+  String get applyNow => 'Apply now';
+
+  @override
+  String get welcomeTo => 'Welcome to';
+
+  @override
   String get sendOtp => 'Send OTP';
 
   @override

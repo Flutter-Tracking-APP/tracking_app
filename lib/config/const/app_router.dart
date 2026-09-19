@@ -6,6 +6,7 @@ import 'package:tracking_app/features/auth/presentation/forget_password/view/for
 import 'package:tracking_app/features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
 import 'package:tracking_app/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:tracking_app/features/auth/presentation/login/view/login_view.dart';
+import 'package:tracking_app/features/splash/presentation/view/onboarding_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/splash_view.dart';
 import 'package:tracking_app/handlers/home_view.dart';
 
@@ -15,6 +16,7 @@ abstract final class AppRoutes {
   static const login = '/login';
   static const home = '/home';
   static const forgetPassword = '/forgot-password';
+  static const onBoarding = '/onBoarding';
 }
 
 abstract final class AppRouter {
@@ -29,6 +31,13 @@ abstract final class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           return SplashView();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.onBoarding,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          return OnboardingView();
         },
       ),
       GoRoute(

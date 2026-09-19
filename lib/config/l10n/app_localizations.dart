@@ -94,6 +94,24 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
+  /// No description provided for @floweryriderapp.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery rider app'**
+  String get floweryriderapp;
+
+  /// No description provided for @applyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply now'**
+  String get applyNow;
+
+  /// No description provided for @welcomeTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to'**
+  String get welcomeTo;
+
   /// No description provided for @sendOtp.
   ///
   /// In en, this message translates to:

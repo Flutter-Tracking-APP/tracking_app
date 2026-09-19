@@ -1,4 +1,7 @@
-{
+{ 
+  "floweryriderapp":"Flowery rider app",
+  "applyNow":"Apply now",
+  "welcomeTo":"Welcome to",
   "sendOtp": "Send OTP",
   "verifyOtp": "Verify OTP",
   "otp": "OTP",
@@ -13,7 +16,7 @@
   "newPassword": "New Password",
   "enterNewPassword": "Enter new password",
   "confirmYourPassword": "Confirm your password",
-    "passwordMustBeAtLeast8Characters": "Password must be at least 8 characters",
+  "passwordMustBeAtLeast8Characters": "Password must be at least 8 characters",
   "passwordMustContainUppercase": "Password must contain an uppercase letter",
   "passwordMustContainLowercase": "Password must contain a lowercase letter",
   "passwordMustContainNumber": "Password must contain a number",
