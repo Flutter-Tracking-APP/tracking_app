@@ -10,6 +10,7 @@ import 'package:tracking_app/core/ui/themes/app_theme.dart';
 import 'firebase_options.dart';
 
 void main() {
+  // some random comment
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
