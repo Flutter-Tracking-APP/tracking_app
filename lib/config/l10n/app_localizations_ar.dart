@@ -18,75 +18,75 @@ class AppLocalizationsAr extends AppLocalizations {
   String get welcomeTo => 'Welcome to';
 
   @override
-  String get sendOtp => 'Send OTP';
+  String get sendOtp => 'إرسال الرمز';
 
   @override
-  String get verifyOtp => 'Verify OTP';
+  String get verifyOtp => 'تأكيد الرمز';
 
   @override
-  String get otp => 'OTP';
+  String get otp => 'رمز التحقق';
 
   @override
-  String get enterOtp => 'Enter OTP';
+  String get enterOtp => 'أدخل رمز التحقق';
 
   @override
   String otpSentTo(Object email) {
-    return 'Enter the OTP sent to $email';
+    return 'أدخل رمز التحقق المرسل إلى $email';
   }
 
   @override
-  String get resendOtp => 'Resend OTP';
+  String get resendOtp => 'إعادة إرسال الرمز';
 
   @override
   String resendOtpIn(Object seconds) {
-    return 'Resend OTP in $seconds seconds';
+    return 'إعادة إرسال الرمز خلال $seconds ثانية';
   }
 
   @override
-  String get invalidOtp => 'OTP must contain 6 digits';
+  String get invalidOtp => 'يجب أن يتكون رمز التحقق من 6 أرقام';
 
   @override
-  String get seconds => 'seconds';
+  String get seconds => 'ثوانٍ';
 
   @override
-  String get resetPassword => 'Reset Password';
+  String get resetPassword => 'إعادة تعيين كلمة المرور';
 
   @override
-  String get createNewPassword => 'Create New Password';
+  String get createNewPassword => 'إنشاء كلمة مرور جديدة';
 
   @override
-  String get newPassword => 'New Password';
+  String get newPassword => 'كلمة المرور الجديدة';
 
   @override
-  String get enterNewPassword => 'Enter new password';
+  String get enterNewPassword => 'أدخل كلمة المرور الجديدة';
 
   @override
-  String get confirmYourPassword => 'Confirm your password';
+  String get confirmYourPassword => 'أكّد كلمة المرور';
 
   @override
   String get passwordMustBeAtLeast8Characters =>
-      'Password must be at least 8 characters';
+      'يجب ألا تقل كلمة المرور عن 8 أحرف';
 
   @override
   String get passwordMustContainUppercase =>
-      'Password must contain an uppercase letter';
+      'يجب أن تحتوي كلمة المرور على حرف كبير';
 
   @override
   String get passwordMustContainLowercase =>
-      'Password must contain a lowercase letter';
+      'يجب أن تحتوي كلمة المرور على حرف صغير';
 
   @override
-  String get passwordMustContainNumber => 'Password must contain a number';
+  String get passwordMustContainNumber => 'يجب أن تحتوي كلمة المرور على رقم';
 
   @override
   String get passwordMustContainSpecialCharacter =>
-      'Password must contain a special character';
+      'يجب أن تحتوي كلمة المرور على رمز خاص';
 
   @override
-  String get passwordsDoNotMatch => 'Passwords do not match';
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
 
   @override
-  String get passwordResetSuccessfully => 'Password reset successfully';
+  String get passwordResetSuccessfully => 'تمت إعادة تعيين كلمة المرور بنجاح';
 
   @override
   String get productDescription => 'Description';
@@ -107,65 +107,65 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmPassword => 'Confirm password';
 
   @override
-  String get login => 'Login';
+  String get login => 'تسجيل الدخول';
 
   @override
   String get signup => 'Sign up';
 
   @override
-  String get loginRequired => 'Login required';
+  String get loginRequired => 'تسجيل الدخول مطلوب';
 
   @override
-  String get loginRequiredMessage => 'Please login to use this feature.';
+  String get loginRequiredMessage => 'يرجى تسجيل الدخول لاستخدام هذه الميزة.';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'إلغاء';
 
   @override
-  String get rememberMe => 'Remember me';
+  String get rememberMe => 'تذكرني';
 
   @override
-  String get forgetPassword => 'Forget Password?';
+  String get forgetPassword => 'نسيت كلمة المرور؟';
 
   @override
-  String get continueAsGuest => 'Continue as guest';
+  String get continueAsGuest => 'المتابعة كزائر';
 
   @override
-  String get dontHaveAccount => 'Don\'t have account? ';
+  String get dontHaveAccount => 'ليس لديك حساب؟ ';
 
   @override
-  String get signUp => 'Sign up';
+  String get signUp => 'إنشاء حساب';
 
   @override
-  String get loginSuccessfully => 'Login Successfully';
+  String get loginSuccessfully => 'تم تسجيل الدخول بنجاح';
 
   @override
   String get emailHint => 'أدخل بريدك الإلكتروني';
 
   @override
-  String get password => 'Password';
+  String get password => 'كلمة المرور';
 
   @override
   String get passwordHint => 'أدخل كلمة المرور';
 
   @override
-  String get forgotPassword => 'Forgot Password?';
+  String get forgotPassword => 'نسيت كلمة المرور؟';
 
   @override
-  String get forgetPasswordText => 'Forgot Password';
+  String get forgetPasswordText => 'نسيت كلمة المرور';
 
   @override
   String get forgotPasswordDescription =>
-      'Enter your email address and we will send you an OTP.';
+      'أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق (OTP).';
 
   @override
-  String get email => 'Email';
+  String get email => 'البريد الإلكتروني';
 
   @override
-  String get enterYourEmail => 'Enter your email';
+  String get enterYourEmail => 'أدخل بريدك الإلكتروني';
 
   @override
-  String get invalidEmail => 'Please enter a valid email';
+  String get invalidEmail => 'يرجى إدخال بريد إلكتروني صالح';
 
   @override
   String get generalValidationError => 'إدخال غير صالح';
