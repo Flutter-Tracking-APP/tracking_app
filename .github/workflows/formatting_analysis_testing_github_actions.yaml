@@ -31,7 +31,7 @@
 #      even if prior steps failed.
 # ==============================================================================
 
-name: Flutter Unit Tests
+name: Flutter Formatting, Analysis & Unit Tests
 
 on:
   push:
