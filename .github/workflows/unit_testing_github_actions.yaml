@@ -23,10 +23,11 @@
 #   2. Set up Java: Installs Java OpenJDK (Zulu 17) required for Android dependencies.
 #   3. Set up Flutter: Installs Flutter 3.47.0 (stable channel) with Pub cache enabled.
 #   4. Install Dependencies: Downloads all packages listed in pubspec.yaml.
-#   5. Check Code Formatting: Fails the build if code isn't formatted via 'dart format'.
-#   6. Run Static Code Analysis: Scans for code issues and treats info logs as errors.
-#   7. Run Unit Tests with Coverage: Executes all unit tests and outputs lcov.info.
-#   8. Upload Coverage Report: Uploads the test coverage report as a build artifact,
+#   5. Run Build Runner: Generate files before analysis.
+#   6. Check Code Formatting: Fails the build if code isn't formatted via 'dart format'.
+#   7. Run Static Code Analysis: Scans for code issues and treats info logs as errors.
+#   8. Run Unit Tests with Coverage: Executes all unit tests and outputs lcov.info.
+#   9. Upload Coverage Report: Uploads the test coverage report as a build artifact,
 #      even if prior steps failed.
 # ==============================================================================
 
@@ -68,6 +69,9 @@ jobs:
 
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Generate Code (build_runner)
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Check Code Formatting
         run: dart format --set-exit-if-changed lib test
