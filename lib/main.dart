@@ -8,6 +8,7 @@ import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
 
 void main() {
+  // some random comment
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   Bloc.observer = AppBlocObserver();
