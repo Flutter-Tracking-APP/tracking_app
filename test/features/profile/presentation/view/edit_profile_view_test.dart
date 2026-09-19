@@ -111,6 +111,77 @@ void main() {
     expect(textField.readOnly, isTrue);
   });
 
+  testWidgets('update button starts disabled when form is pristine', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget(profile: dummyProfile));
+    await tester.pumpAndSettle();
+
+    final buttonFinder = find.widgetWithText(ElevatedButton, 'Update');
+    final button = tester.widget<ElevatedButton>(buttonFinder);
+    expect(button.enabled, isFalse);
+  });
+
+  testWidgets('update button enables when field is modified and valid', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget(profile: dummyProfile));
+    await tester.pumpAndSettle();
+
+    final firstNameField = find.widgetWithText(AppTextField, 'First legal name');
+    await tester.enterText(
+      find.descendant(of: firstNameField, matching: find.byType(TextField)),
+      'Ahmed',
+    );
+    await tester.pumpAndSettle();
+
+    final buttonFinder = find.widgetWithText(ElevatedButton, 'Update');
+    final button = tester.widget<ElevatedButton>(buttonFinder);
+    expect(button.enabled, isTrue);
+  });
+
+  testWidgets('update button disables when field is cleared', (tester) async {
+    await tester.pumpWidget(createTestWidget(profile: dummyProfile));
+    await tester.pumpAndSettle();
+
+    final firstNameField = find.widgetWithText(AppTextField, 'First legal name');
+    await tester.enterText(
+      find.descendant(of: firstNameField, matching: find.byType(TextField)),
+      '',
+    );
+    await tester.pumpAndSettle();
+
+    final buttonFinder = find.widgetWithText(ElevatedButton, 'Update');
+    final button = tester.widget<ElevatedButton>(buttonFinder);
+    expect(button.enabled, isFalse);
+  });
+
+  testWidgets('update button disables when reverted back to initial value', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget(profile: dummyProfile));
+    await tester.pumpAndSettle();
+
+    final firstNameField = find.widgetWithText(AppTextField, 'First legal name');
+    final textFinder = find.descendant(
+      of: firstNameField,
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(textFinder, 'Ahmed');
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update')).enabled,
+      isTrue,
+    );
+
+    await tester.enterText(textFinder, 'Nour');
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update')).enabled,
+      isFalse,
+    );
+  });
+
   testWidgets('renders properly in Arabic (RTL)', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.0;

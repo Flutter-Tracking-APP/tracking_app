@@ -112,6 +112,7 @@ class _EditVehicleInfoViewState extends State<EditVehicleInfoView> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
+      titleSpacing: 0,
     );
   }
 

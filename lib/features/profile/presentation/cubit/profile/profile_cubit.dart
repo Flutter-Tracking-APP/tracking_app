@@ -19,19 +19,37 @@ class ProfileCubit extends Cubit<ProfileState> {
     switch (event) {
       case GetProfileEvent():
         _getProfile();
+      case UpdateProfileLocallyEvent(:final profile):
+        emit(state.copyWith(profileState: BaseState.success(profile)));
       case LogoutEvent():
         _logout();
     }
   }
 
   Future<void> _getProfile() async {
-    emit(state.copyWith(profileState: BaseState.loading()));
+    emit(
+      state.copyWith(
+        profileState: BaseState(
+          isLoading: true,
+          errorMessage: null,
+          data: state.profileState.data,
+        ),
+      ),
+    );
     final result = await _getProfileUseCase.call();
     switch (result) {
       case Success(data: final data):
         emit(state.copyWith(profileState: BaseState.success(data)));
       case Failure(error: final error, message: final msg):
-        emit(state.copyWith(profileState: BaseState.error(msg ?? error.name)));
+        emit(
+          state.copyWith(
+            profileState: BaseState(
+              isLoading: false,
+              errorMessage: msg ?? error.name,
+              data: state.profileState.data,
+            ),
+          ),
+        );
     }
   }
 

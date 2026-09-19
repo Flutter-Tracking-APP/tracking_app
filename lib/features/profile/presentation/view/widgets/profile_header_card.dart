@@ -21,50 +21,77 @@ class ProfileHeaderCard extends StatelessWidget {
     final avatarUrl = profile?.profilePictureUrl;
     final fullName = profile?.fullName.isNotEmpty == true
         ? profile!.fullName
-        : 'Driver';
-    final email = profile?.email ?? '';
+        : '';
+    final email = profile?.email.isNotEmpty == true
+        ? profile!.email
+        : '';
+    final phone = profile?.phoneNumber.isNotEmpty == true
+        ? profile!.phoneNumber
+        : '';
 
-    return Column(
-      children: [
-        _buildAvatar(avatarUrl),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: onEditTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(fullName, style: AppStyles.bold20Inter),
-                const SizedBox(width: 6),
-                const Icon(
-                  Icons.edit_outlined,
-                  size: 18,
-                  color: AppColors.grey,
-                ),
-              ],
-            ),
-          ),
+    return InkWell(
+      onTap: onEditTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsetsDirectional.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.white[500]!, width: 1),
         ),
-        if (email.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Text(email, style: AppStyles.regular14InterGreyHeight15),
-        ],
-      ],
+        child: Row(
+          children: [
+            _buildAvatar(avatarUrl),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    fullName,
+                    style: AppStyles.bold20Inter.copyWith(fontSize: 16),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    email,
+                    style: AppStyles.regular12Inter,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    phone,
+                    style: AppStyles.regular12Inter,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: AppColors.grey,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildAvatar(String? avatarUrl) {
     return Container(
-      width: 90,
-      height: 90,
+      width: 56,
+      height: 56,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.purpleBase.withValues(alpha: 0.1),
         border: Border.all(
           color: AppColors.purpleBase.withValues(alpha: 0.2),
-          width: 2,
+          width: 1.5,
         ),
       ),
       child: ClipOval(
@@ -82,7 +109,7 @@ class ProfileHeaderCard extends StatelessWidget {
 
   Widget _buildFallbackFlower() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: SvgPicture.asset(AppImages.flower, fit: BoxFit.contain),
     );
   }

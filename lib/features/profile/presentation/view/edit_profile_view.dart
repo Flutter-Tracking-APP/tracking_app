@@ -37,26 +37,40 @@ class _EditProfileViewState extends State<EditProfileView> {
   late final TextEditingController _passwordPlaceholderController;
   final _imagePicker = ImagePicker();
 
+  late String _initialFirstName;
+  late String _initialLastName;
+  late String _initialPhone;
+  late int _initialGender;
+
   @override
   void initState() {
     super.initState();
-    _firstNameController = TextEditingController(
-      text: widget.initialProfile?.firstName ?? '',
-    );
-    _lastNameController = TextEditingController(
-      text: widget.initialProfile?.lastName ?? '',
-    );
+    _initialFirstName = widget.initialProfile?.firstName ?? '';
+    _initialLastName = widget.initialProfile?.lastName ?? '';
+    _initialPhone = widget.initialProfile?.phoneNumber ?? '';
+    _initialGender = widget.initialProfile?.gender ?? 0;
+
+    _firstNameController = TextEditingController(text: _initialFirstName)
+      ..addListener(_onFieldChanged);
+    _lastNameController = TextEditingController(text: _initialLastName)
+      ..addListener(_onFieldChanged);
     _emailController = TextEditingController(
       text: widget.initialProfile?.email ?? '',
     );
-    _phoneController = TextEditingController(
-      text: widget.initialProfile?.phoneNumber ?? '',
-    );
+    _phoneController = TextEditingController(text: _initialPhone)
+      ..addListener(_onFieldChanged);
     _passwordPlaceholderController = TextEditingController(text: '••••••••');
+  }
+
+  void _onFieldChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    _firstNameController.removeListener(_onFieldChanged);
+    _lastNameController.removeListener(_onFieldChanged);
+    _phoneController.removeListener(_onFieldChanged);
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -81,6 +95,10 @@ class _EditProfileViewState extends State<EditProfileView> {
         listener: _handleListener,
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+          final isDirty = _checkIsDirty(state);
+          final isValid = _isFormValid();
+          final canSubmit =
+              isDirty && isValid && !state.updateProfileState.isLoading;
 
           return Scaffold(
             backgroundColor: AppColors.whiteBase,
@@ -112,7 +130,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         },
                       ),
                       const SizedBox(height: 24),
-                      _buildSubmitButton(context, state, l10n),
+                      _buildSubmitButton(context, state, l10n, canSubmit),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -139,6 +157,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
+      titleSpacing: 0,
     );
   }
 
@@ -212,6 +231,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     BuildContext context,
     EditProfileState state,
     AppLocalizations l10n,
+    bool canSubmit,
   ) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
@@ -220,9 +240,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       child: AppButton(
         text: l10n.updateButton,
         isLoading: state.updateProfileState.isLoading,
-        onPressed: state.updateProfileState.isLoading
-            ? null
-            : () => _onSubmit(context, state),
+        onPressed: canSubmit ? () => _onSubmit(context, state) : null,
       ),
     );
   }
@@ -252,13 +270,36 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   void _handleListener(BuildContext context, EditProfileState state) {
     if (state.updateProfileState.data != null) {
+      _initialFirstName = _firstNameController.text.trim();
+      _initialLastName = _lastNameController.text.trim();
+      _initialPhone = _phoneController.text.trim();
+      _initialGender = state.selectedGender;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(state.updateProfileState.data!),
           backgroundColor: AppColors.success,
         ),
       );
-      Navigator.of(context).pop();
+
+      final updatedProfile = UserProfileEntity(
+        id: widget.initialProfile?.id ?? '',
+        firstName: _initialFirstName,
+        lastName: _initialLastName,
+        email: widget.initialProfile?.email ?? '',
+        phoneNumber: _initialPhone,
+        gender: _initialGender,
+        profilePictureUrl: widget.initialProfile?.profilePictureUrl,
+      );
+
+      if (context.mounted) {
+        final goRouter = GoRouter.maybeOf(context);
+        if (goRouter != null) {
+          goRouter.pop(updatedProfile);
+        } else {
+          Navigator.of(context).pop(updatedProfile);
+        }
+      }
     } else if (state.updateProfileState.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -267,6 +308,31 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       );
     }
+  }
+
+  bool _checkIsDirty(EditProfileState state) {
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final gender = state.selectedGender;
+    final hasNewAvatar = state.avatarFile != null;
+
+    return firstName != _initialFirstName ||
+        lastName != _initialLastName ||
+        phone != _initialPhone ||
+        gender != _initialGender ||
+        hasNewAvatar;
+  }
+
+  bool _isFormValid() {
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final phone = _phoneController.text.trim();
+
+    if (firstName.isEmpty || lastName.isEmpty || phone.isEmpty) {
+      return false;
+    }
+    return FormValidator.validate(FormValidator.phonePattern, phone);
   }
 
   String? _validateRequired(String? val, AppLocalizations l10n) {

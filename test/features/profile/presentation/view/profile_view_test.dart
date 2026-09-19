@@ -144,13 +144,16 @@ void main() {
     await tester.pumpWidget(createTestWidget());
     await tester.pumpAndSettle();
 
-    expect(find.text('Flowery'), findsOneWidget);
+    expect(find.text('Profile'), findsOneWidget);
     expect(find.text('Nour Mohamed'), findsOneWidget);
     expect(find.text('nour@test.com'), findsOneWidget);
+    expect(find.text('01010522698'), findsOneWidget);
     expect(find.text('Vehicle Info'), findsOneWidget);
-    expect(find.text('Car • 222'), findsOneWidget);
+    expect(find.text('Bike'), findsOneWidget);
+    expect(find.text('UP16DL0007'), findsOneWidget);
     expect(find.text('Language'), findsOneWidget);
     expect(find.text('Logout'), findsOneWidget);
+    expect(find.text('v 6.3.0 - (446)'), findsOneWidget);
   });
 
   testWidgets('opens LanguageBottomSheet when language tile is tapped', (
@@ -193,6 +196,7 @@ void main() {
     await tester.pumpWidget(createTestWidget(locale: const Locale('ar')));
     await tester.pumpAndSettle();
 
+    expect(find.text('الملف الشخصي'), findsOneWidget);
     expect(find.text('بيانات المركبة'), findsOneWidget);
     expect(find.text('اللغة'), findsOneWidget);
     expect(find.text('تسجيل الخروج'), findsOneWidget);

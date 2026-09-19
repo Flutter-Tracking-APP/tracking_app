@@ -10,8 +10,8 @@ class VehicleInfoTile extends StatelessWidget {
 
   const VehicleInfoTile({
     super.key,
-    this.vehicleType = 'Car',
-    this.plateNumber = '222',
+    this.vehicleType = 'Bike',
+    this.plateNumber = 'UP16DL0007',
     required this.onTap,
   });
 
@@ -21,38 +21,32 @@ class VehicleInfoTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
+        padding: const EdgeInsetsDirectional.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.white[500]!, width: 1),
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.directions_car_outlined,
-              size: 24,
-              color: AppColors.purpleBase,
-            ),
-            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     l10n.vehicleInfoLabel,
-                    style: AppStyles.medium16Inter.copyWith(
-                      color: AppColors.blackBase,
-                    ),
+                    style: AppStyles.bold20Inter.copyWith(fontSize: 16),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Text(
-                    '$vehicleType • $plateNumber',
+                    vehicleType,
+                    style: AppStyles.regular12Inter,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    plateNumber,
                     style: AppStyles.regular12Inter,
                   ),
                 ],

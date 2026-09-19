@@ -15,7 +15,6 @@ import 'package:tracking_app/features/profile/presentation/view/edit_vehicle_inf
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/onboarding_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/splash_view.dart';
-import 'package:tracking_app/handlers/home_view.dart';
 
 abstract final class AppRoutes {
   static const splash = '/';
@@ -50,13 +49,6 @@ abstract final class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           return OnboardingView();
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.home,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          return HomeView();
         },
       ),
       GoRoute(
