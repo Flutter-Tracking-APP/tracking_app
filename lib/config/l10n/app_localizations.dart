@@ -445,6 +445,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a vehicle type'**
   String get vehicleTypeRequiredError;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @editVehicleInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Vehicle Info'**
+  String get editVehicleInfoTitle;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changeLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get changeLanguageTitle;
+
+  /// No description provided for @vehicleInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Info'**
+  String get vehicleInfoLabel;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageLabel;
+
+  /// No description provided for @logoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutLabel;
+
+  /// No description provided for @logoutDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGOUT'**
+  String get logoutDialogTitle;
+
+  /// No description provided for @logoutDialogContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm logout!!'**
+  String get logoutDialogContent;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateButton;
+
+  /// No description provided for @changeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get changeButton;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @currentPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter current password'**
+  String get currentPasswordHint;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @newPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get newPasswordHint;
+
+  /// No description provided for @confirmNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get confirmNewPasswordLabel;
+
+  /// No description provided for @confirmNewPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get confirmNewPasswordHint;
+
+  /// No description provided for @languageArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get languageArabic;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @profileUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccess;
+
+  /// No description provided for @vehicleUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle info updated successfully'**
+  String get vehicleUpdatedSuccess;
+
+  /// No description provided for @passwordChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed successfully'**
+  String get passwordChangedSuccess;
 }
 
 class _AppLocalizationsDelegate

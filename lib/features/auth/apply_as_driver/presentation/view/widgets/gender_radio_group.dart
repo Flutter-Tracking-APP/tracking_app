@@ -32,9 +32,9 @@ class GenderRadioGroup extends StatelessWidget {
             style: AppStyles.medium16Inter.copyWith(color: AppColors.blackBase),
           ),
           SizedBox(width: screenWidth * 0.04),
-          _buildRadioOption(label: l10n.genderFemale, value: 0),
+          _buildRadioOption(label: l10n.genderFemale, value: 1),
           SizedBox(width: screenWidth * 0.03),
-          _buildRadioOption(label: l10n.genderMale, value: 1),
+          _buildRadioOption(label: l10n.genderMale, value: 0),
         ],
       ),
     );

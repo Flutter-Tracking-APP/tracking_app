@@ -12,12 +12,22 @@ class LoginView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteBase,
       body: Center(
-        child: TextButton(
-          onPressed: () => context.push(AppRoutes.applyDriver),
-          child: Text(
-            'Apply as Driver',
-            style: AppStyles.medium16InterUnderline,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextButton(
+              onPressed: () => context.push(AppRoutes.applyDriver),
+              child: Text(
+                'Apply as Driver',
+                style: AppStyles.medium16InterUnderline,
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () => context.push(AppRoutes.profile),
+              child: Text('Profile', style: AppStyles.medium16InterUnderline),
+            ),
+          ],
         ),
       ),
     );

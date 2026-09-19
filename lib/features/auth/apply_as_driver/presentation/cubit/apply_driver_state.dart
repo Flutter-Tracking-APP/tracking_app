@@ -17,7 +17,7 @@ class ApplyDriverState extends Equatable {
   const ApplyDriverState({
     this.applyState = const BaseState.initial(),
     this.vehicleTypesState = const BaseState.initial(),
-    this.selectedGender = 1,
+    this.selectedGender = 0,
     this.selectedVehicleType,
     this.licenceImage,
     this.nidImage,

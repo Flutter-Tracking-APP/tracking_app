@@ -3,12 +3,21 @@ import 'package:go_router/go_router.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/view/apply_as_driver_view.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/view/success_apply_view.dart';
 import 'package:tracking_app/features/auth/presentation/login/view/login_view.dart';
+import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/presentation/view/change_password_view.dart';
+import 'package:tracking_app/features/profile/presentation/view/edit_profile_view.dart';
+import 'package:tracking_app/features/profile/presentation/view/edit_vehicle_info_view.dart';
+import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 
 abstract final class AppRoutes {
   static const splash = '/';
   static const login = '/login';
   static const applyDriver = '/apply-driver';
   static const applyDriverSuccess = '/apply-driver-success';
+  static const profile = '/profile';
+  static const editProfile = '/edit-profile';
+  static const editVehicleInfo = '/edit-vehicle-info';
+  static const changePassword = '/change-password';
 }
 
 abstract final class AppRouter {
@@ -16,7 +25,7 @@ abstract final class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.applyDriver,
+    initialLocation: AppRoutes.login,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -46,6 +55,35 @@ abstract final class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           return const SuccessApplyView();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          return const ProfileView();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.editProfile,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final profile = state.extra as UserProfileEntity?;
+          return EditProfileView(initialProfile: profile);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.editVehicleInfo,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          return const EditVehicleInfoView();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.changePassword,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          return const ChangePasswordView();
         },
       ),
     ],

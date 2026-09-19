@@ -196,4 +196,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vehicleTypeRequiredError => 'Please select a vehicle type';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get editProfileTitle => 'Edit Profile';
+
+  @override
+  String get editVehicleInfoTitle => 'Edit Vehicle Info';
+
+  @override
+  String get changePasswordTitle => 'Change Password';
+
+  @override
+  String get changeLanguageTitle => 'Change Language';
+
+  @override
+  String get vehicleInfoLabel => 'Vehicle Info';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get logoutLabel => 'Logout';
+
+  @override
+  String get logoutDialogTitle => 'LOGOUT';
+
+  @override
+  String get logoutDialogContent => 'Confirm logout!!';
+
+  @override
+  String get cancelButton => 'Cancel';
+
+  @override
+  String get updateButton => 'Update';
+
+  @override
+  String get changeButton => 'Change';
+
+  @override
+  String get currentPasswordLabel => 'Current password';
+
+  @override
+  String get currentPasswordHint => 'Enter current password';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get newPasswordHint => 'Enter new password';
+
+  @override
+  String get confirmNewPasswordLabel => 'Confirm new password';
+
+  @override
+  String get confirmNewPasswordHint => 'Confirm new password';
+
+  @override
+  String get languageArabic => 'Arabic';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get profileUpdatedSuccess => 'Profile updated successfully';
+
+  @override
+  String get vehicleUpdatedSuccess => 'Vehicle info updated successfully';
+
+  @override
+  String get passwordChangedSuccess => 'Password changed successfully';
 }

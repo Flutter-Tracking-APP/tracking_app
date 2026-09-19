@@ -194,4 +194,76 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get vehicleTypeRequiredError => 'يرجى اختيار نوع المركبة';
+
+  @override
+  String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get editProfileTitle => 'تعديل الملف الشخصي';
+
+  @override
+  String get editVehicleInfoTitle => 'تعديل بيانات المركبة';
+
+  @override
+  String get changePasswordTitle => 'تغيير كلمة المرور';
+
+  @override
+  String get changeLanguageTitle => 'تغيير اللغة';
+
+  @override
+  String get vehicleInfoLabel => 'بيانات المركبة';
+
+  @override
+  String get languageLabel => 'اللغة';
+
+  @override
+  String get logoutLabel => 'تسجيل الخروج';
+
+  @override
+  String get logoutDialogTitle => 'تسجيل الخروج';
+
+  @override
+  String get logoutDialogContent => 'هل أنت متأكد من تسجيل الخروج؟';
+
+  @override
+  String get cancelButton => 'إلغاء';
+
+  @override
+  String get updateButton => 'تحديث';
+
+  @override
+  String get changeButton => 'تغيير';
+
+  @override
+  String get currentPasswordLabel => 'كلمة المرور الحالية';
+
+  @override
+  String get currentPasswordHint => 'أدخل كلمة المرور الحالية';
+
+  @override
+  String get newPasswordLabel => 'كلمة المرور الجديدة';
+
+  @override
+  String get newPasswordHint => 'أدخل كلمة المرور الجديدة';
+
+  @override
+  String get confirmNewPasswordLabel => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get confirmNewPasswordHint => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get languageArabic => 'العربية';
+
+  @override
+  String get languageEnglish => 'الإنجليزية';
+
+  @override
+  String get profileUpdatedSuccess => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get vehicleUpdatedSuccess => 'تم تحديث بيانات المركبة بنجاح';
+
+  @override
+  String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح';
 }

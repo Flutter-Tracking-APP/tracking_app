@@ -16,6 +16,7 @@ class AppTextField extends StatelessWidget {
   final void Function(String)? onChange;
   final Widget? suffixIcon;
   final bool obscureText;
+  final bool readOnly;
   final TextInputType? keyboardType;
   final AppLocalizations localizations;
 
@@ -32,6 +33,7 @@ class AppTextField extends StatelessWidget {
     this.onChange,
     this.suffixIcon,
     this.obscureText = false,
+    this.readOnly = false,
     this.keyboardType,
     required this.localizations,
   }) : labelStyle = labelStyle ?? AppStyles.regular12Roboto,
@@ -62,6 +64,7 @@ class AppTextField extends StatelessWidget {
       validator: validator ?? defaultValidator,
       onChanged: onChange,
       obscureText: obscureText,
+      readOnly: readOnly,
       keyboardType: keyboardType,
     );
   }

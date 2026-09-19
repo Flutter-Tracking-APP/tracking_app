@@ -71,9 +71,9 @@ void main() {
   );
 
   group('ApplyDriverCubit', () {
-    test('initial state has default gender 1 and initial BaseStates', () {
+    test('initial state has default gender 0 and initial BaseStates', () {
       final cubit = ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase);
-      expect(cubit.state.selectedGender, 1);
+      expect(cubit.state.selectedGender, 0);
       expect(cubit.state.applyState.isLoading, false);
       expect(cubit.state.vehicleTypesState.isLoading, false);
       cubit.close();
@@ -150,8 +150,8 @@ void main() {
     blocTest<ApplyDriverCubit, ApplyDriverState>(
       'updates gender when SelectGenderEvent is triggered',
       build: () => ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase),
-      act: (cubit) => cubit.doEvent(const SelectGenderEvent(0)),
-      expect: () => [predicate<ApplyDriverState>((s) => s.selectedGender == 0)],
+      act: (cubit) => cubit.doEvent(const SelectGenderEvent(1)),
+      expect: () => [predicate<ApplyDriverState>((s) => s.selectedGender == 1)],
     );
 
     blocTest<ApplyDriverCubit, ApplyDriverState>(
