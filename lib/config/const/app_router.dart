@@ -13,6 +13,7 @@ import 'package:tracking_app/features/profile/presentation/view/change_password_
 import 'package:tracking_app/features/profile/presentation/view/edit_profile_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/edit_vehicle_info_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
+import 'package:tracking_app/features/splash/presentation/view/onboarding_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/splash_view.dart';
 import 'package:tracking_app/handlers/home_view.dart';
 
@@ -27,6 +28,7 @@ abstract final class AppRoutes {
   static const changePassword = '/change-password';
   static const home = '/home';
   static const forgetPassword = '/forgot-password';
+  static const onBoarding = '/onBoarding';
 }
 
 abstract final class AppRouter {
@@ -34,13 +36,20 @@ abstract final class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.splash,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           return SplashView();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.onBoarding,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          return OnboardingView();
         },
       ),
       GoRoute(
