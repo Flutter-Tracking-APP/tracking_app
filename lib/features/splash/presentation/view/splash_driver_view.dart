@@ -7,7 +7,12 @@ import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_images.dart';
 
 class SplashDriverView extends StatefulWidget {
-  const SplashDriverView({super.key});
+  const SplashDriverView({
+    super.key,
+    required this.onFinished,
+  });
+
+  final VoidCallback onFinished;
 
   @override
   State<SplashDriverView> createState() => _SplashDriverViewState();
@@ -15,77 +20,93 @@ class SplashDriverView extends StatefulWidget {
 
 class _SplashDriverViewState extends State<SplashDriverView>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<Offset> _imageSlideAnimation;
+  late final AnimationController _slideController;
 
-  Timer? _animationTimer;
+  Timer? _exitTimer;
+  bool _startedExit = false;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
+    _slideController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 800),
     );
- 
-    _imageSlideAnimation =
-        Tween<Offset>(begin: Offset.zero, end: const Offset(0.8, 0)).animate(
-          CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic),
-        );
 
- 
-    _animationTimer = Timer(const Duration(milliseconds: 4800), () {
-      if (mounted) {
-        _controller.forward();
+    _slideController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.onFinished();
       }
     });
   }
 
+  void _onLottieLoaded(LottieComposition composition) {
+    if (_startedExit) return;
+
+    _startedExit = true;
+
+    // Wait until the Lottie animation completes.
+    _exitTimer = Timer(
+      composition.duration,
+      () {
+        if (!mounted) return;
+
+        _slideController.forward();
+      },
+    );
+  }
+
   @override
   void dispose() {
-    _animationTimer?.cancel();
-    _controller.dispose();
+    _exitTimer?.cancel();
+
+    _slideController
+      ..removeStatusListener((_) {})
+      ..dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     const primaryColor = AppColors.purpleBase;
-     final localizations = AppLocalizations.of(context)!;
+
+    final localizations = AppLocalizations.of(context)!;
     final screenHeight = MediaQuery.sizeOf(context).height;
 
- 
-    final imageHeight = screenHeight * 0.45;
+    final imageSize = screenHeight * 0.40;
 
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
+    return SizedBox.expand(
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
- 
           Positioned(
             top: -50,
             right: -50,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: primaryColor.withValues(alpha:0.08),
+            child: RepaintBoundary(
+              child: Container(
+                width: 220,
+                height: 220,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: primaryColor.withValues(alpha: 0.08),
+                ),
               ),
             ),
           ),
- 
+
           Positioned(
             bottom: -70,
             left: -70,
-            child: Container(
-              width: 260,
-              height: 260,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: primaryColor.withValues(alpha:0.12),
+            child: RepaintBoundary(
+              child: Container(
+                width: 260,
+                height: 260,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: primaryColor.withValues(alpha: 0.12),
+                ),
               ),
             ),
           ),
@@ -96,43 +117,59 @@ class _SplashDriverViewState extends State<SplashDriverView>
               child: Column(
                 children: [
                   const Spacer(),
+
                   SizedBox(
-                    height: imageHeight,
+                    height: imageSize,
                     width: double.infinity,
                     child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.white.withValues(alpha:0.45),
-                          boxShadow: [
-                            BoxShadow(
-                              color: primaryColor.withValues(alpha:0.1),
-                              blurRadius: 35,
-                              spreadRadius: 5,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: Offset.zero,
+                          end: const Offset(1.2, 0),
+                        ).animate(
+                          CurvedAnimation(
+                            parent: _slideController,
+                            curve: Curves.easeInCubic,
+                          ),
                         ),
-                        child: SlideTransition(
-                          position: _imageSlideAnimation,
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.white.withValues(alpha: 0.45),
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    primaryColor.withValues(alpha: 0.1),
+                                blurRadius: 35,
+                                spreadRadius: 5,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
                           child: Lottie.asset(
                             AppImages.deliveryServiceImage,
-                            width: imageHeight * 0.88,
-                            height: imageHeight * 0.88,
+                            width: imageSize * 0.88,
+                            height: imageSize * 0.88,
                             fit: BoxFit.cover,
-                            repeat: true,
+
+                            // Play ONLY one cycle.
+                            repeat: false,
+
+                            // Start exit when the Lottie composition ends.
+                            onLoaded: _onLottieLoaded,
                           ),
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 140),
-                    Text(
+                  const SizedBox(height: 120),
+
+                  Text(
                     localizations.floweryriderapp,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 2,
@@ -148,8 +185,10 @@ class _SplashDriverViewState extends State<SplashDriverView>
                       borderRadius: BorderRadius.circular(8),
                       child: LinearProgressIndicator(
                         minHeight: 4,
-                        backgroundColor: primaryColor.withValues(alpha:  0.15),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
+                        backgroundColor:
+                            primaryColor.withValues(alpha: 0.15),
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(
                           primaryColor,
                         ),
                       ),
