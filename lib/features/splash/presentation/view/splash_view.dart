@@ -1,4 +1,3 @@
- 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracking_app/config/const/app_router.dart';
@@ -14,18 +13,12 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  static const _splashDuration = Duration(seconds: 5);
-
-  @override
-  void initState() {
-    super.initState();
-    _checkSession();
-  }
+  bool _isNavigating = false;
 
   Future<void> _checkSession() async {
-    await Future.delayed(_splashDuration);
+    if (_isNavigating) return;
 
-    if (!mounted) return;
+    _isNavigating = true;
 
     final sessionService = getIt<SessionService>();
 
@@ -39,8 +32,7 @@ class _SplashViewState extends State<SplashView> {
       } else {
         context.go(AppRoutes.onBoarding);
       }
-    } catch (error) {
-
+    } catch (_) {
       if (!mounted) return;
 
       context.go(AppRoutes.onBoarding);
@@ -49,9 +41,10 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SplashDriverView(),
+    return Scaffold(
+      body: SplashDriverView(
+        onFinished: _checkSession,
+      ),
     );
   }
 }
- 
