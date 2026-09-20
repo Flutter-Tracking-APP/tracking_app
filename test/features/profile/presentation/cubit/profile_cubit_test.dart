@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tracking_app/config/base_state/base_state.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/config/session/session_service.dart';
@@ -145,6 +146,52 @@ void main() {
       verify: (_) {
         expect(fakeSessionService.sessionCleared, true);
       },
+    );
+
+    blocTest<ProfileCubit, ProfileState>(
+      'emits success immediately when UpdateProfileLocallyEvent is received',
+      build: () => ProfileCubit(getProfileUseCase, fakeSessionService),
+      act: (cubit) => cubit.doEvent(const UpdateProfileLocallyEvent(testEntity)),
+      expect: () => [
+        predicate<ProfileState>(
+          (s) => s.profileState.data?.id == 'p-1' && !s.profileState.isLoading,
+        ),
+      ],
+    );
+
+    blocTest<ProfileCubit, ProfileState>(
+      'preserves existing cached profile data when refreshing via GetProfileEvent',
+      seed: () => const ProfileState(
+        profileState: BaseState(
+          isLoading: false,
+          errorMessage: null,
+          data: testEntity,
+        ),
+      ),
+      build: () {
+        fakeRepo.profileResult = const Success(
+          UserProfileEntity(
+            id: 'p-1',
+            firstName: 'Updated',
+            lastName: 'Name',
+            email: 'nour@test.com',
+            phoneNumber: '01010522698',
+            gender: 0,
+          ),
+        );
+        return ProfileCubit(getProfileUseCase, fakeSessionService);
+      },
+      act: (cubit) => cubit.doEvent(const GetProfileEvent()),
+      expect: () => [
+        predicate<ProfileState>(
+          (s) => s.profileState.isLoading && s.profileState.data == testEntity,
+        ),
+        predicate<ProfileState>(
+          (s) =>
+              !s.profileState.isLoading &&
+              s.profileState.data?.firstName == 'Updated',
+        ),
+      ],
     );
   });
 }

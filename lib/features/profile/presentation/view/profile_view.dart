@@ -6,6 +6,7 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_events.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_state.dart';
@@ -38,55 +39,71 @@ class ProfileView extends StatelessWidget {
             backgroundColor: AppColors.whiteBase,
             appBar: _buildAppBar(context, l10n),
             body: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: Column(
-                  children: [
-                    ProfileHeaderCard(
-                      profile: state.profileState.data,
-                      onEditTap: () => _navigateToEditProfile(context, state),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
                     ),
-                    const SizedBox(height: 24),
-                    VehicleInfoTile(
-                      onTap: () => context.push(AppRoutes.editVehicleInfo),
-                    ),
-                    const SizedBox(height: 16),
-                    ProfileMenuTile(
-                      icon: Icons.language_outlined,
-                      title: l10n.languageLabel,
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            languageName,
-                            style: AppStyles.regular14Inter.copyWith(
-                              color: AppColors.purpleBase,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 14,
-                            color: AppColors.grey,
-                          ),
-                        ],
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight - 24,
                       ),
-                      onTap: () => LanguageBottomSheet.show(context),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          children: [
+                            ProfileHeaderCard(
+                              profile: state.profileState.data,
+                              onEditTap: () =>
+                                  _navigateToEditProfile(context, state),
+                            ),
+                            const SizedBox(height: 16),
+                            VehicleInfoTile(
+                              onTap: () => _navigateToEditVehicle(context),
+                            ),
+                            const SizedBox(height: 24),
+                            ProfileMenuTile(
+                              icon: Icons.translate,
+                              title: l10n.languageLabel,
+                              trailing: Text(
+                                languageName,
+                                style: AppStyles.regular14Inter.copyWith(
+                                  color: AppColors.purpleBase,
+                                ),
+                              ),
+                              onTap: () => LanguageBottomSheet.show(context),
+                            ),
+                            const SizedBox(height: 8),
+                            ProfileMenuTile(
+                              icon: Icons.logout,
+                              title: l10n.logoutLabel,
+                              iconColor: AppColors.blackBase,
+                              textColor: AppColors.blackBase,
+                              trailing: const Icon(
+                                Icons.logout,
+                                size: 20,
+                                color: AppColors.blackBase,
+                              ),
+                              onTap: () => _onLogoutTap(context),
+                            ),
+                            const Spacer(),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                'v 6.3.0 - (446)',
+                                style: TextStyle(
+                                  color: AppColors.grey,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    const Divider(height: 1, color: AppColors.whiteBase),
-                    ProfileMenuTile(
-                      icon: Icons.logout_outlined,
-                      title: l10n.logoutLabel,
-                      iconColor: AppColors.error,
-                      textColor: AppColors.error,
-                      trailing: const SizedBox.shrink(),
-                      onTap: () => _onLogoutTap(context),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           );
@@ -100,7 +117,10 @@ class ProfileView extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     return AppBar(
-      title: Text('Flowery', style: AppStyles.appTitle),
+      title: Text(
+        l10n.profileTitle,
+        style: AppStyles.bold20Inter.copyWith(fontSize: 18),
+      ),
       centerTitle: false,
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -109,7 +129,11 @@ class ProfileView extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.only(end: 16),
           child: IconButton(
-            icon: const Icon(Icons.notifications_none_outlined, size: 24),
+            icon: const Icon(
+              Icons.notifications_none_outlined,
+              size: 24,
+              color: AppColors.blackBase,
+            ),
             onPressed: () {},
           ),
         ),
@@ -117,8 +141,27 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  void _navigateToEditProfile(BuildContext context, ProfileState state) {
-    context.push(AppRoutes.editProfile, extra: state.profileState.data);
+  Future<void> _navigateToEditProfile(
+    BuildContext context,
+    ProfileState state,
+  ) async {
+    final currentProfile = state.profileState.data;
+    final updatedProfile = await context.push<UserProfileEntity>(
+      AppRoutes.editProfile,
+      extra: currentProfile,
+    );
+    if (updatedProfile != null && context.mounted) {
+      context.read<ProfileCubit>().doEvent(
+        UpdateProfileLocallyEvent(updatedProfile),
+      );
+    }
+  }
+
+  Future<void> _navigateToEditVehicle(BuildContext context) async {
+    await context.push(AppRoutes.editVehicleInfo);
+    if (context.mounted) {
+      context.read<ProfileCubit>().doEvent(const GetProfileEvent());
+    }
   }
 
   void _onLogoutTap(BuildContext context) {
