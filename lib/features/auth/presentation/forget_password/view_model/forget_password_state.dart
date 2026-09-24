@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../config/base_state/base_state.dart';
+import '../../../../../config/base/base_state.dart';
 
 enum ForgetPasswordStep { email, otp, resetPassword }
 
@@ -45,8 +45,8 @@ class ForgetPasswordState extends BaseState<dynamic> with Equatable {
     String? email,
     int? remainingSeconds,
     bool? isLoading,
-    String? errorMessage,
-    dynamic data,
+    Object? errorMessage = unset,
+    Object? data = unset,
   }) {
     return ForgetPasswordState(
       step: step ?? this.step,
@@ -56,8 +56,10 @@ class ForgetPasswordState extends BaseState<dynamic> with Equatable {
       email: email ?? this.email,
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage ?? this.errorMessage,
-      data: data ?? this.data,
+      errorMessage: identical(errorMessage, unset)
+          ? this.errorMessage
+          : errorMessage as String?,
+      data: identical(data, unset) ? this.data : data,
     );
   }
 

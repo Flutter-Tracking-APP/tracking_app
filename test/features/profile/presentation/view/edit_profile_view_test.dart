@@ -14,6 +14,7 @@ import 'package:tracking_app/features/profile/domain/repositories/profile_reposi
 import 'package:tracking_app/features/profile/domain/use_cases/update_profile_use_case.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/edit_profile/edit_profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/view/edit_profile_view.dart';
+import '../../../../helpers/fake_image_picker_service.dart';
 
 class FakeEditRepo implements ProfileRepository {
   @override
@@ -76,7 +77,10 @@ void main() {
     }
     final fakeRepo = FakeEditRepo();
     getIt.registerFactory<EditProfileCubit>(
-      () => EditProfileCubit(UpdateProfileUseCase(fakeRepo)),
+      () => EditProfileCubit(
+        UpdateProfileUseCase(fakeRepo),
+        FakeImagePickerService(),
+      ),
     );
   });
 

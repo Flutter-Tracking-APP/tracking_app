@@ -30,7 +30,8 @@ class DriverDataDto {
   final String? createdAt;
   final String? updatedAt;
   final String? gender;
-  final String? notifcationStatus;
+  @JsonKey(readValue: _readNotificationStatus)
+  final String? notificationStatus;
 
   const DriverDataDto({
     this.id,
@@ -41,8 +42,15 @@ class DriverDataDto {
     this.createdAt,
     this.updatedAt,
     this.gender,
-    this.notifcationStatus,
+    this.notificationStatus,
   });
+
+  static Object? _readNotificationStatus(
+    Map<dynamic, dynamic> json,
+    String key,
+  ) {
+    return json['notificationStatus'] ?? json['notifcationStatus'];
+  }
 
   factory DriverDataDto.fromJson(Map<String, dynamic> json) =>
       _$DriverDataDtoFromJson(json);

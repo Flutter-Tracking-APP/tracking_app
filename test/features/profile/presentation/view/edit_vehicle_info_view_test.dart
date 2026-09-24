@@ -19,6 +19,7 @@ import 'package:tracking_app/features/profile/domain/repositories/profile_reposi
 import 'package:tracking_app/features/profile/domain/use_cases/update_vehicle_use_case.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/view/edit_vehicle_info_view.dart';
+import '../../../../helpers/fake_image_picker_service.dart';
 
 class FakeVehicleApplyTestRepo implements ApplyDriverRepository {
   @override
@@ -77,6 +78,7 @@ void main() {
       () => EditVehicleCubit(
         GetVehicleTypesUseCase(applyRepo),
         UpdateVehicleUseCase(profileRepo),
+        FakeImagePickerService(),
       ),
     );
   });

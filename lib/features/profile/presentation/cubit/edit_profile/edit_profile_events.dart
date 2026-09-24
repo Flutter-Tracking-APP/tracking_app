@@ -12,8 +12,8 @@ final class InitEditProfileEvent extends EditProfileEvents {
 }
 
 final class PickAvatarEvent extends EditProfileEvents {
-  final File file;
-  const PickAvatarEvent(this.file);
+  final File? file;
+  const PickAvatarEvent([this.file]);
 }
 
 final class SelectEditGenderEvent extends EditProfileEvents {

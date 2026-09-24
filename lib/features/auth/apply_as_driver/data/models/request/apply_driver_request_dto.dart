@@ -54,13 +54,12 @@ class ApplyDriverRequestDto {
     );
   }
 
-  Future<FormData> toFormData() async {
+  Future<Map<String, dynamic>> toPartMap() async {
     final nidFileName = nidImage.path.split(Platform.pathSeparator).last;
-    final licenceFileName = licenceImage.path
-        .split(Platform.pathSeparator)
-        .last;
+    final licenceFileName =
+        licenceImage.path.split(Platform.pathSeparator).last;
 
-    return FormData.fromMap({
+    return {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
@@ -81,6 +80,10 @@ class ApplyDriverRequestDto {
         filename: licenceFileName,
       ),
       'fcmToken': fcmToken,
-    });
+    };
+  }
+
+  Future<FormData> toFormData() async {
+    return FormData.fromMap(await toPartMap());
   }
 }

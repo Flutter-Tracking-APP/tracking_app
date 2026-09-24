@@ -17,6 +17,7 @@ import 'package:tracking_app/features/profile/domain/use_cases/update_vehicle_us
 import 'package:tracking_app/features/profile/presentation/cubit/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/edit_vehicle/edit_vehicle_events.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/edit_vehicle/edit_vehicle_state.dart';
+import '../../../../helpers/fake_image_picker_service.dart';
 
 class FakeVehicleApplyRepo implements ApplyDriverRepository {
   ApiResults<List<VehicleTypeEntity>>? vehicleTypesResult;
@@ -57,12 +58,14 @@ void main() {
   late FakeVehicleProfileRepo fakeProfileRepo;
   late GetVehicleTypesUseCase getVehicleTypesUseCase;
   late UpdateVehicleUseCase updateVehicleUseCase;
+  late FakeImagePickerService fakeImagePicker;
 
   setUp(() {
     fakeApplyRepo = FakeVehicleApplyRepo();
     fakeProfileRepo = FakeVehicleProfileRepo();
     getVehicleTypesUseCase = GetVehicleTypesUseCase(fakeApplyRepo);
     updateVehicleUseCase = UpdateVehicleUseCase(fakeProfileRepo);
+    fakeImagePicker = FakeImagePickerService();
   });
 
   const testTypes = [VehicleTypeEntity(id: 'v-1', name: 'Car')];
@@ -76,7 +79,11 @@ void main() {
       'emits loading then success on LoadVehicleTypesEvent',
       build: () {
         fakeApplyRepo.vehicleTypesResult = const Success(testTypes);
-        return EditVehicleCubit(getVehicleTypesUseCase, updateVehicleUseCase);
+        return EditVehicleCubit(
+          getVehicleTypesUseCase,
+          updateVehicleUseCase,
+          fakeImagePicker,
+        );
       },
       act: (cubit) => cubit.doEvent(const LoadVehicleTypesEvent()),
       expect: () => [
@@ -91,8 +98,11 @@ void main() {
 
     blocTest<EditVehicleCubit, EditVehicleState>(
       'updates selectedVehicleType on SelectVehicleTypeEvent',
-      build: () =>
-          EditVehicleCubit(getVehicleTypesUseCase, updateVehicleUseCase),
+      build: () => EditVehicleCubit(
+        getVehicleTypesUseCase,
+        updateVehicleUseCase,
+        fakeImagePicker,
+      ),
       act: (cubit) => cubit.doEvent(SelectVehicleTypeEvent(testTypes.first)),
       expect: () => [
         predicate<EditVehicleState>((s) => s.selectedVehicleType?.id == 'v-1'),
@@ -100,9 +110,12 @@ void main() {
     );
 
     blocTest<EditVehicleCubit, EditVehicleState>(
-      'updates licenseFile on PickLicenseDocumentEvent',
-      build: () =>
-          EditVehicleCubit(getVehicleTypesUseCase, updateVehicleUseCase),
+      'updates licenseFile on PickLicenseDocumentEvent with explicit file',
+      build: () => EditVehicleCubit(
+        getVehicleTypesUseCase,
+        updateVehicleUseCase,
+        fakeImagePicker,
+      ),
       act: (cubit) => cubit.doEvent(PickLicenseDocumentEvent(File('lic.png'))),
       expect: () => [
         predicate<EditVehicleState>((s) => s.licenseFile?.path == 'lic.png'),
@@ -110,10 +123,32 @@ void main() {
     );
 
     blocTest<EditVehicleCubit, EditVehicleState>(
+      'picks license document via ImagePickerService when file is null',
+      build: () {
+        fakeImagePicker.fileToReturn = File('picked_lic.png');
+        return EditVehicleCubit(
+          getVehicleTypesUseCase,
+          updateVehicleUseCase,
+          fakeImagePicker,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const PickLicenseDocumentEvent()),
+      expect: () => [
+        predicate<EditVehicleState>(
+          (s) => s.licenseFile?.path == 'picked_lic.png',
+        ),
+      ],
+    );
+
+    blocTest<EditVehicleCubit, EditVehicleState>(
       'emits loading then success on SubmitVehicleInfoEvent',
       build: () {
         fakeProfileRepo.updateResult = const Success('Updated');
-        return EditVehicleCubit(getVehicleTypesUseCase, updateVehicleUseCase);
+        return EditVehicleCubit(
+          getVehicleTypesUseCase,
+          updateVehicleUseCase,
+          fakeImagePicker,
+        );
       },
       act: (cubit) => cubit.doEvent(const SubmitVehicleInfoEvent(testParams)),
       expect: () => [

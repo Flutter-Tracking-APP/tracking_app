@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/config/session/session_service.dart';

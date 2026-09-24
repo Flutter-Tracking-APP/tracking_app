@@ -41,15 +41,20 @@ class GenderRadioGroup extends StatelessWidget {
   }
 
   Widget _buildRadioOption({required String label, required int value}) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Radio<int>(value: value, activeColor: AppColors.purpleBase),
-        GestureDetector(
-          onTap: () => onChanged(value),
-          child: Text(label, style: AppStyles.regular14InterW500),
-        ),
-      ],
+    return InkWell(
+      onTap: () => onChanged(value),
+      borderRadius: BorderRadius.circular(4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Radio<int>(
+            value: value,
+            activeColor: AppColors.purpleBase,
+          ),
+          Text(label, style: AppStyles.regular14InterW500),
+          const SizedBox(width: 8),
+        ],
+      ),
     );
   }
 }

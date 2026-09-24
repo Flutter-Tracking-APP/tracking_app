@@ -122,9 +122,6 @@ class ProfileView extends StatelessWidget {
         style: AppStyles.bold20Inter.copyWith(fontSize: 18),
       ),
       centerTitle: false,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
       actions: [
         Padding(
           padding: const EdgeInsetsDirectional.only(end: 16),

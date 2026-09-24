@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/features/auth/domain/entities/login_entity.dart';
 
 

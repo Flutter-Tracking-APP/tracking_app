@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:tracking_app/config/base/base_event.dart';
+import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/form_validator/form_validator.dart';
@@ -28,14 +28,15 @@ class EditProfileView extends StatefulWidget {
   State<EditProfileView> createState() => _EditProfileViewState();
 }
 
-class _EditProfileViewState extends State<EditProfileView> {
+class _EditProfileViewState extends State<EditProfileView>
+    with BaseViewMixin<EditProfileView, EditProfileCubit> {
+  late final EditProfileCubit _cubit;
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
   late final TextEditingController _passwordPlaceholderController;
-  final _imagePicker = ImagePicker();
 
   late String _initialFirstName;
   late String _initialLastName;
@@ -43,8 +44,15 @@ class _EditProfileViewState extends State<EditProfileView> {
   late int _initialGender;
 
   @override
+  EditProfileCubit get cubit => _cubit;
+
+  @override
   void initState() {
-    super.initState();
+    _cubit = getIt<EditProfileCubit>();
+    if (widget.initialProfile != null) {
+      _cubit.doEvent(InitEditProfileEvent(widget.initialProfile!));
+    }
+
     _initialFirstName = widget.initialProfile?.firstName ?? '';
     _initialLastName = widget.initialProfile?.lastName ?? '';
     _initialPhone = widget.initialProfile?.phoneNumber ?? '';
@@ -60,10 +68,36 @@ class _EditProfileViewState extends State<EditProfileView> {
     _phoneController = TextEditingController(text: _initialPhone)
       ..addListener(_onFieldChanged);
     _passwordPlaceholderController = TextEditingController(text: '••••••••');
+    super.initState();
   }
 
   void _onFieldChanged() {
     if (mounted) setState(() {});
+  }
+
+  @override
+  void handleEvent(BaseEvent event) {
+    if (event is DisplaySuccess) {
+      showSuccessSnackBar(event.successMsg);
+      final updatedProfile = UserProfileEntity(
+        id: widget.initialProfile?.id ?? '',
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+        email: widget.initialProfile?.email ?? '',
+        phoneNumber: _phoneController.text.trim(),
+        gender: _cubit.state.selectedGender,
+        profilePictureUrl: widget.initialProfile?.profilePictureUrl,
+      );
+
+      final goRouter = GoRouter.maybeOf(context);
+      if (goRouter != null) {
+        goRouter.pop(updatedProfile);
+      } else {
+        Navigator.of(context).pop(updatedProfile);
+      }
+      return;
+    }
+    super.handleEvent(event);
   }
 
   @override
@@ -76,23 +110,15 @@ class _EditProfileViewState extends State<EditProfileView> {
     _emailController.dispose();
     _phoneController.dispose();
     _passwordPlaceholderController.dispose();
+    _cubit.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        final cubit = getIt<EditProfileCubit>();
-        if (widget.initialProfile != null) {
-          cubit.doEvent(InitEditProfileEvent(widget.initialProfile!));
-        }
-        return cubit;
-      },
-      child: BlocConsumer<EditProfileCubit, EditProfileState>(
-        listenWhen: (prev, curr) =>
-            prev.updateProfileState != curr.updateProfileState,
-        listener: _handleListener,
+    return BlocProvider.value(
+      value: _cubit,
+      child: BlocBuilder<EditProfileCubit, EditProfileState>(
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
           final isDirty = _checkIsDirty(state);
@@ -116,7 +142,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                       EditProfileAvatar(
                         localImage: state.avatarFile,
                         networkUrl: widget.initialProfile?.profilePictureUrl,
-                        onPickImage: () => _pickImage(context),
+                        onPickImage: () =>
+                            _cubit.doEvent(const PickAvatarEvent()),
                       ),
                       const SizedBox(height: 20),
                       _buildInputFields(l10n, context),
@@ -124,9 +151,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       GenderRadioGroup(
                         selectedGender: state.selectedGender,
                         onChanged: (gender) {
-                          context.read<EditProfileCubit>().doEvent(
-                            SelectEditGenderEvent(gender),
-                          );
+                          _cubit.doEvent(SelectEditGenderEvent(gender));
                         },
                       ),
                       const SizedBox(height: 24),
@@ -154,9 +179,6 @@ class _EditProfileViewState extends State<EditProfileView> {
       ),
       title: Text(l10n.editProfileTitle, style: AppStyles.bold20Inter),
       centerTitle: false,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
       titleSpacing: 0,
     );
   }
@@ -173,7 +195,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                 hint: l10n.firstNameHint,
                 controller: _firstNameController,
                 localizations: l10n,
-                validator: (val) => _validateRequired(val, l10n),
+                validator: (val) => FormValidator.validateRequired(
+                  val,
+                  l10n.emptyValidationError,
+                ),
               ),
             ),
             const SizedBox(width: 16),
@@ -183,7 +208,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                 hint: l10n.lastNameHint,
                 controller: _lastNameController,
                 localizations: l10n,
-                validator: (val) => _validateRequired(val, l10n),
+                validator: (val) => FormValidator.validateRequired(
+                  val,
+                  l10n.emptyValidationError,
+                ),
               ),
             ),
           ],
@@ -203,7 +231,11 @@ class _EditProfileViewState extends State<EditProfileView> {
           controller: _phoneController,
           keyboardType: TextInputType.phone,
           localizations: l10n,
-          validator: (val) => _validatePhone(val, l10n),
+          validator: (val) => FormValidator.validatePhone(
+            val,
+            l10n.emptyValidationError,
+            l10n.invalidPhoneError,
+          ),
         ),
         const SizedBox(height: 14),
         AppTextField(
@@ -240,21 +272,12 @@ class _EditProfileViewState extends State<EditProfileView> {
       child: AppButton(
         text: l10n.updateButton,
         isLoading: state.updateProfileState.isLoading,
-        onPressed: canSubmit ? () => _onSubmit(context, state) : null,
+        onPressed: canSubmit ? () => _onSubmit(state) : null,
       ),
     );
   }
 
-  Future<void> _pickImage(BuildContext context) async {
-    final picked = await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (picked != null && context.mounted) {
-      context.read<EditProfileCubit>().doEvent(
-        PickAvatarEvent(File(picked.path)),
-      );
-    }
-  }
-
-  void _onSubmit(BuildContext context, EditProfileState state) {
+  void _onSubmit(EditProfileState state) {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final params = UpdateProfileParams(
@@ -265,49 +288,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       profilePictureUrl: widget.initialProfile?.profilePictureUrl ?? 'mock_url',
     );
 
-    context.read<EditProfileCubit>().doEvent(SubmitEditProfileEvent(params));
-  }
-
-  void _handleListener(BuildContext context, EditProfileState state) {
-    if (state.updateProfileState.data != null) {
-      _initialFirstName = _firstNameController.text.trim();
-      _initialLastName = _lastNameController.text.trim();
-      _initialPhone = _phoneController.text.trim();
-      _initialGender = state.selectedGender;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.updateProfileState.data!),
-          backgroundColor: AppColors.success,
-        ),
-      );
-
-      final updatedProfile = UserProfileEntity(
-        id: widget.initialProfile?.id ?? '',
-        firstName: _initialFirstName,
-        lastName: _initialLastName,
-        email: widget.initialProfile?.email ?? '',
-        phoneNumber: _initialPhone,
-        gender: _initialGender,
-        profilePictureUrl: widget.initialProfile?.profilePictureUrl,
-      );
-
-      if (context.mounted) {
-        final goRouter = GoRouter.maybeOf(context);
-        if (goRouter != null) {
-          goRouter.pop(updatedProfile);
-        } else {
-          Navigator.of(context).pop(updatedProfile);
-        }
-      }
-    } else if (state.updateProfileState.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.updateProfileState.errorMessage!),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
+    _cubit.doEvent(SubmitEditProfileEvent(params));
   }
 
   bool _checkIsDirty(EditProfileState state) {
@@ -333,18 +314,5 @@ class _EditProfileViewState extends State<EditProfileView> {
       return false;
     }
     return FormValidator.validate(FormValidator.phonePattern, phone);
-  }
-
-  String? _validateRequired(String? val, AppLocalizations l10n) {
-    if (val == null || val.trim().isEmpty) return l10n.emptyValidationError;
-    return null;
-  }
-
-  String? _validatePhone(String? val, AppLocalizations l10n) {
-    if (val == null || val.trim().isEmpty) return l10n.emptyValidationError;
-    if (!FormValidator.validate(FormValidator.phonePattern, val.trim())) {
-      return l10n.invalidPhoneError;
-    }
-    return null;
   }
 }

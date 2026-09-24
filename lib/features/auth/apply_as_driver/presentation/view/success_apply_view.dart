@@ -18,10 +18,6 @@ class SuccessApplyView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteBase,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: AppColors.blackBase,
-        scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
       ),
       body: Stack(

@@ -15,8 +15,8 @@ class ApplyDriverRemoteDataSourceImpl implements ApplyDriverRemoteDataSource {
   Future<ApplyDriverResponseDto> applyAsDriver(
     ApplyDriverRequestDto request,
   ) async {
-    final formData = await request.toFormData();
-    return await _apiClient.applyAsDriver(formData);
+    final parts = await request.toPartMap();
+    return await _apiClient.applyAsDriver(parts);
   }
 
   @override

@@ -1,6 +1,8 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_cubit.dart';
+import 'package:tracking_app/config/base/base_event.dart';
+import 'package:tracking_app/config/base/base_state.dart';
+import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
@@ -9,7 +11,7 @@ import 'package:tracking_app/features/profile/presentation/cubit/change_password
 import 'package:tracking_app/features/profile/presentation/cubit/change_password/change_password_state.dart';
 
 @injectable
-class ChangePasswordCubit extends Cubit<ChangePasswordState> {
+class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
   final ChangePasswordUseCase _changePasswordUseCase;
   final SessionService _sessionService;
 
@@ -44,12 +46,16 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
       case Success(data: final message):
         await _sessionService.clearSession();
         emit(state.copyWith(changePasswordState: BaseState.success(message)));
+        emitEvent(DisplaySuccess(message));
+        emitEvent(const NavigateEvent(AppRoutes.login));
       case Failure(error: final error, message: final msg):
+        final errorMsg = msg ?? error.name;
         emit(
           state.copyWith(
-            changePasswordState: BaseState.error(msg ?? error.name),
+            changePasswordState: BaseState.error(errorMsg),
           ),
         );
+        emitEvent(DisplayError(errorMsg));
     }
   }
 }

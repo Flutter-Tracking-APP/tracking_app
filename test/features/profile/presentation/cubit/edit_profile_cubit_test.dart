@@ -12,6 +12,7 @@ import 'package:tracking_app/features/profile/domain/use_cases/update_profile_us
 import 'package:tracking_app/features/profile/presentation/cubit/edit_profile/edit_profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/edit_profile/edit_profile_events.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/edit_profile/edit_profile_state.dart';
+import '../../../../helpers/fake_image_picker_service.dart';
 
 class FakeEditProfileRepo implements ProfileRepository {
   ApiResults<String>? updateResult;
@@ -37,10 +38,12 @@ class FakeEditProfileRepo implements ProfileRepository {
 void main() {
   late FakeEditProfileRepo fakeRepo;
   late UpdateProfileUseCase updateProfileUseCase;
+  late FakeImagePickerService fakeImagePicker;
 
   setUp(() {
     fakeRepo = FakeEditProfileRepo();
     updateProfileUseCase = UpdateProfileUseCase(fakeRepo);
+    fakeImagePicker = FakeImagePickerService();
   });
 
   const testParams = UpdateProfileParams(
@@ -54,14 +57,14 @@ void main() {
   group('EditProfileCubit', () {
     blocTest<EditProfileCubit, EditProfileState>(
       'updates gender on SelectEditGenderEvent',
-      build: () => EditProfileCubit(updateProfileUseCase),
+      build: () => EditProfileCubit(updateProfileUseCase, fakeImagePicker),
       act: (cubit) => cubit.doEvent(const SelectEditGenderEvent(1)),
       expect: () => [predicate<EditProfileState>((s) => s.selectedGender == 1)],
     );
 
     blocTest<EditProfileCubit, EditProfileState>(
-      'updates avatarFile on PickAvatarEvent',
-      build: () => EditProfileCubit(updateProfileUseCase),
+      'updates avatarFile on PickAvatarEvent with explicit file',
+      build: () => EditProfileCubit(updateProfileUseCase, fakeImagePicker),
       act: (cubit) => cubit.doEvent(PickAvatarEvent(File('dummy.png'))),
       expect: () => [
         predicate<EditProfileState>((s) => s.avatarFile?.path == 'dummy.png'),
@@ -69,10 +72,24 @@ void main() {
     );
 
     blocTest<EditProfileCubit, EditProfileState>(
+      'picks avatar via ImagePickerService when file is null',
+      build: () {
+        fakeImagePicker.fileToReturn = File('picked_avatar.png');
+        return EditProfileCubit(updateProfileUseCase, fakeImagePicker);
+      },
+      act: (cubit) => cubit.doEvent(const PickAvatarEvent()),
+      expect: () => [
+        predicate<EditProfileState>(
+          (s) => s.avatarFile?.path == 'picked_avatar.png',
+        ),
+      ],
+    );
+
+    blocTest<EditProfileCubit, EditProfileState>(
       'emits loading then success on SubmitEditProfileEvent',
       build: () {
         fakeRepo.updateResult = const Success('Updated');
-        return EditProfileCubit(updateProfileUseCase);
+        return EditProfileCubit(updateProfileUseCase, fakeImagePicker);
       },
       act: (cubit) => cubit.doEvent(const SubmitEditProfileEvent(testParams)),
       expect: () => [
@@ -90,7 +107,7 @@ void main() {
           'Failed to update',
           AppError.server,
         );
-        return EditProfileCubit(updateProfileUseCase);
+        return EditProfileCubit(updateProfileUseCase, fakeImagePicker);
       },
       act: (cubit) => cubit.doEvent(const SubmitEditProfileEvent(testParams)),
       expect: () => [
