@@ -7,10 +7,7 @@ import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_images.dart';
 
 class SplashDriverView extends StatefulWidget {
-  const SplashDriverView({
-    super.key,
-    required this.onFinished,
-  });
+  const SplashDriverView({super.key, required this.onFinished});
 
   final VoidCallback onFinished;
 
@@ -47,14 +44,11 @@ class _SplashDriverViewState extends State<SplashDriverView>
     _startedExit = true;
 
     // Wait until the Lottie animation completes.
-    _exitTimer = Timer(
-      composition.duration,
-      () {
-        if (!mounted) return;
+    _exitTimer = Timer(composition.duration, () {
+      if (!mounted) return;
 
-        _slideController.forward();
-      },
-    );
+      _slideController.forward();
+    });
   }
 
   @override
@@ -123,15 +117,16 @@ class _SplashDriverViewState extends State<SplashDriverView>
                     width: double.infinity,
                     child: Center(
                       child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: Offset.zero,
-                          end: const Offset(1.2, 0),
-                        ).animate(
-                          CurvedAnimation(
-                            parent: _slideController,
-                            curve: Curves.easeInCubic,
-                          ),
-                        ),
+                        position:
+                            Tween<Offset>(
+                              begin: Offset.zero,
+                              end: const Offset(1.2, 0),
+                            ).animate(
+                              CurvedAnimation(
+                                parent: _slideController,
+                                curve: Curves.easeInCubic,
+                              ),
+                            ),
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
@@ -139,8 +134,7 @@ class _SplashDriverViewState extends State<SplashDriverView>
                             color: AppColors.white.withValues(alpha: 0.45),
                             boxShadow: [
                               BoxShadow(
-                                color:
-                                    primaryColor.withValues(alpha: 0.1),
+                                color: primaryColor.withValues(alpha: 0.1),
                                 blurRadius: 35,
                                 spreadRadius: 5,
                                 offset: const Offset(0, 10),
@@ -185,10 +179,8 @@ class _SplashDriverViewState extends State<SplashDriverView>
                       borderRadius: BorderRadius.circular(8),
                       child: LinearProgressIndicator(
                         minHeight: 4,
-                        backgroundColor:
-                            primaryColor.withValues(alpha: 0.15),
-                        valueColor:
-                            const AlwaysStoppedAnimation<Color>(
+                        backgroundColor: primaryColor.withValues(alpha: 0.15),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
                           primaryColor,
                         ),
                       ),

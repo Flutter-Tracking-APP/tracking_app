@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:equatable/equatable.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_state.dart';
 
 class EditProfileState extends Equatable {
   final BaseState<String> updateProfileState;

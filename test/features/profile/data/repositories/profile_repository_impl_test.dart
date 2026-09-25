@@ -4,9 +4,9 @@ import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/features/profile/data/data_sources/contract/profile_remote_data_source.dart';
 import 'package:tracking_app/features/profile/data/models/request/change_password_request_dto.dart';
-import 'package:tracking_app/features/profile/data/models/request/update_profile_request_dto.dart';
 import 'package:tracking_app/features/profile/data/models/response/profile_action_response_dto.dart';
 import 'package:tracking_app/features/profile/data/models/response/user_profile_response_dto.dart';
+import 'package:tracking_app/features/profile/data/models/response/vehicle_info_response_dto.dart';
 import 'package:tracking_app/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
@@ -25,10 +25,16 @@ class FakeProfileRemoteDataSource implements ProfileRemoteDataSource {
 
   @override
   Future<ProfileActionResponseDto> updateProfile(
-    UpdateProfileRequestDto request,
+    Map<String, dynamic> parts,
   ) async {
     if (exceptionToThrow != null) throw exceptionToThrow!;
     return actionResponse!;
+  }
+
+  @override
+  Future<VehicleInfoResponseDto> getVehicleInfo() async {
+    if (exceptionToThrow != null) throw exceptionToThrow!;
+    return const VehicleInfoResponseDto();
   }
 
   @override
@@ -116,7 +122,7 @@ void main() {
           lastName: 'Mohamed',
           phoneNumber: '01010522698',
           gender: 0,
-          profilePictureUrl: 'test',
+          profilePicture: null,
         );
 
         final result = await repository.updateProfile(params);

@@ -4,9 +4,12 @@ abstract final class Endpoints {
   static const vehicleTypes = 'api/identity/vehicle-types';
   static const getProfile = 'api/identity/users/me';
   static const updateProfile = 'api/identity/users/profile';
+  static const getVehicleInfo = 'api/identity/vehicles/info';
   static const updateVehicle = 'api/identity/vehicles/info';
   static const changePassword = 'api/identity/users/change-password';
   static const String forgetPassword = 'api/identity/auth/forget-password';
   static const String verifyOTP = 'api/identity/auth/otp-verification';
   static const String resetPassword = 'api/identity/auth/reset-password';
+  static const String refreshToken = 'api/identity/auth/refresh-token';
+  static const login = 'api/identity/auth/login';
 }

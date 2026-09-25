@@ -12,7 +12,7 @@ extension ApplyDriverResponseDtoMapper on ApplyDriverResponseDto {
       createdAt: data?.createdAt ?? '',
       updatedAt: data?.updatedAt ?? '',
       gender: data?.gender ?? '',
-      notificationStatus: data?.notifcationStatus ?? '',
+      notificationStatus: data?.notificationStatus ?? '',
     );
   }
 }
@@ -28,7 +28,7 @@ extension DriverDataDtoMapper on DriverDataDto {
       createdAt: createdAt ?? '',
       updatedAt: updatedAt ?? '',
       gender: gender ?? '',
-      notificationStatus: notifcationStatus ?? '',
+      notificationStatus: notificationStatus ?? '',
     );
   }
 }

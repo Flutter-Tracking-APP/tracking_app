@@ -4,6 +4,7 @@ import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/domain/entities/vehicle_info_entity.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_vehicle_params.dart';
@@ -23,6 +24,10 @@ class FakeChangePasswordRepo implements ProfileRepository {
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
       const Success('ok');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
+      const Failure('not needed', AppError.general);
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>

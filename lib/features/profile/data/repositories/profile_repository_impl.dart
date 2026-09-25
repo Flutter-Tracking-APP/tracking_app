@@ -4,6 +4,7 @@ import 'package:tracking_app/config/network/safe_call.dart';
 import 'package:tracking_app/features/profile/data/data_sources/contract/profile_remote_data_source.dart';
 import 'package:tracking_app/features/profile/data/mapper/profile_mapper.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/domain/entities/vehicle_info_entity.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_vehicle_params.dart';
@@ -26,8 +27,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) {
     return safeCall(() async {
-      final response = await _remoteDataSource.updateProfile(params.toDto());
+      final parts = await params.toPartMap();
+      final response = await _remoteDataSource.updateProfile(parts);
       return Success(response.message ?? 'Profile updated successfully');
+    });
+  }
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() {
+    return safeCall(() async {
+      final response = await _remoteDataSource.getVehicleInfo();
+      return Success(response.toEntity());
     });
   }
 

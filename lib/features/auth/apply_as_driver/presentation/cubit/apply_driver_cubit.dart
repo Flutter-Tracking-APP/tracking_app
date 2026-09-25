@@ -1,6 +1,10 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:io';
 import 'package:injectable/injectable.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_cubit.dart';
+import 'package:tracking_app/config/base/base_event.dart';
+import 'package:tracking_app/config/base/base_state.dart';
+import 'package:tracking_app/config/const/app_router.dart';
+import 'package:tracking_app/config/di/image_picker_service.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/params/apply_driver_params.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/use_cases/apply_as_driver_use_case.dart';
@@ -9,12 +13,16 @@ import 'package:tracking_app/features/auth/apply_as_driver/presentation/cubit/ap
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/cubit/apply_driver_state.dart';
 
 @injectable
-class ApplyDriverCubit extends Cubit<ApplyDriverState> {
+class ApplyDriverCubit extends BaseCubit<ApplyDriverState, BaseEvent> {
   final ApplyAsDriverUseCase _applyAsDriverUseCase;
   final GetVehicleTypesUseCase _getVehicleTypesUseCase;
+  final ImagePickerService _imagePickerService;
 
-  ApplyDriverCubit(this._applyAsDriverUseCase, this._getVehicleTypesUseCase)
-    : super(const ApplyDriverState());
+  ApplyDriverCubit(
+    this._applyAsDriverUseCase,
+    this._getVehicleTypesUseCase,
+    this._imagePickerService,
+  ) : super(const ApplyDriverState());
 
   void doEvent(ApplyDriverEvents event) {
     switch (event) {
@@ -27,9 +35,9 @@ class ApplyDriverCubit extends Cubit<ApplyDriverState> {
       case SelectVehicleTypeEvent(vehicleType: final vehicleType):
         emit(state.copyWith(selectedVehicleType: vehicleType));
       case PickLicenceImageEvent(file: final file):
-        emit(state.copyWith(licenceImage: file));
+        _pickLicenceImage(file);
       case PickNidImageEvent(file: final file):
-        emit(state.copyWith(nidImage: file));
+        _pickNidImage(file);
       case TogglePasswordVisibilityEvent():
         emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
       case ToggleConfirmPasswordVisibilityEvent():
@@ -38,6 +46,28 @@ class ApplyDriverCubit extends Cubit<ApplyDriverState> {
             isConfirmPasswordVisible: !state.isConfirmPasswordVisible,
           ),
         );
+    }
+  }
+
+  Future<void> _pickLicenceImage(File? file) async {
+    if (file != null) {
+      emit(state.copyWith(licenceImage: file));
+      return;
+    }
+    final picked = await _imagePickerService.pickImageFromGallery();
+    if (picked != null) {
+      emit(state.copyWith(licenceImage: picked));
+    }
+  }
+
+  Future<void> _pickNidImage(File? file) async {
+    if (file != null) {
+      emit(state.copyWith(nidImage: file));
+      return;
+    }
+    final picked = await _imagePickerService.pickImageFromGallery();
+    if (picked != null) {
+      emit(state.copyWith(nidImage: picked));
     }
   }
 
@@ -53,9 +83,8 @@ class ApplyDriverCubit extends Cubit<ApplyDriverState> {
           ),
         );
       case Failure(error: final error, message: final msg):
-        emit(
-          state.copyWith(vehicleTypesState: BaseState.error(msg ?? error.name)),
-        );
+        final errorMsg = msg ?? error.name;
+        emit(state.copyWith(vehicleTypesState: BaseState.error(errorMsg)));
     }
   }
 
@@ -65,8 +94,11 @@ class ApplyDriverCubit extends Cubit<ApplyDriverState> {
     switch (result) {
       case Success(data: final data):
         emit(state.copyWith(applyState: BaseState.success(data)));
+        emitEvent(const NavigateEvent(AppRoutes.applyDriverSuccess));
       case Failure(error: final error, message: final msg):
-        emit(state.copyWith(applyState: BaseState.error(msg ?? error.name)));
+        final errorMsg = msg ?? error.name;
+        emit(state.copyWith(applyState: BaseState.error(errorMsg)));
+        emitEvent(DisplayError(errorMsg));
     }
   }
 }

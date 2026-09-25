@@ -1,8 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:tracking_app/config/base/base_event.dart';
+import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/di/di.dart';
+import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
@@ -22,10 +23,26 @@ class EditVehicleInfoView extends StatefulWidget {
   State<EditVehicleInfoView> createState() => _EditVehicleInfoViewState();
 }
 
-class _EditVehicleInfoViewState extends State<EditVehicleInfoView> {
+class _EditVehicleInfoViewState extends State<EditVehicleInfoView>
+    with BaseViewMixin<EditVehicleInfoView, EditVehicleCubit, BaseEvent> {
+  late final EditVehicleCubit _cubit;
   final _formKey = GlobalKey<FormState>();
   final _plateNumberController = TextEditingController();
-  final _imagePicker = ImagePicker();
+
+  @override
+  EditVehicleCubit get cubit => _cubit;
+
+  @override
+  void initState() {
+    _cubit = getIt<EditVehicleCubit>()..doEvent(const LoadVehicleTypesEvent());
+    super.initState();
+  }
+
+  @override
+  void showSuccessSnackBar(String message) {
+    super.showSuccessSnackBar(message);
+    Navigator.of(context).pop();
+  }
 
   @override
   void dispose() {
@@ -35,65 +52,78 @@ class _EditVehicleInfoViewState extends State<EditVehicleInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<EditVehicleCubit>()..doEvent(const LoadVehicleTypesEvent()),
-      child: BlocConsumer<EditVehicleCubit, EditVehicleState>(
-        listenWhen: (prev, curr) =>
-            prev.updateVehicleState != curr.updateVehicleState,
-        listener: _handleListener,
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
-          return Scaffold(
-            backgroundColor: AppColors.whiteBase,
-            appBar: _buildAppBar(context, l10n),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      VehicleTypeDropdownField(
+    return BlocProvider<EditVehicleCubit>(
+      create: (context) => _cubit,
+      child: Scaffold(
+        backgroundColor: AppColors.whiteBase,
+        appBar: _buildAppBar(context, l10n),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  BlocBuilder<EditVehicleCubit, EditVehicleState>(
+                    buildWhen: (prev, curr) =>
+                        prev.vehicleTypesState != curr.vehicleTypesState ||
+                        prev.selectedVehicleType != curr.selectedVehicleType,
+                    builder: (context, state) {
+                      return VehicleTypeDropdownField(
                         vehicleTypes: state.vehicleTypesState.data ?? [],
                         selectedVehicleType: state.selectedVehicleType,
                         isLoading: state.vehicleTypesState.isLoading,
                         onChanged: (type) {
                           if (type != null) {
-                            context.read<EditVehicleCubit>().doEvent(
-                              SelectVehicleTypeEvent(type),
-                            );
+                            _cubit.doEvent(SelectVehicleTypeEvent(type));
                           }
                         },
-                      ),
-                      const SizedBox(height: 16),
-                      AppTextField(
-                        label: l10n.vehicleNumberLabel,
-                        hint: l10n.vehicleNumberHint,
-                        controller: _plateNumberController,
-                        localizations: l10n,
-                        validator: (val) => _validateRequired(val, l10n),
-                      ),
-                      const SizedBox(height: 16),
-                      FileUploadField(
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  AppTextField(
+                    label: l10n.vehicleNumberLabel,
+                    hint: l10n.vehicleNumberHint,
+                    controller: _plateNumberController,
+                    localizations: l10n,
+                    validator: (val) => FormValidator.validateRequired(
+                      val,
+                      l10n.emptyValidationError,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  BlocBuilder<EditVehicleCubit, EditVehicleState>(
+                    buildWhen: (prev, curr) =>
+                        prev.licenseFile != curr.licenseFile,
+                    builder: (context, state) {
+                      return FileUploadField(
                         label: l10n.vehicleLicenseLabel,
                         hint: l10n.vehicleLicenseHint,
                         file: state.licenseFile,
-                        onTap: () => _pickLicense(context),
-                      ),
-                      const SizedBox(height: 28),
-                      _buildSubmitButton(context, state, l10n),
-                    ],
+                        onTap: () =>
+                            _cubit.doEvent(const PickLicenseDocumentEvent()),
+                      );
+                    },
                   ),
-                ),
+                  const SizedBox(height: 28),
+                  BlocBuilder<EditVehicleCubit, EditVehicleState>(
+                    buildWhen: (prev, curr) =>
+                        prev.updateVehicleState != curr.updateVehicleState,
+                    builder: (context, state) {
+                      return _buildSubmitButton(context, state, l10n);
+                    },
+                  ),
+                ],
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -109,9 +139,6 @@ class _EditVehicleInfoViewState extends State<EditVehicleInfoView> {
       ),
       title: Text(l10n.editVehicleInfoTitle, style: AppStyles.bold20Inter),
       centerTitle: false,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
       titleSpacing: 0,
     );
   }
@@ -130,21 +157,12 @@ class _EditVehicleInfoViewState extends State<EditVehicleInfoView> {
         isLoading: state.updateVehicleState.isLoading,
         onPressed: state.updateVehicleState.isLoading
             ? null
-            : () => _onSubmit(context, state),
+            : () => _onSubmit(state),
       ),
     );
   }
 
-  Future<void> _pickLicense(BuildContext context) async {
-    final picked = await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (picked != null && context.mounted) {
-      context.read<EditVehicleCubit>().doEvent(
-        PickLicenseDocumentEvent(File(picked.path)),
-      );
-    }
-  }
-
-  void _onSubmit(BuildContext context, EditVehicleState state) {
+  void _onSubmit(EditVehicleState state) {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final params = UpdateVehicleParams(
@@ -153,30 +171,6 @@ class _EditVehicleInfoViewState extends State<EditVehicleInfoView> {
       licenseDocument: state.licenseFile,
     );
 
-    context.read<EditVehicleCubit>().doEvent(SubmitVehicleInfoEvent(params));
-  }
-
-  void _handleListener(BuildContext context, EditVehicleState state) {
-    if (state.updateVehicleState.data != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.updateVehicleState.data!),
-          backgroundColor: AppColors.success,
-        ),
-      );
-      Navigator.of(context).pop();
-    } else if (state.updateVehicleState.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.updateVehicleState.errorMessage!),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
-  String? _validateRequired(String? val, AppLocalizations l10n) {
-    if (val == null || val.trim().isEmpty) return l10n.emptyValidationError;
-    return null;
+    _cubit.doEvent(SubmitVehicleInfoEvent(params));
   }
 }

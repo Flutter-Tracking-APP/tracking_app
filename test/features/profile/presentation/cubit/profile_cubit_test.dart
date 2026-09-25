@@ -1,21 +1,24 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/domain/entities/vehicle_info_entity.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_vehicle_params.dart';
 import 'package:tracking_app/features/profile/domain/repositories/profile_repository.dart';
 import 'package:tracking_app/features/profile/domain/use_cases/get_profile_use_case.dart';
+import 'package:tracking_app/features/profile/domain/use_cases/get_vehicle_info_use_case.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_events.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_state.dart';
 
 class FakeProfileRepo implements ProfileRepository {
   ApiResults<UserProfileEntity>? profileResult;
+  ApiResults<VehicleInfoEntity>? vehicleInfoResult;
 
   @override
   Future<ApiResults<UserProfileEntity>> getProfile() async => profileResult!;
@@ -23,6 +26,10 @@ class FakeProfileRepo implements ProfileRepository {
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
       const Success('ok');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
+      vehicleInfoResult ?? const Failure('not needed', AppError.general);
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -78,11 +85,13 @@ void main() {
   late FakeProfileRepo fakeRepo;
   late FakeSessionService fakeSessionService;
   late GetProfileUseCase getProfileUseCase;
+  late GetVehicleInfoUseCase getVehicleInfoUseCase;
 
   setUp(() {
     fakeRepo = FakeProfileRepo();
     fakeSessionService = FakeSessionService();
     getProfileUseCase = GetProfileUseCase(fakeRepo);
+    getVehicleInfoUseCase = GetVehicleInfoUseCase(fakeRepo);
   });
 
   const testEntity = UserProfileEntity(
@@ -94,10 +103,24 @@ void main() {
     gender: 0,
   );
 
+  const testVehicleEntity = VehicleInfoEntity(
+    vehicleId: 'v-1',
+    vehicleTypeId: 'vt-1',
+    vehicleTypeName: 'Bike',
+    plateNumber: 'UP16DL0007',
+    capacity: 2,
+    licenseDocument: 'doc.png',
+  );
+
   group('ProfileCubit', () {
     test('initial state has initial BaseStates', () {
-      final cubit = ProfileCubit(getProfileUseCase, fakeSessionService);
+      final cubit = ProfileCubit(
+        getProfileUseCase,
+        getVehicleInfoUseCase,
+        fakeSessionService,
+      );
       expect(cubit.state.profileState.isLoading, false);
+      expect(cubit.state.vehicleInfoState.isLoading, false);
       expect(cubit.state.logoutState.isLoading, false);
       cubit.close();
     });
@@ -106,7 +129,11 @@ void main() {
       'emits loading then success when GetProfileEvent succeeds',
       build: () {
         fakeRepo.profileResult = const Success(testEntity);
-        return ProfileCubit(getProfileUseCase, fakeSessionService);
+        return ProfileCubit(
+          getProfileUseCase,
+          getVehicleInfoUseCase,
+          fakeSessionService,
+        );
       },
       act: (cubit) => cubit.doEvent(const GetProfileEvent()),
       expect: () => [
@@ -122,7 +149,11 @@ void main() {
           'Failed to fetch',
           AppError.server,
         );
-        return ProfileCubit(getProfileUseCase, fakeSessionService);
+        return ProfileCubit(
+          getProfileUseCase,
+          getVehicleInfoUseCase,
+          fakeSessionService,
+        );
       },
       act: (cubit) => cubit.doEvent(const GetProfileEvent()),
       expect: () => [
@@ -134,8 +165,53 @@ void main() {
     );
 
     blocTest<ProfileCubit, ProfileState>(
+      'emits loading then success when GetVehicleInfoEvent succeeds',
+      build: () {
+        fakeRepo.vehicleInfoResult = const Success(testVehicleEntity);
+        return ProfileCubit(
+          getProfileUseCase,
+          getVehicleInfoUseCase,
+          fakeSessionService,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const GetVehicleInfoEvent()),
+      expect: () => [
+        predicate<ProfileState>((s) => s.vehicleInfoState.isLoading),
+        predicate<ProfileState>(
+          (s) => s.vehicleInfoState.data?.vehicleTypeName == 'Bike',
+        ),
+      ],
+    );
+
+    blocTest<ProfileCubit, ProfileState>(
+      'emits loading then error when GetVehicleInfoEvent fails',
+      build: () {
+        fakeRepo.vehicleInfoResult = const Failure(
+          'Failed to fetch vehicle',
+          AppError.server,
+        );
+        return ProfileCubit(
+          getProfileUseCase,
+          getVehicleInfoUseCase,
+          fakeSessionService,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const GetVehicleInfoEvent()),
+      expect: () => [
+        predicate<ProfileState>((s) => s.vehicleInfoState.isLoading),
+        predicate<ProfileState>(
+          (s) => s.vehicleInfoState.errorMessage == 'Failed to fetch vehicle',
+        ),
+      ],
+    );
+
+    blocTest<ProfileCubit, ProfileState>(
       'clears session and emits success on LogoutEvent',
-      build: () => ProfileCubit(getProfileUseCase, fakeSessionService),
+      build: () => ProfileCubit(
+        getProfileUseCase,
+        getVehicleInfoUseCase,
+        fakeSessionService,
+      ),
       act: (cubit) => cubit.doEvent(const LogoutEvent()),
       expect: () => [
         predicate<ProfileState>((s) => s.logoutState.isLoading),
@@ -150,8 +226,13 @@ void main() {
 
     blocTest<ProfileCubit, ProfileState>(
       'emits success immediately when UpdateProfileLocallyEvent is received',
-      build: () => ProfileCubit(getProfileUseCase, fakeSessionService),
-      act: (cubit) => cubit.doEvent(const UpdateProfileLocallyEvent(testEntity)),
+      build: () => ProfileCubit(
+        getProfileUseCase,
+        getVehicleInfoUseCase,
+        fakeSessionService,
+      ),
+      act: (cubit) =>
+          cubit.doEvent(const UpdateProfileLocallyEvent(testEntity)),
       expect: () => [
         predicate<ProfileState>(
           (s) => s.profileState.data?.id == 'p-1' && !s.profileState.isLoading,
@@ -179,7 +260,11 @@ void main() {
             gender: 0,
           ),
         );
-        return ProfileCubit(getProfileUseCase, fakeSessionService);
+        return ProfileCubit(
+          getProfileUseCase,
+          getVehicleInfoUseCase,
+          fakeSessionService,
+        );
       },
       act: (cubit) => cubit.doEvent(const GetProfileEvent()),
       expect: () => [

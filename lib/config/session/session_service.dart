@@ -1,4 +1,3 @@
-
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/config/storage/secure_storage_service.dart';
 import 'package:tracking_app/core/const/app_constants.dart';

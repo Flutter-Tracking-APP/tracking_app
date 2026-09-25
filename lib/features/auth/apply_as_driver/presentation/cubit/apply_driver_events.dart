@@ -29,15 +29,15 @@ final class SelectVehicleTypeEvent extends ApplyDriverEvents {
 }
 
 final class PickLicenceImageEvent extends ApplyDriverEvents {
-  final File file;
+  final File? file;
 
-  const PickLicenceImageEvent(this.file);
+  const PickLicenceImageEvent([this.file]);
 }
 
 final class PickNidImageEvent extends ApplyDriverEvents {
-  final File file;
+  final File? file;
 
-  const PickNidImageEvent(this.file);
+  const PickNidImageEvent([this.file]);
 }
 
 final class TogglePasswordVisibilityEvent extends ApplyDriverEvents {

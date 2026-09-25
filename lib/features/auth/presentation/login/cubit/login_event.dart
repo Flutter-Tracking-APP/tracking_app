@@ -18,7 +18,6 @@ class FormValidityChanged extends LoginEvent {
 
   FormValidityChanged(this.isValid);
 }
- 
 
 sealed class LoginUIEvent {}
 

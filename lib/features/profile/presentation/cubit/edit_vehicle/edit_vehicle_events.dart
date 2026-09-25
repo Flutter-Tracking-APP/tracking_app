@@ -16,8 +16,8 @@ final class SelectVehicleTypeEvent extends EditVehicleEvents {
 }
 
 final class PickLicenseDocumentEvent extends EditVehicleEvents {
-  final File file;
-  const PickLicenseDocumentEvent(this.file);
+  final File? file;
+  const PickLicenseDocumentEvent([this.file]);
 }
 
 final class SubmitVehicleInfoEvent extends EditVehicleEvents {

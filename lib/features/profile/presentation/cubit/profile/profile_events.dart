@@ -8,6 +8,10 @@ final class GetProfileEvent extends ProfileEvents {
   const GetProfileEvent();
 }
 
+final class GetVehicleInfoEvent extends ProfileEvents {
+  const GetVehicleInfoEvent();
+}
+
 final class UpdateProfileLocallyEvent extends ProfileEvents {
   final UserProfileEntity profile;
   const UpdateProfileLocallyEvent(this.profile);

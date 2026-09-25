@@ -80,7 +80,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String otp,
   }) {
-  return  safeCall(() async {
+    return safeCall(() async {
       VerifyOtpResponseDto verifyOtpResponse = await _remoteDataSource
           .verifyOtp(email: email, otp: otp);
 

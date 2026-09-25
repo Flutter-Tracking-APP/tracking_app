@@ -12,6 +12,7 @@ import 'package:tracking_app/features/auth/apply_as_driver/domain/use_cases/get_
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/cubit/apply_driver_cubit.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/cubit/apply_driver_events.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/cubit/apply_driver_state.dart';
+import '../../../../../helpers/fake_image_picker_service.dart';
 
 class FakeApplyDriverRepo implements ApplyDriverRepository {
   ApiResults<DriverApplicationEntity>? applyResult;
@@ -34,11 +35,13 @@ void main() {
   late FakeApplyDriverRepo fakeRepo;
   late ApplyAsDriverUseCase applyUseCase;
   late GetVehicleTypesUseCase getVehicleTypesUseCase;
+  late FakeImagePickerService fakeImagePicker;
 
   setUp(() {
     fakeRepo = FakeApplyDriverRepo();
     applyUseCase = ApplyAsDriverUseCase(fakeRepo);
     getVehicleTypesUseCase = GetVehicleTypesUseCase(fakeRepo);
+    fakeImagePicker = FakeImagePickerService();
   });
 
   const dummyEntity = DriverApplicationEntity(
@@ -72,7 +75,11 @@ void main() {
 
   group('ApplyDriverCubit', () {
     test('initial state has default gender 0 and initial BaseStates', () {
-      final cubit = ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase);
+      final cubit = ApplyDriverCubit(
+        applyUseCase,
+        getVehicleTypesUseCase,
+        fakeImagePicker,
+      );
       expect(cubit.state.selectedGender, 0);
       expect(cubit.state.applyState.isLoading, false);
       expect(cubit.state.vehicleTypesState.isLoading, false);
@@ -85,7 +92,11 @@ void main() {
         fakeRepo.vehicleTypesResult = const Success([
           VehicleTypeEntity(id: 'v-1', name: 'Car'),
         ]);
-        return ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase);
+        return ApplyDriverCubit(
+          applyUseCase,
+          getVehicleTypesUseCase,
+          fakeImagePicker,
+        );
       },
       act: (cubit) => cubit.doEvent(const GetVehicleTypesEvent()),
       expect: () => [
@@ -105,7 +116,11 @@ void main() {
           'Network failure',
           AppError.noConnection,
         );
-        return ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase);
+        return ApplyDriverCubit(
+          applyUseCase,
+          getVehicleTypesUseCase,
+          fakeImagePicker,
+        );
       },
       act: (cubit) => cubit.doEvent(const GetVehicleTypesEvent()),
       expect: () => [
@@ -120,7 +135,11 @@ void main() {
       'emits loading then success when SubmitApplyDriverEvent succeeds',
       build: () {
         fakeRepo.applyResult = const Success(dummyEntity);
-        return ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase);
+        return ApplyDriverCubit(
+          applyUseCase,
+          getVehicleTypesUseCase,
+          fakeImagePicker,
+        );
       },
       act: (cubit) => cubit.doEvent(SubmitApplyDriverEvent(testParams)),
       expect: () => [
@@ -136,7 +155,11 @@ void main() {
           'Phone already in use',
           AppError.conflict,
         );
-        return ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase);
+        return ApplyDriverCubit(
+          applyUseCase,
+          getVehicleTypesUseCase,
+          fakeImagePicker,
+        );
       },
       act: (cubit) => cubit.doEvent(SubmitApplyDriverEvent(testParams)),
       expect: () => [
@@ -149,14 +172,22 @@ void main() {
 
     blocTest<ApplyDriverCubit, ApplyDriverState>(
       'updates gender when SelectGenderEvent is triggered',
-      build: () => ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase),
+      build: () => ApplyDriverCubit(
+        applyUseCase,
+        getVehicleTypesUseCase,
+        fakeImagePicker,
+      ),
       act: (cubit) => cubit.doEvent(const SelectGenderEvent(1)),
       expect: () => [predicate<ApplyDriverState>((s) => s.selectedGender == 1)],
     );
 
     blocTest<ApplyDriverCubit, ApplyDriverState>(
       'toggles isPasswordVisible when TogglePasswordVisibilityEvent is triggered',
-      build: () => ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase),
+      build: () => ApplyDriverCubit(
+        applyUseCase,
+        getVehicleTypesUseCase,
+        fakeImagePicker,
+      ),
       act: (cubit) => cubit.doEvent(const TogglePasswordVisibilityEvent()),
       expect: () => [
         predicate<ApplyDriverState>((s) => s.isPasswordVisible == true),
@@ -165,11 +196,51 @@ void main() {
 
     blocTest<ApplyDriverCubit, ApplyDriverState>(
       'toggles isConfirmPasswordVisible when ToggleConfirmPasswordVisibilityEvent is triggered',
-      build: () => ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase),
+      build: () => ApplyDriverCubit(
+        applyUseCase,
+        getVehicleTypesUseCase,
+        fakeImagePicker,
+      ),
       act: (cubit) =>
           cubit.doEvent(const ToggleConfirmPasswordVisibilityEvent()),
       expect: () => [
         predicate<ApplyDriverState>((s) => s.isConfirmPasswordVisible == true),
+      ],
+    );
+
+    blocTest<ApplyDriverCubit, ApplyDriverState>(
+      'picks licence image via ImagePickerService when file is null',
+      build: () {
+        fakeImagePicker.fileToReturn = File('picked_licence.png');
+        return ApplyDriverCubit(
+          applyUseCase,
+          getVehicleTypesUseCase,
+          fakeImagePicker,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const PickLicenceImageEvent()),
+      expect: () => [
+        predicate<ApplyDriverState>(
+          (s) => s.licenceImage?.path == 'picked_licence.png',
+        ),
+      ],
+    );
+
+    blocTest<ApplyDriverCubit, ApplyDriverState>(
+      'picks NID image via ImagePickerService when file is null',
+      build: () {
+        fakeImagePicker.fileToReturn = File('picked_nid.png');
+        return ApplyDriverCubit(
+          applyUseCase,
+          getVehicleTypesUseCase,
+          fakeImagePicker,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const PickNidImageEvent()),
+      expect: () => [
+        predicate<ApplyDriverState>(
+          (s) => s.nidImage?.path == 'picked_nid.png',
+        ),
       ],
     );
   });

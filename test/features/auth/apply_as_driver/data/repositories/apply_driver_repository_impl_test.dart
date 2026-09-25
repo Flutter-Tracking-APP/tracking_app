@@ -87,7 +87,7 @@ void main() {
             createdAt: '2026-01-01',
             updatedAt: '2026-01-01',
             gender: 'Male',
-            notifcationStatus: 'on',
+            notificationStatus: 'on',
           ),
         );
 

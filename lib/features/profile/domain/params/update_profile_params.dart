@@ -1,18 +1,19 @@
+import 'dart:io';
 import 'package:equatable/equatable.dart';
 
 class UpdateProfileParams extends Equatable {
-  final String firstName;
-  final String lastName;
-  final String phoneNumber;
-  final int gender;
-  final String profilePictureUrl;
+  final String? firstName;
+  final String? lastName;
+  final String? phoneNumber;
+  final int? gender;
+  final File? profilePicture;
 
   const UpdateProfileParams({
-    required this.firstName,
-    required this.lastName,
-    required this.phoneNumber,
-    required this.gender,
-    required this.profilePictureUrl,
+    this.firstName,
+    this.lastName,
+    this.phoneNumber,
+    this.gender,
+    this.profilePicture,
   });
 
   @override
@@ -21,6 +22,6 @@ class UpdateProfileParams extends Equatable {
     lastName,
     phoneNumber,
     gender,
-    profilePictureUrl,
+    profilePicture,
   ];
 }

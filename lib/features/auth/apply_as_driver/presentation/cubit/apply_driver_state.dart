@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:equatable/equatable.dart';
-import 'package:tracking_app/config/base_state/base_state.dart';
+import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/entities/driver_application_entity.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/entities/vehicle_type_entity.dart';
 

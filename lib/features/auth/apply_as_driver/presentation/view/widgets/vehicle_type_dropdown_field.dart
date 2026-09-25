@@ -9,6 +9,7 @@ class VehicleTypeDropdownField extends StatelessWidget {
   final VehicleTypeEntity? selectedVehicleType;
   final bool isLoading;
   final ValueChanged<VehicleTypeEntity?> onChanged;
+  final FormFieldValidator<VehicleTypeEntity>? validator;
   final String? errorText;
 
   const VehicleTypeDropdownField({
@@ -17,6 +18,7 @@ class VehicleTypeDropdownField extends StatelessWidget {
     required this.selectedVehicleType,
     required this.isLoading,
     required this.onChanged,
+    this.validator,
     this.errorText,
   });
 
@@ -24,10 +26,10 @@ class VehicleTypeDropdownField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final effectiveValue =
-        vehicleTypes.any((e) => e.id == selectedVehicleType?.id)
-        ? vehicleTypes.firstWhere((e) => e.id == selectedVehicleType?.id)
-        : null;
+    final effectiveValue = vehicleTypes.cast<VehicleTypeEntity?>().firstWhere(
+      (e) => e?.id == selectedVehicleType?.id,
+      orElse: () => null,
+    );
 
     return DropdownButtonFormField<VehicleTypeEntity>(
       initialValue: effectiveValue,
@@ -52,6 +54,7 @@ class VehicleTypeDropdownField extends StatelessWidget {
         );
       }).toList(),
       onChanged: isLoading ? null : onChanged,
+      validator: validator,
       icon: isLoading
           ? const SizedBox(
               width: 18,
