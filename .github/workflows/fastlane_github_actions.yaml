@@ -1,0 +1,54 @@
+name: Deploy to Firebase via Fastlane
+
+on:
+  push:
+    branches: [ main, 'release/*' ]
+  workflow_dispatch: # Allows manual triggers from GitHub Actions UI
+
+# Cancel outdated runs if new commits are pushed to the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy_firebase:
+    name: Build & Deploy Android APK via Fastlane
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: android
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.47.0'
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:${{ hashFiles('**/pubspec.lock') }}"
+
+      - name: Install Fastlane Plugins
+        run: |
+          cd android
+          bundle exec fastlane install_plugins
+
+      - name: Run Fastlane Firebase Deployment
+        env:
+          FIREBASE_APP_ID_ANDROID: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
+          FIREBASE_CREDENTIAL_FILE_CONTENT: ${{ secrets.FIREBASE_CREDENTIAL_FILE_CONTENT }}
+        run: |
+          cd android
+          bundle exec fastlane android deploy_firebase
