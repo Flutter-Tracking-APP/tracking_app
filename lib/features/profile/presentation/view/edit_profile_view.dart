@@ -285,7 +285,7 @@ class _EditProfileViewState extends State<EditProfileView>
       lastName: _lastNameController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
       gender: state.selectedGender,
-      profilePictureUrl: widget.initialProfile?.profilePictureUrl ?? 'mock_url',
+      profilePicture: state.avatarFile,
     );
 
     _cubit.doEvent(SubmitEditProfileEvent(params));

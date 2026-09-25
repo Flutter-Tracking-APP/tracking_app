@@ -119,10 +119,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
           controller: _currentPasswordController,
           obscureText: !state.isCurrentPasswordVisible,
           localizations: l10n,
-          validator: (val) => FormValidator.validateRequired(
-            val,
-            l10n.emptyValidationError,
-          ),
+          validator: (val) =>
+              FormValidator.validateRequired(val, l10n.emptyValidationError),
           suffixIcon: IconButton(
             icon: Icon(
               state.isCurrentPasswordVisible
@@ -131,9 +129,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
               color: AppColors.grey,
             ),
             onPressed: () {
-              _cubit.doEvent(
-                const ToggleCurrentPasswordVisibilityEvent(),
-              );
+              _cubit.doEvent(const ToggleCurrentPasswordVisibilityEvent());
             },
           ),
         );
@@ -165,9 +161,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
               color: AppColors.grey,
             ),
             onPressed: () {
-              _cubit.doEvent(
-                const ToggleNewPasswordVisibilityEvent(),
-              );
+              _cubit.doEvent(const ToggleNewPasswordVisibilityEvent());
             },
           ),
         );
@@ -178,8 +172,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
   Widget _buildConfirmNewPasswordField(AppLocalizations l10n) {
     return BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
       buildWhen: (prev, curr) =>
-          prev.isConfirmNewPasswordVisible !=
-          curr.isConfirmNewPasswordVisible,
+          prev.isConfirmNewPasswordVisible != curr.isConfirmNewPasswordVisible,
       builder: (context, state) {
         return AppTextField(
           label: l10n.confirmNewPasswordLabel,
@@ -201,9 +194,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
               color: AppColors.grey,
             ),
             onPressed: () {
-              _cubit.doEvent(
-                const ToggleConfirmNewPasswordVisibilityEvent(),
-              );
+              _cubit.doEvent(const ToggleConfirmNewPasswordVisibilityEvent());
             },
           ),
         );
@@ -211,10 +202,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
     );
   }
 
-  Widget _buildSubmitButton(
-    BuildContext context,
-    AppLocalizations l10n,
-  ) {
+  Widget _buildSubmitButton(BuildContext context, AppLocalizations l10n) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     return BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
       buildWhen: (prev, curr) =>

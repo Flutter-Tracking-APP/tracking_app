@@ -60,9 +60,7 @@ class EditVehicleCubit extends BaseCubit<EditVehicleState, BaseEvent> {
         );
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
-        emit(
-          state.copyWith(vehicleTypesState: BaseState.error(errorMsg)),
-        );
+        emit(state.copyWith(vehicleTypesState: BaseState.error(errorMsg)));
         emitEvent(DisplayError(errorMsg));
     }
   }
@@ -76,11 +74,7 @@ class EditVehicleCubit extends BaseCubit<EditVehicleState, BaseEvent> {
         emitEvent(DisplaySuccess(message));
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
-        emit(
-          state.copyWith(
-            updateVehicleState: BaseState.error(errorMsg),
-          ),
-        );
+        emit(state.copyWith(updateVehicleState: BaseState.error(errorMsg)));
         emitEvent(DisplayError(errorMsg));
     }
   }

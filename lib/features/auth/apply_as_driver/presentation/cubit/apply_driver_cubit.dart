@@ -84,9 +84,7 @@ class ApplyDriverCubit extends BaseCubit<ApplyDriverState, BaseEvent> {
         );
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
-        emit(
-          state.copyWith(vehicleTypesState: BaseState.error(errorMsg)),
-        );
+        emit(state.copyWith(vehicleTypesState: BaseState.error(errorMsg)));
     }
   }
 

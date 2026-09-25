@@ -6,21 +6,28 @@ import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/features/profile/domain/use_cases/get_profile_use_case.dart';
+import 'package:tracking_app/features/profile/domain/use_cases/get_vehicle_info_use_case.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_events.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_state.dart';
 
 @injectable
 class ProfileCubit extends BaseCubit<ProfileState, BaseEvent> {
   final GetProfileUseCase _getProfileUseCase;
+  final GetVehicleInfoUseCase _getVehicleInfoUseCase;
   final SessionService _sessionService;
 
-  ProfileCubit(this._getProfileUseCase, this._sessionService)
-    : super(const ProfileState());
+  ProfileCubit(
+    this._getProfileUseCase,
+    this._getVehicleInfoUseCase,
+    this._sessionService,
+  ) : super(const ProfileState());
 
   void doEvent(ProfileEvents event) {
     switch (event) {
       case GetProfileEvent():
         _getProfile();
+      case GetVehicleInfoEvent():
+        _getVehicleInfo();
       case UpdateProfileLocallyEvent(:final profile):
         emit(state.copyWith(profileState: BaseState.success(profile)));
       case LogoutEvent():
@@ -54,6 +61,34 @@ class ProfileCubit extends BaseCubit<ProfileState, BaseEvent> {
           ),
         );
         emitEvent(DisplayError(errorMsg));
+    }
+  }
+
+  Future<void> _getVehicleInfo() async {
+    emit(
+      state.copyWith(
+        vehicleInfoState: BaseState(
+          isLoading: true,
+          errorMessage: null,
+          data: state.vehicleInfoState.data,
+        ),
+      ),
+    );
+    final result = await _getVehicleInfoUseCase.call();
+    switch (result) {
+      case Success(data: final data):
+        emit(state.copyWith(vehicleInfoState: BaseState.success(data)));
+      case Failure(error: final error, message: final msg):
+        final errorMsg = msg ?? error.name;
+        emit(
+          state.copyWith(
+            vehicleInfoState: BaseState(
+              isLoading: false,
+              errorMessage: errorMsg,
+              data: state.vehicleInfoState.data,
+            ),
+          ),
+        );
     }
   }
 

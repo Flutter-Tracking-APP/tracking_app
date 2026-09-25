@@ -217,8 +217,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Enter First Name
-      final firstNameFinder =
-          find.widgetWithText(AppTextField, 'First legal name');
+      final firstNameFinder = find.widgetWithText(
+        AppTextField,
+        'First legal name',
+      );
       await tester.ensureVisible(firstNameFinder);
       await tester.enterText(
         find.descendant(of: firstNameFinder, matching: find.byType(TextField)),
@@ -226,8 +228,10 @@ void main() {
       );
 
       // Enter Last Name
-      final lastNameFinder =
-          find.widgetWithText(AppTextField, 'Second legal name');
+      final lastNameFinder = find.widgetWithText(
+        AppTextField,
+        'Second legal name',
+      );
       await tester.ensureVisible(lastNameFinder);
       await tester.enterText(
         find.descendant(of: lastNameFinder, matching: find.byType(TextField)),
@@ -235,8 +239,10 @@ void main() {
       );
 
       // Enter Vehicle Number
-      final vehicleNumberFinder =
-          find.widgetWithText(AppTextField, 'Vehicle number');
+      final vehicleNumberFinder = find.widgetWithText(
+        AppTextField,
+        'Vehicle number',
+      );
       await tester.ensureVisible(vehicleNumberFinder);
       await tester.enterText(
         find.descendant(
@@ -284,8 +290,9 @@ void main() {
       );
 
       // Enter Confirm Password
-      final confirmPasswordFinder =
-          find.widgetWithText(AppTextField, 'Confirm password').first;
+      final confirmPasswordFinder = find
+          .widgetWithText(AppTextField, 'Confirm password')
+          .first;
       await tester.ensureVisible(confirmPasswordFinder);
       await tester.enterText(
         find.descendant(

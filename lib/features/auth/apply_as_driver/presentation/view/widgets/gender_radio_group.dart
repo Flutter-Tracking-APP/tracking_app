@@ -47,10 +47,7 @@ class GenderRadioGroup extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Radio<int>(
-            value: value,
-            activeColor: AppColors.purpleBase,
-          ),
+          Radio<int>(value: value, activeColor: AppColors.purpleBase),
           Text(label, style: AppStyles.regular14InterW500),
           const SizedBox(width: 8),
         ],

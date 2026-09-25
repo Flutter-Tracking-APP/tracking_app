@@ -17,7 +17,7 @@ abstract class ApplyDriverApiClient {
   @POST(Endpoints.applyDriver)
   @MultiPart()
   Future<ApplyDriverResponseDto> applyAsDriver(
-    @PartMap() Map<String, dynamic> parts,
+    @Part() Map<String, dynamic> parts,
   );
 
   @GET(Endpoints.vehicleTypes)

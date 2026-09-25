@@ -20,51 +20,53 @@ class FileUploadField extends FormField<File> {
     super.validator,
     super.autovalidateMode,
   }) : super(
-          initialValue: file,
-          builder: (FormFieldState<File> field) {
-            final state = field as _FileUploadFieldState;
-            final currentFile = state.value ?? state.widget.file;
-            final fileName =
-                currentFile?.path.split(Platform.pathSeparator).last;
-            final displayError =
-                currentFile != null ? null : (state.errorText ?? errorText);
+         initialValue: file,
+         builder: (FormFieldState<File> field) {
+           final state = field as _FileUploadFieldState;
+           final currentFile = state.value ?? state.widget.file;
+           final fileName = currentFile?.path
+               .split(Platform.pathSeparator)
+               .last;
+           final displayError = currentFile != null
+               ? null
+               : (state.errorText ?? errorText);
 
-            return InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(4),
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  labelText: label,
-                  labelStyle: AppStyles.regular12Roboto,
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.black, width: 1),
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.black, width: 1),
-                  ),
-                  errorBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.error, width: 1),
-                  ),
-                  errorText: displayError,
-                  errorMaxLines: 2,
-                  suffixIcon: const Icon(
-                    Icons.upload_outlined,
-                    color: AppColors.blackBase,
-                  ),
-                ),
-                child: Text(
-                  fileName ?? hint,
-                  style: fileName != null
-                      ? AppStyles.regular14InterW500
-                      : AppStyles.regular14Roboto,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            );
-          },
-        );
+           return InkWell(
+             onTap: onTap,
+             borderRadius: BorderRadius.circular(4),
+             child: InputDecorator(
+               decoration: InputDecoration(
+                 labelText: label,
+                 labelStyle: AppStyles.regular12Roboto,
+                 floatingLabelBehavior: FloatingLabelBehavior.always,
+                 border: const OutlineInputBorder(
+                   borderSide: BorderSide(color: AppColors.black, width: 1),
+                 ),
+                 enabledBorder: const OutlineInputBorder(
+                   borderSide: BorderSide(color: AppColors.black, width: 1),
+                 ),
+                 errorBorder: const OutlineInputBorder(
+                   borderSide: BorderSide(color: AppColors.error, width: 1),
+                 ),
+                 errorText: displayError,
+                 errorMaxLines: 2,
+                 suffixIcon: const Icon(
+                   Icons.upload_outlined,
+                   color: AppColors.blackBase,
+                 ),
+               ),
+               child: Text(
+                 fileName ?? hint,
+                 style: fileName != null
+                     ? AppStyles.regular14InterW500
+                     : AppStyles.regular14Roboto,
+                 maxLines: 1,
+                 overflow: TextOverflow.ellipsis,
+               ),
+             ),
+           );
+         },
+       );
 
   @override
   FormFieldState<File> createState() => _FileUploadFieldState();

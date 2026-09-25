@@ -16,7 +16,7 @@ class EditProfileCubit extends BaseCubit<EditProfileState, BaseEvent> {
   final ImagePickerService _imagePickerService;
 
   EditProfileCubit(this._updateProfileUseCase, this._imagePickerService)
-      : super(const EditProfileState());
+    : super(const EditProfileState());
 
   void doEvent(EditProfileEvents event) {
     switch (event) {
@@ -51,11 +51,7 @@ class EditProfileCubit extends BaseCubit<EditProfileState, BaseEvent> {
         emitEvent(DisplaySuccess(message));
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
-        emit(
-          state.copyWith(
-            updateProfileState: BaseState.error(errorMsg),
-          ),
-        );
+        emit(state.copyWith(updateProfileState: BaseState.error(errorMsg)));
         emitEvent(DisplayError(errorMsg));
     }
   }

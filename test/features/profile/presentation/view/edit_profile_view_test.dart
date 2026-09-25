@@ -4,9 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
+import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/domain/entities/vehicle_info_entity.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_vehicle_params.dart';
@@ -32,6 +34,10 @@ class FakeEditRepo implements ProfileRepository {
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
       const Success('Profile updated successfully');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
+      const Failure('not needed', AppError.general);
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -132,7 +138,10 @@ void main() {
     await tester.pumpWidget(createTestWidget(profile: dummyProfile));
     await tester.pumpAndSettle();
 
-    final firstNameField = find.widgetWithText(AppTextField, 'First legal name');
+    final firstNameField = find.widgetWithText(
+      AppTextField,
+      'First legal name',
+    );
     await tester.enterText(
       find.descendant(of: firstNameField, matching: find.byType(TextField)),
       'Ahmed',
@@ -148,7 +157,10 @@ void main() {
     await tester.pumpWidget(createTestWidget(profile: dummyProfile));
     await tester.pumpAndSettle();
 
-    final firstNameField = find.widgetWithText(AppTextField, 'First legal name');
+    final firstNameField = find.widgetWithText(
+      AppTextField,
+      'First legal name',
+    );
     await tester.enterText(
       find.descendant(of: firstNameField, matching: find.byType(TextField)),
       '',
@@ -166,7 +178,10 @@ void main() {
     await tester.pumpWidget(createTestWidget(profile: dummyProfile));
     await tester.pumpAndSettle();
 
-    final firstNameField = find.widgetWithText(AppTextField, 'First legal name');
+    final firstNameField = find.widgetWithText(
+      AppTextField,
+      'First legal name',
+    );
     final textFinder = find.descendant(
       of: firstNameField,
       matching: find.byType(TextField),
@@ -174,14 +189,18 @@ void main() {
     await tester.enterText(textFinder, 'Ahmed');
     await tester.pumpAndSettle();
     expect(
-      tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update')).enabled,
+      tester
+          .widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update'))
+          .enabled,
       isTrue,
     );
 
     await tester.enterText(textFinder, 'Nour');
     await tester.pumpAndSettle();
     expect(
-      tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update')).enabled,
+      tester
+          .widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update'))
+          .enabled,
       isFalse,
     );
   });

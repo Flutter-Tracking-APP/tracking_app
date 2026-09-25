@@ -5,8 +5,11 @@ import 'package:tracking_app/config/base/base_cubit.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 
-mixin BaseViewMixin<T extends StatefulWidget,
-    C extends BaseCubit<dynamic, BaseEvent>> on State<T> {
+mixin BaseViewMixin<
+  T extends StatefulWidget,
+  C extends BaseCubit<dynamic, BaseEvent>
+>
+    on State<T> {
   StreamSubscription<BaseEvent>? _eventSubscription;
 
   C get cubit;

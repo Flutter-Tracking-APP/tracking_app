@@ -26,9 +26,10 @@ class VehicleTypeDropdownField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final effectiveValue = vehicleTypes
-        .cast<VehicleTypeEntity?>()
-        .firstWhere((e) => e?.id == selectedVehicleType?.id, orElse: () => null);
+    final effectiveValue = vehicleTypes.cast<VehicleTypeEntity?>().firstWhere(
+      (e) => e?.id == selectedVehicleType?.id,
+      orElse: () => null,
+    );
 
     return DropdownButtonFormField<VehicleTypeEntity>(
       initialValue: effectiveValue,

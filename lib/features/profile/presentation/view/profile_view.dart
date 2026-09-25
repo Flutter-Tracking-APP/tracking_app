@@ -22,7 +22,9 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<ProfileCubit>()..doEvent(const GetProfileEvent()),
+      create: (_) => getIt<ProfileCubit>()
+        ..doEvent(const GetProfileEvent())
+        ..doEvent(const GetVehicleInfoEvent()),
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listenWhen: (prev, curr) =>
             prev.logoutState != curr.logoutState ||
@@ -56,10 +58,14 @@ class ProfileView extends StatelessWidget {
                             ProfileHeaderCard(
                               profile: state.profileState.data,
                               onEditTap: () =>
-                                  _navigateToEditProfile(context, state),
+                                   _navigateToEditProfile(context, state),
                             ),
                             const SizedBox(height: 16),
                             VehicleInfoTile(
+                              vehicleType:
+                                  state.vehicleInfoState.data?.vehicleTypeName,
+                              plateNumber:
+                                  state.vehicleInfoState.data?.plateNumber,
                               onTap: () => _navigateToEditVehicle(context),
                             ),
                             const SizedBox(height: 24),
@@ -157,7 +163,7 @@ class ProfileView extends StatelessWidget {
   Future<void> _navigateToEditVehicle(BuildContext context) async {
     await context.push(AppRoutes.editVehicleInfo);
     if (context.mounted) {
-      context.read<ProfileCubit>().doEvent(const GetProfileEvent());
+      context.read<ProfileCubit>().doEvent(const GetVehicleInfoEvent());
     }
   }
 

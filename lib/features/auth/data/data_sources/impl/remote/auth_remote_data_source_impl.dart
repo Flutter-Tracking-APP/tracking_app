@@ -20,13 +20,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<LoginResponse> login(LoginRequest request) async {
     return await _apiClient.login(request);
   }
-    @override
+
+  @override
   Future<ForgetPasswordResponseDto> forgotPassword({required String email}) {
     final request = ForgetPasswordRequestDto(email: email);
 
     return _apiClient.forgotPassword(request);
   }
-    @override
+
+  @override
   Future<VerifyOtpResponseDto> verifyOtp({
     required String email,
     required String otp,
@@ -50,6 +52,4 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
     return _apiClient.resetPassword(request);
   }
-
- 
 }

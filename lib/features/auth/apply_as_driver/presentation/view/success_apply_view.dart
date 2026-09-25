@@ -17,9 +17,7 @@ class SuccessApplyView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.whiteBase,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
+      appBar: AppBar(automaticallyImplyLeading: false),
       body: Stack(
         children: [
           Positioned(

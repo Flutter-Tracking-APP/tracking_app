@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/features/auth/domain/entities/login_entity.dart';
 
-
 class LoginState extends Equatable {
   final BaseState<LoginEntity> login;
   final bool rememberMe;

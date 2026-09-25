@@ -1,4 +1,3 @@
-
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/features/auth/domain/entities/login_entity.dart';

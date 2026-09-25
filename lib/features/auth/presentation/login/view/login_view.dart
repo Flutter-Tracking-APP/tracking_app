@@ -65,16 +65,15 @@ class _LoginViewState extends State<LoginView> {
             ),
           );
 
-          case LoginSuccess():
-            // final cartCubit = context.read<CartCubit>();
-            // cartCubit.doEvent(GetCartEvent());
-            // getIt<PendingCartActionStore>().executePendingActionIfAny(cartCubit);
-            context.go(AppRoutes.profile);
+        case LoginSuccess():
+          // final cartCubit = context.read<CartCubit>();
+          // cartCubit.doEvent(GetCartEvent());
+          // getIt<PendingCartActionStore>().executePendingActionIfAny(cartCubit);
+          context.go(AppRoutes.profile);
 
         //   case GuestLoginSuccess():
         //     context.go(AppRoutes.homeTab);
         // }
-     
       }
     });
   }
@@ -172,37 +171,37 @@ class _LoginViewState extends State<LoginView> {
                       },
                     ),
                     const SizedBox(height: 70),
-            BlocBuilder<LoginCubit, LoginState>(
-  buildWhen: (previous, current) =>
-      previous.login.isLoading != current.login.isLoading,
-  builder: (context, state) {
-    final isLoading = state.login.isLoading;
+                    BlocBuilder<LoginCubit, LoginState>(
+                      buildWhen: (previous, current) =>
+                          previous.login.isLoading != current.login.isLoading,
+                      builder: (context, state) {
+                        final isLoading = state.login.isLoading;
 
-    return SizedBox(
-      width: double.infinity,
-      child: AppButton(
-        text: localizations.login,
-        isLoading: isLoading,
+                        return SizedBox(
+                          width: double.infinity,
+                          child: AppButton(
+                            text: localizations.login,
+                            isLoading: isLoading,
 
-        onPressed: isLoading
-            ? null
-            : () {
-                if (!_formKey.currentState!.validate()) {
-                  return;
-                }
+                            onPressed: isLoading
+                                ? null
+                                : () {
+                                    if (!_formKey.currentState!.validate()) {
+                                      return;
+                                    }
 
-                context.read<LoginCubit>().doEvent(
-                      LoginSubmitted(
-                        email: emailController.text.trim(),
-                        password: passwordController.text,
-                      ),
-                    );
-              },
-      ),
-    );
-  },
-),
-                 
+                                    context.read<LoginCubit>().doEvent(
+                                      LoginSubmitted(
+                                        email: emailController.text.trim(),
+                                        password: passwordController.text,
+                                      ),
+                                    );
+                                  },
+                          ),
+                        );
+                      },
+                    ),
+
                     const SizedBox(height: 20),
                     RichText(
                       text: TextSpan(

@@ -12,6 +12,7 @@ import 'package:tracking_app/features/auth/apply_as_driver/domain/params/apply_d
 import 'package:tracking_app/features/auth/apply_as_driver/domain/repositories/apply_driver_repository.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/use_cases/get_vehicle_types_use_case.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/domain/entities/vehicle_info_entity.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_vehicle_params.dart';
@@ -40,6 +41,10 @@ class FakeVehicleProfileTestRepo implements ProfileRepository {
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
       const Success('ok');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
+      const Failure('not needed', AppError.general);
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>

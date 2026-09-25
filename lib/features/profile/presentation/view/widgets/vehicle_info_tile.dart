@@ -4,14 +4,14 @@ import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
 
 class VehicleInfoTile extends StatelessWidget {
-  final String vehicleType;
-  final String plateNumber;
+  final String? vehicleType;
+  final String? plateNumber;
   final VoidCallback onTap;
 
   const VehicleInfoTile({
     super.key,
-    this.vehicleType = 'Bike',
-    this.plateNumber = 'UP16DL0007',
+    this.vehicleType,
+    this.plateNumber,
     required this.onTap,
   });
 
@@ -39,16 +39,14 @@ class VehicleInfoTile extends StatelessWidget {
                     l10n.vehicleInfoLabel,
                     style: AppStyles.bold20Inter.copyWith(fontSize: 16),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    vehicleType,
-                    style: AppStyles.regular12Inter,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    plateNumber,
-                    style: AppStyles.regular12Inter,
-                  ),
+                  if (vehicleType != null && vehicleType!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(vehicleType!, style: AppStyles.regular12Inter),
+                  ],
+                  if (plateNumber != null && plateNumber!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(plateNumber!, style: AppStyles.regular12Inter),
+                  ],
                 ],
               ),
             ),

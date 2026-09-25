@@ -50,11 +50,7 @@ class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
         emitEvent(const NavigateEvent(AppRoutes.login));
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
-        emit(
-          state.copyWith(
-            changePasswordState: BaseState.error(errorMsg),
-          ),
-        );
+        emit(state.copyWith(changePasswordState: BaseState.error(errorMsg)));
         emitEvent(DisplayError(errorMsg));
     }
   }

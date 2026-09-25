@@ -9,11 +9,13 @@ import 'package:tracking_app/config/storage/secure_storage_service.dart';
 import 'package:tracking_app/core/localization/locale_cubit.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:tracking_app/features/profile/domain/entities/vehicle_info_entity.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_profile_params.dart';
 import 'package:tracking_app/features/profile/domain/params/update_vehicle_params.dart';
 import 'package:tracking_app/features/profile/domain/repositories/profile_repository.dart';
 import 'package:tracking_app/features/profile/domain/use_cases/get_profile_use_case.dart';
+import 'package:tracking_app/features/profile/domain/use_cases/get_vehicle_info_use_case.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/widgets/language_bottom_sheet.dart';
@@ -37,6 +39,20 @@ class FakeWidgetProfileRepo implements ProfileRepository {
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
       const Success('ok');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async {
+    return const Success(
+      VehicleInfoEntity(
+        vehicleId: 'v-1',
+        vehicleTypeId: 'vt-1',
+        vehicleTypeName: 'Bike',
+        plateNumber: 'UP16DL0007',
+        capacity: 2,
+        licenseDocument: 'doc.png',
+      ),
+    );
+  }
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -125,7 +141,11 @@ void main() {
 
     getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit(fakeStorage));
     getIt.registerFactory<ProfileCubit>(
-      () => ProfileCubit(GetProfileUseCase(fakeRepo), fakeSession),
+      () => ProfileCubit(
+        GetProfileUseCase(fakeRepo),
+        GetVehicleInfoUseCase(fakeRepo),
+        fakeSession,
+      ),
     );
   });
 

@@ -68,41 +68,47 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
 
     return BlocProvider.value(
       value: _cubit,
-      child: Scaffold(
-        backgroundColor: AppColors.whiteBase,
-        appBar: _buildAppBar(context, l10n),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const ApplyDriverHeaderWidget(),
-                  const SizedBox(height: 18),
-                  _buildNameFields(l10n),
-                  const SizedBox(height: 14),
-                  _buildVehicleSection(l10n),
-                  const SizedBox(height: 14),
-                  _buildContactFields(l10n),
-                  const SizedBox(height: 14),
-                  _buildIdSection(l10n),
-                  const SizedBox(height: 14),
-                  _buildPasswordSection(l10n),
-                  const SizedBox(height: 16),
-                  _buildGenderSection(),
-                  const SizedBox(height: 20),
-                  _buildSubmitButton(context, l10n),
-                  const SizedBox(height: 24),
-                ],
+      child: BlocBuilder<ApplyDriverCubit, ApplyDriverState>(
+        buildWhen: (prev, curr) =>
+            prev.applyState.isLoading != curr.applyState.isLoading,
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppColors.whiteBase,
+            appBar: _buildAppBar(context, l10n),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const ApplyDriverHeaderWidget(),
+                      const SizedBox(height: 18),
+                      _buildNameFields(l10n),
+                      const SizedBox(height: 14),
+                      _buildVehicleSection(l10n),
+                      const SizedBox(height: 14),
+                      _buildContactFields(l10n),
+                      const SizedBox(height: 14),
+                      _buildIdSection(l10n),
+                      const SizedBox(height: 14),
+                      _buildPasswordSection(l10n),
+                      const SizedBox(height: 16),
+                      _buildGenderSection(),
+                      const SizedBox(height: 20),
+                      _buildSubmitButton(context, l10n),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -175,8 +181,10 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
               hint: l10n.vehicleNumberHint,
               controller: _vehicleNumberController,
               localizations: l10n,
-              validator: (val) =>
-                  FormValidator.validateRequired(val, l10n.emptyValidationError),
+              validator: (val) => FormValidator.validateRequired(
+                val,
+                l10n.emptyValidationError,
+              ),
             ),
             const SizedBox(height: 14),
             FileUploadField(
@@ -250,10 +258,8 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
               label: l10n.nidImageLabel,
               hint: l10n.nidImageHint,
               file: state.nidImage,
-              validator: (val) => FormValidator.validateFile(
-                val,
-                l10n.nidImageRequiredError,
-              ),
+              validator: (val) =>
+                  FormValidator.validateFile(val, l10n.nidImageRequiredError),
               onTap: () => _cubit.doEvent(const PickNidImageEvent()),
             ),
           ],
@@ -278,11 +284,11 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
           ),
           validatorConfirmPassword: (val) =>
               FormValidator.validateConfirmPassword(
-            val,
-            _passwordController.text,
-            l10n.emptyValidationError,
-            l10n.passwordMismatchError,
-          ),
+                val,
+                _passwordController.text,
+                l10n.emptyValidationError,
+                l10n.passwordMismatchError,
+              ),
           isPasswordVisible: state.isPasswordVisible,
           isConfirmPasswordVisible: state.isConfirmPasswordVisible,
           onTogglePassword: () =>
@@ -306,10 +312,7 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
     );
   }
 
-  Widget _buildSubmitButton(
-    BuildContext context,
-    AppLocalizations l10n,
-  ) {
+  Widget _buildSubmitButton(BuildContext context, AppLocalizations l10n) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     return BlocBuilder<ApplyDriverCubit, ApplyDriverState>(
       buildWhen: (prev, curr) =>

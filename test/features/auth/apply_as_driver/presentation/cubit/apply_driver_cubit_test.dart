@@ -75,8 +75,11 @@ void main() {
 
   group('ApplyDriverCubit', () {
     test('initial state has default gender 0 and initial BaseStates', () {
-      final cubit =
-          ApplyDriverCubit(applyUseCase, getVehicleTypesUseCase, fakeImagePicker);
+      final cubit = ApplyDriverCubit(
+        applyUseCase,
+        getVehicleTypesUseCase,
+        fakeImagePicker,
+      );
       expect(cubit.state.selectedGender, 0);
       expect(cubit.state.applyState.isLoading, false);
       expect(cubit.state.vehicleTypesState.isLoading, false);
@@ -235,7 +238,9 @@ void main() {
       },
       act: (cubit) => cubit.doEvent(const PickNidImageEvent()),
       expect: () => [
-        predicate<ApplyDriverState>((s) => s.nidImage?.path == 'picked_nid.png'),
+        predicate<ApplyDriverState>(
+          (s) => s.nidImage?.path == 'picked_nid.png',
+        ),
       ],
     );
   });

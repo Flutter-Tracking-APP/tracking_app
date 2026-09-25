@@ -22,9 +22,7 @@ class ProfileHeaderCard extends StatelessWidget {
     final fullName = profile?.fullName.isNotEmpty == true
         ? profile!.fullName
         : '';
-    final email = profile?.email.isNotEmpty == true
-        ? profile!.email
-        : '';
+    final email = profile?.email.isNotEmpty == true ? profile!.email : '';
     final phone = profile?.phoneNumber.isNotEmpty == true
         ? profile!.phoneNumber
         : '';

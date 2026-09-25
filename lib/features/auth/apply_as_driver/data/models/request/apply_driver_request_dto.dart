@@ -56,8 +56,9 @@ class ApplyDriverRequestDto {
 
   Future<Map<String, dynamic>> toPartMap() async {
     final nidFileName = nidImage.path.split(Platform.pathSeparator).last;
-    final licenceFileName =
-        licenceImage.path.split(Platform.pathSeparator).last;
+    final licenceFileName = licenceImage.path
+        .split(Platform.pathSeparator)
+        .last;
 
     return {
       'firstName': firstName,

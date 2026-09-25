@@ -31,12 +31,7 @@ class _OnboardingViewState extends State<OnboardingView>
     _imageSlideAnimation = Tween<Offset>(
       begin: const Offset(-1.5, 0),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _imageFadeAnimation = CurvedAnimation(
       parent: _controller,
@@ -58,13 +53,13 @@ class _OnboardingViewState extends State<OnboardingView>
 
     // MUST be the same as DriverView
     final imageHeight = screenHeight * 0.45;
-  final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
 
@@ -89,7 +84,6 @@ class _OnboardingViewState extends State<OnboardingView>
 
               const SizedBox(height: 20),
 
-             
               Text(
                 '${localizations.welcomeTo} \n ${localizations.floweryriderapp}',
                 textAlign: TextAlign.left,
@@ -122,10 +116,8 @@ class _OnboardingViewState extends State<OnboardingView>
                   onPressed: () {
                     context.push(AppRoutes.applyDriver);
                   },
-                  style: TextButton.styleFrom(
-                    side: const BorderSide(),
-                  ),
-                  child:   Text(localizations.applyNow),
+                  style: TextButton.styleFrom(side: const BorderSide()),
+                  child: Text(localizations.applyNow),
                 ),
               ),
 
@@ -136,10 +128,7 @@ class _OnboardingViewState extends State<OnboardingView>
               // =====================================
               const SizedBox(
                 width: double.infinity,
-                child: Text(
-                  'v 6.3.0 - (446)',
-                  textAlign: TextAlign.center,
-                ),
+                child: Text('v 6.3.0 - (446)', textAlign: TextAlign.center),
               ),
 
               const SizedBox(height: 30),
