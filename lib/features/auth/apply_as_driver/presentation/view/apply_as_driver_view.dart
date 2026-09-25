@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/form_validator/form_validator.dart';
@@ -26,7 +27,7 @@ class ApplyAsDriverView extends StatefulWidget {
 }
 
 class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
-    with BaseViewMixin<ApplyAsDriverView, ApplyDriverCubit> {
+    with BaseViewMixin<ApplyAsDriverView, ApplyDriverCubit, BaseEvent> {
   late final ApplyDriverCubit _cubit;
 
   final _formKey = GlobalKey<FormState>();

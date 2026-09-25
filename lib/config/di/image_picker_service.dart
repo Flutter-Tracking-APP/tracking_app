@@ -11,9 +11,7 @@ abstract class ImagePickerService {
 class ImagePickerServiceImpl implements ImagePickerService {
   final ImagePicker _picker;
 
-  ImagePickerServiceImpl() : _picker = ImagePicker();
-
-  ImagePickerServiceImpl.withPicker(this._picker);
+  ImagePickerServiceImpl(this._picker);
 
   @override
   Future<File?> pickImageFromGallery() async {

@@ -27,10 +27,7 @@ class RefreshTokenDataDto {
   final String token;
   final String refreshToken;
 
-  const RefreshTokenDataDto({
-    required this.token,
-    required this.refreshToken,
-  });
+  const RefreshTokenDataDto({required this.token, required this.refreshToken});
 
   factory RefreshTokenDataDto.fromJson(Map<String, dynamic> json) =>
       _$RefreshTokenDataDtoFromJson(json);

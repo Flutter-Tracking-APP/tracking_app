@@ -58,7 +58,7 @@ class ProfileView extends StatelessWidget {
                             ProfileHeaderCard(
                               profile: state.profileState.data,
                               onEditTap: () =>
-                                   _navigateToEditProfile(context, state),
+                                  _navigateToEditProfile(context, state),
                             ),
                             const SizedBox(height: 16),
                             VehicleInfoTile(

@@ -11,4 +11,5 @@ abstract final class Endpoints {
   static const String verifyOTP = 'api/identity/auth/otp-verification';
   static const String resetPassword = 'api/identity/auth/reset-password';
   static const String refreshToken = 'api/identity/auth/refresh-token';
+  static const login = 'api/identity/auth/login';
 }

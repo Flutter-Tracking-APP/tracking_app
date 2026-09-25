@@ -103,9 +103,7 @@ class TokenRefreshInterceptor extends Interceptor {
       return false;
     }
 
-    final requestDto = RefreshTokenRequestDto(
-      refreshToken: storedRefreshToken,
-    );
+    final requestDto = RefreshTokenRequestDto(refreshToken: storedRefreshToken);
 
     final response = await _refreshDio.post<Map<String, dynamic>>(
       Endpoints.refreshToken,
@@ -144,10 +142,7 @@ class TokenRefreshInterceptor extends Interceptor {
       return handler.next(dioError);
     } catch (e) {
       return handler.next(
-        DioException(
-          requestOptions: requestOptions,
-          error: e,
-        ),
+        DioException(requestOptions: requestOptions, error: e),
       );
     }
   }

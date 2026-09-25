@@ -47,10 +47,7 @@ abstract class DioModule {
       ),
     );
 
-    dio.interceptors.addAll([
-      authInterceptor,
-      tokenRefreshInterceptor,
-    ]);
+    dio.interceptors.addAll([authInterceptor, tokenRefreshInterceptor]);
 
     if (kDebugMode) {
       dio.interceptors.add(

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
-import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
@@ -24,7 +22,7 @@ class ChangePasswordView extends StatefulWidget {
 }
 
 class _ChangePasswordViewState extends State<ChangePasswordView>
-    with BaseViewMixin<ChangePasswordView, ChangePasswordCubit> {
+    with BaseViewMixin<ChangePasswordView, ChangePasswordCubit, BaseEvent> {
   late final ChangePasswordCubit _cubit;
   final _formKey = GlobalKey<FormState>();
   final _currentPasswordController = TextEditingController();
@@ -38,15 +36,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
   void initState() {
     _cubit = getIt<ChangePasswordCubit>();
     super.initState();
-  }
-
-  @override
-  void handleEvent(BaseEvent event) {
-    if (event is NavigateEvent && event.routeName == AppRoutes.login) {
-      context.go(AppRoutes.login);
-      return;
-    }
-    super.handleEvent(event);
   }
 
   @override

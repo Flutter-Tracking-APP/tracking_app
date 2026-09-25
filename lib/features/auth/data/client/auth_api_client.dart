@@ -19,7 +19,7 @@ abstract class AuthApiClient {
   @factoryMethod
   factory AuthApiClient(Dio dio) = _AuthApiClient;
 
-  @POST("api/identity/auth/login")
+  @POST(Endpoints.login)
   Future<LoginResponse> login(@Body() LoginRequest request);
   @POST(Endpoints.forgetPassword)
   Future<ForgetPasswordResponseDto> forgotPassword(

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tracking_app/config/base/base_event.dart';
 
-abstract class BaseCubit<State, UiEvent> extends Cubit<State> {
+abstract class BaseCubit<State, E extends BaseEvent> extends Cubit<State> {
   BaseCubit(super.initialState);
 
-  final StreamController<UiEvent> _eventController =
-      StreamController<UiEvent>.broadcast();
+  final StreamController<E> _eventController = StreamController<E>.broadcast();
 
-  Stream<UiEvent> get eventStream => _eventController.stream;
+  Stream<E> get eventStream => _eventController.stream;
 
-  void emitEvent(UiEvent event) {
+  void emitEvent(E event) {
     if (_eventController.isClosed) {
       throw StateError('Cannot emit new events after calling close');
     }

@@ -14,10 +14,7 @@ class FakeSessionService implements SessionService {
   bool isCleared = false;
   int updateTokensCallCount = 0;
 
-  FakeSessionService({
-    this.currentToken = '',
-    this.currentRefreshToken = '',
-  });
+  FakeSessionService({this.currentToken = '', this.currentRefreshToken = ''});
 
   @override
   Future<String> getToken() async => currentToken;
@@ -146,10 +143,8 @@ void main() {
       );
     });
 
-    interceptor = TokenRefreshInterceptor(
-      fakeSessionService,
-      refreshDio,
-    )..dioProvider = () => mainDio;
+    interceptor = TokenRefreshInterceptor(fakeSessionService, refreshDio)
+      ..dioProvider = () => mainDio;
   });
 
   group('TokenRefreshInterceptor Tests', () {
@@ -169,62 +164,71 @@ void main() {
       expect(refreshApiCallCount, 0);
     });
 
-    test('401 error on already retried request should pass to next without refresh', () async {
-      final handler = TestErrorHandler();
-      final exception = DioException(
-        requestOptions: RequestOptions(
-          path: '/api/test',
-          extra: {NetworkConstants.isRetry: true},
-        ),
-        response: Response(
-          requestOptions: RequestOptions(path: '/api/test'),
-          statusCode: 401,
-        ),
-      );
+    test(
+      '401 error on already retried request should pass to next without refresh',
+      () async {
+        final handler = TestErrorHandler();
+        final exception = DioException(
+          requestOptions: RequestOptions(
+            path: '/api/test',
+            extra: {NetworkConstants.isRetry: true},
+          ),
+          response: Response(
+            requestOptions: RequestOptions(path: '/api/test'),
+            statusCode: 401,
+          ),
+        );
 
-      await interceptor.onError(exception, handler);
+        await interceptor.onError(exception, handler);
 
-      expect(handler.nextCompleter.isCompleted, isTrue);
-      expect(refreshApiCallCount, 0);
-    });
+        expect(handler.nextCompleter.isCompleted, isTrue);
+        expect(refreshApiCallCount, 0);
+      },
+    );
 
-    test('401 error on refreshToken endpoint triggers logout and passes to next', () async {
-      final handler = TestErrorHandler();
-      final exception = DioException(
-        requestOptions: RequestOptions(path: Endpoints.refreshToken),
-        response: Response(
+    test(
+      '401 error on refreshToken endpoint triggers logout and passes to next',
+      () async {
+        final handler = TestErrorHandler();
+        final exception = DioException(
           requestOptions: RequestOptions(path: Endpoints.refreshToken),
-          statusCode: 401,
-        ),
-      );
+          response: Response(
+            requestOptions: RequestOptions(path: Endpoints.refreshToken),
+            statusCode: 401,
+          ),
+        );
 
-      await interceptor.onError(exception, handler);
+        await interceptor.onError(exception, handler);
 
-      expect(handler.nextCompleter.isCompleted, isTrue);
-      expect(refreshApiCallCount, 0);
-      expect(fakeSessionService.isCleared, isTrue);
-    });
+        expect(handler.nextCompleter.isCompleted, isTrue);
+        expect(refreshApiCallCount, 0);
+        expect(fakeSessionService.isCleared, isTrue);
+      },
+    );
 
-    test('401 error with empty refresh token triggers logout and passes to next', () async {
-      fakeSessionService.currentRefreshToken = '';
-      final handler = TestErrorHandler();
-      final exception = DioException(
-        requestOptions: RequestOptions(
-          path: '/api/profile',
-          headers: {'Authorization': 'Bearer old_access_token'},
-        ),
-        response: Response(
-          requestOptions: RequestOptions(path: '/api/profile'),
-          statusCode: 401,
-        ),
-      );
+    test(
+      '401 error with empty refresh token triggers logout and passes to next',
+      () async {
+        fakeSessionService.currentRefreshToken = '';
+        final handler = TestErrorHandler();
+        final exception = DioException(
+          requestOptions: RequestOptions(
+            path: '/api/profile',
+            headers: {'Authorization': 'Bearer old_access_token'},
+          ),
+          response: Response(
+            requestOptions: RequestOptions(path: '/api/profile'),
+            statusCode: 401,
+          ),
+        );
 
-      await interceptor.onError(exception, handler);
+        await interceptor.onError(exception, handler);
 
-      expect(handler.nextCompleter.isCompleted, isTrue);
-      expect(refreshApiCallCount, 0);
-      expect(fakeSessionService.isCleared, isTrue);
-    });
+        expect(handler.nextCompleter.isCompleted, isTrue);
+        expect(refreshApiCallCount, 0);
+        expect(fakeSessionService.isCleared, isTrue);
+      },
+    );
 
     test('Successful 401 refresh updates tokens and retries request', () async {
       final handler = TestErrorHandler();
@@ -234,10 +238,7 @@ void main() {
       );
       final exception = DioException(
         requestOptions: requestOptions,
-        response: Response(
-          requestOptions: requestOptions,
-          statusCode: 401,
-        ),
+        response: Response(requestOptions: requestOptions, statusCode: 401),
       );
 
       await interceptor.onError(exception, handler);
@@ -248,94 +249,106 @@ void main() {
       expect(refreshApiCallCount, 1);
       expect(fakeSessionService.currentToken, 'new_access_token');
       expect(fakeSessionService.currentRefreshToken, 'new_refresh_token');
-      expect(requestOptions.headers['Authorization'], 'Bearer new_access_token');
+      expect(
+        requestOptions.headers['Authorization'],
+        'Bearer new_access_token',
+      );
       expect(requestOptions.extra[NetworkConstants.isRetry], isTrue);
     });
 
-    test('If token was already updated by another call, retries immediately without refresh', () async {
-      fakeSessionService.currentToken = 'already_updated_token';
+    test(
+      'If token was already updated by another call, retries immediately without refresh',
+      () async {
+        fakeSessionService.currentToken = 'already_updated_token';
 
-      final handler = TestErrorHandler();
-      final requestOptions = RequestOptions(
-        path: '/api/profile',
-        headers: {'Authorization': 'Bearer old_access_token'},
-      );
-      final exception = DioException(
-        requestOptions: requestOptions,
-        response: Response(
+        final handler = TestErrorHandler();
+        final requestOptions = RequestOptions(
+          path: '/api/profile',
+          headers: {'Authorization': 'Bearer old_access_token'},
+        );
+        final exception = DioException(
           requestOptions: requestOptions,
+          response: Response(requestOptions: requestOptions, statusCode: 401),
+        );
+
+        await interceptor.onError(exception, handler);
+
+        expect(handler.resolvedCompleter.isCompleted, isTrue);
+        expect(refreshApiCallCount, 0); // No refresh call needed!
+        expect(
+          requestOptions.headers['Authorization'],
+          'Bearer already_updated_token',
+        );
+        expect(requestOptions.extra[NetworkConstants.isRetry], isTrue);
+      },
+    );
+
+    test(
+      'Concurrent 401 errors deduplicate and fire only ONE refresh API call',
+      () async {
+        final handler1 = TestErrorHandler();
+        final handler2 = TestErrorHandler();
+
+        final request1 = RequestOptions(
+          path: '/api/profile',
+          headers: {'Authorization': 'Bearer old_access_token'},
+        );
+        final request2 = RequestOptions(
+          path: '/api/vehicles',
+          headers: {'Authorization': 'Bearer old_access_token'},
+        );
+
+        final err1 = DioException(
+          requestOptions: request1,
+          response: Response(requestOptions: request1, statusCode: 401),
+        );
+        final err2 = DioException(
+          requestOptions: request2,
+          response: Response(requestOptions: request2, statusCode: 401),
+        );
+
+        // Trigger both simultaneously
+        final future1 = interceptor.onError(err1, handler1);
+        final future2 = interceptor.onError(err2, handler2);
+
+        await Future.wait([future1, future2]);
+
+        expect(handler1.resolvedCompleter.isCompleted, isTrue);
+        expect(handler2.resolvedCompleter.isCompleted, isTrue);
+        expect(
+          refreshApiCallCount,
+          1,
+        ); // Only 1 refresh network call was executed!
+        expect(fakeSessionService.currentToken, 'new_access_token');
+      },
+    );
+
+    test(
+      'Refresh API failure triggers logout and next for all waiting handlers',
+      () async {
+        refreshResponseGenerator = (options) => Response(
+          requestOptions: options,
           statusCode: 401,
-        ),
-      );
+          data: {'status': false, 'message': 'Refresh token expired'},
+        );
 
-      await interceptor.onError(exception, handler);
-
-      expect(handler.resolvedCompleter.isCompleted, isTrue);
-      expect(refreshApiCallCount, 0); // No refresh call needed!
-      expect(requestOptions.headers['Authorization'], 'Bearer already_updated_token');
-      expect(requestOptions.extra[NetworkConstants.isRetry], isTrue);
-    });
-
-    test('Concurrent 401 errors deduplicate and fire only ONE refresh API call', () async {
-      final handler1 = TestErrorHandler();
-      final handler2 = TestErrorHandler();
-
-      final request1 = RequestOptions(
-        path: '/api/profile',
-        headers: {'Authorization': 'Bearer old_access_token'},
-      );
-      final request2 = RequestOptions(
-        path: '/api/vehicles',
-        headers: {'Authorization': 'Bearer old_access_token'},
-      );
-
-      final err1 = DioException(
-        requestOptions: request1,
-        response: Response(requestOptions: request1, statusCode: 401),
-      );
-      final err2 = DioException(
-        requestOptions: request2,
-        response: Response(requestOptions: request2, statusCode: 401),
-      );
-
-      // Trigger both simultaneously
-      final future1 = interceptor.onError(err1, handler1);
-      final future2 = interceptor.onError(err2, handler2);
-
-      await Future.wait([future1, future2]);
-
-      expect(handler1.resolvedCompleter.isCompleted, isTrue);
-      expect(handler2.resolvedCompleter.isCompleted, isTrue);
-      expect(refreshApiCallCount, 1); // Only 1 refresh network call was executed!
-      expect(fakeSessionService.currentToken, 'new_access_token');
-    });
-
-    test('Refresh API failure triggers logout and next for all waiting handlers', () async {
-      refreshResponseGenerator = (options) => Response(
-        requestOptions: options,
-        statusCode: 401,
-        data: {'status': false, 'message': 'Refresh token expired'},
-      );
-
-      final handler = TestErrorHandler();
-      final requestOptions = RequestOptions(
-        path: '/api/profile',
-        headers: {'Authorization': 'Bearer old_access_token'},
-      );
-      final exception = DioException(
-        requestOptions: requestOptions,
-        response: Response(
+        final handler = TestErrorHandler();
+        final requestOptions = RequestOptions(
+          path: '/api/profile',
+          headers: {'Authorization': 'Bearer old_access_token'},
+        );
+        final exception = DioException(
           requestOptions: requestOptions,
-          statusCode: 401,
-        ),
-      );
+          response: Response(requestOptions: requestOptions, statusCode: 401),
+        );
 
-      await interceptor.onError(exception, handler);
+        await interceptor.onError(exception, handler);
 
-      expect(handler.nextCompleter.isCompleted, isTrue);
-      expect(refreshApiCallCount, 1);
-      expect(fakeSessionService.isCleared, isTrue);
-    });
+        expect(handler.nextCompleter.isCompleted, isTrue);
+        expect(refreshApiCallCount, 1);
+        expect(fakeSessionService.isCleared, isTrue);
+      },
+    );
   });
 }
 

@@ -7,10 +7,11 @@ import 'package:tracking_app/core/const/app_colors.dart';
 
 mixin BaseViewMixin<
   T extends StatefulWidget,
-  C extends BaseCubit<dynamic, BaseEvent>
+  C extends BaseCubit<dynamic, E>,
+  E extends BaseEvent
 >
     on State<T> {
-  StreamSubscription<BaseEvent>? _eventSubscription;
+  StreamSubscription<E>? _eventSubscription;
 
   C get cubit;
 
@@ -23,11 +24,11 @@ mixin BaseViewMixin<
   void _subscribeToEvents() {
     _eventSubscription = cubit.eventStream.listen((event) {
       if (!mounted) return;
-      handleEvent(event);
+      _handleEvent(event);
     });
   }
 
-  void handleEvent(BaseEvent event) {
+  void _handleEvent(E event) {
     switch (event) {
       case DisplayError(:final errorMsg):
         showErrorSnackBar(errorMsg);
@@ -35,12 +36,13 @@ mixin BaseViewMixin<
         showSuccessSnackBar(successMsg);
       case NavigateEvent(:final routeName, :final extra):
         context.push(routeName, extra: extra);
-      case CustomUiEvent():
+
+      case _:
         onCustomEvent(event);
     }
   }
 
-  void onCustomEvent(BaseEvent event) {}
+  void onCustomEvent(E event) {}
 
   void showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
