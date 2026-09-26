@@ -91,6 +91,19 @@ class SessionService {
     return storedRefreshToken;
   }
 
+  Future<void> saveActiveOrderId(String orderId) async {
+    await _secureStorage.save(AppConstants.activeOrderIdKey, orderId);
+  }
+
+  Future<String?> getActiveOrderId() async {
+    final orderId = await _secureStorage.get(AppConstants.activeOrderIdKey);
+    return orderId.isNotEmpty ? orderId : null;
+  }
+
+  Future<void> clearActiveOrderId() async {
+    await _secureStorage.delete(AppConstants.activeOrderIdKey);
+  }
+
   Future<void> clearSession() async {
     _inMemoryToken = null;
     _inMemoryRefreshToken = null;
@@ -99,5 +112,6 @@ class SessionService {
     await _secureStorage.delete(AppConstants.storageRefreshTokenKey);
     await _secureStorage.delete(AppConstants.rememberMeKey);
     await _secureStorage.delete(AppConstants.guestModeKey);
+    await _secureStorage.delete(AppConstants.activeOrderIdKey);
   }
 }

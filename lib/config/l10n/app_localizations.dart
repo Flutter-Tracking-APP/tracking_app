@@ -877,6 +877,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password changed successfully'**
   String get passwordChangedSuccess;
+
+  /// No description provided for @homeTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTab;
+
+  /// No description provided for @ordersTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get ordersTab;
+
+  /// No description provided for @flowerOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower order'**
+  String get flowerOrder;
+
+  /// No description provided for @pickupAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup address'**
+  String get pickupAddress;
+
+  /// No description provided for @userAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'User address'**
+  String get userAddress;
+
+  /// No description provided for @floweryStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery store'**
+  String get floweryStore;
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @egp.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egp;
+
+  /// No description provided for @orderDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Order details'**
+  String get orderDetails;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @orderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderId;
+
+  /// No description provided for @statusAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get statusAccepted;
+
+  /// No description provided for @statusArrivedAtPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at pickup'**
+  String get statusArrivedAtPickup;
+
+  /// No description provided for @statusPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get statusPicked;
+
+  /// No description provided for @statusOutForDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Out for delivery'**
+  String get statusOutForDelivery;
+
+  /// No description provided for @statusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// No description provided for @arrivedAtPickupPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at Pickup point'**
+  String get arrivedAtPickupPoint;
+
+  /// No description provided for @orderPickedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get orderPickedButton;
+
+  /// No description provided for @startDeliver.
+  ///
+  /// In en, this message translates to:
+  /// **'Start deliver'**
+  String get startDeliver;
+
+  /// No description provided for @arrivedToUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived to the user'**
+  String get arrivedToUser;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get paymentMethod;
+
+  /// No description provided for @cashOnDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on delivery'**
+  String get cashOnDelivery;
+
+  /// No description provided for @noAvailableOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No available orders right now'**
+  String get noAvailableOrders;
+
+  /// No description provided for @orderClaimedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order accepted successfully'**
+  String get orderClaimedSuccessfully;
+
+  /// No description provided for @orderStatusUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order status updated successfully'**
+  String get orderStatusUpdatedSuccessfully;
+
+  /// No description provided for @callingNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not initiate call'**
+  String get callingNotSupported;
+
+  /// No description provided for @whatsappNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open WhatsApp'**
+  String get whatsappNotSupported;
 }
 
 class _AppLocalizationsDelegate

@@ -98,6 +98,15 @@ class FakeWidgetSessionService implements SessionService {
 
   @override
   Future<void> setRememberMe(bool value) async {}
+
+  @override
+  Future<void> clearActiveOrderId() async {}
+
+  @override
+  Future<String?> getActiveOrderId() async => null;
+
+  @override
+  Future<void> saveActiveOrderId(String orderId) async {}
 }
 
 class FakeStorageService implements SecureStorageService {

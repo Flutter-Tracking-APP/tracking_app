@@ -7,8 +7,19 @@ Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
     return await call();
   } catch (e) {
     final error = errorParser(e as Exception);
-
-    return Failure(null, error);
+    String? message;
+    if (e is DioException) {
+      final responseData = e.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        message = (responseData['message'] ??
+                responseData['error'] ??
+                responseData['msg'])
+            ?.toString();
+      } else if (responseData is String) {
+        message = responseData;
+      }
+    }
+    return Failure(message, error);
   }
 }
 

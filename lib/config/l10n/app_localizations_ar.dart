@@ -9,13 +9,13 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get floweryriderapp => 'Flowery rider app';
+  String get floweryriderapp => 'فلاوري رايدر';
 
   @override
-  String get applyNow => 'Apply now';
+  String get applyNow => 'قدّم الآن';
 
   @override
-  String get welcomeTo => 'Welcome to';
+  String get welcomeTo => 'مرحباً بك في';
 
   @override
   String get sendOtp => 'إرسال الرمز';
@@ -89,28 +89,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordResetSuccessfully => 'تمت إعادة تعيين كلمة المرور بنجاح';
 
   @override
-  String get productDescription => 'Description';
+  String get productDescription => 'وصف المنتج';
 
   @override
-  String get productIncludes => 'Includes';
+  String get productIncludes => 'المنتج يشمل';
 
   @override
-  String get productInStock => 'In Stock';
+  String get productInStock => 'المنتج متوفر';
 
   @override
-  String get productOutOfStock => 'Out of Stock';
+  String get productOutOfStock => 'المنتج غير متوفر';
 
   @override
-  String get productAvailableStock => 'Available Stock';
+  String get productAvailableStock => 'الكمية المتاحة من المنتج';
 
   @override
-  String get confirmPassword => 'Confirm password';
+  String get confirmPassword => 'تأكيد كلمة المرور';
 
   @override
   String get login => 'تسجيل الدخول';
 
   @override
-  String get signup => 'Sign up';
+  String get signup => 'إنشاء حساب';
 
   @override
   String get loginRequired => 'تسجيل الدخول مطلوب';
@@ -419,4 +419,88 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح';
+
+  @override
+  String get homeTab => 'الرئيسية';
+
+  @override
+  String get ordersTab => 'الطلبات';
+
+  @override
+  String get flowerOrder => 'طلب زهور';
+
+  @override
+  String get pickupAddress => 'عنوان الاستلام';
+
+  @override
+  String get userAddress => 'عنوان العميل';
+
+  @override
+  String get floweryStore => 'متجر فلاوري';
+
+  @override
+  String get accept => 'قبول';
+
+  @override
+  String get egp => 'ج.م';
+
+  @override
+  String get orderDetails => 'تفاصيل الطلب';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get orderId => 'رقم الطلب';
+
+  @override
+  String get statusAccepted => 'تم القبول';
+
+  @override
+  String get statusArrivedAtPickup => 'وصلت لنقطة الاستلام';
+
+  @override
+  String get statusPicked => 'تم الاستلام';
+
+  @override
+  String get statusOutForDelivery => 'جاري التوصيل';
+
+  @override
+  String get statusDelivered => 'تم التوصيل';
+
+  @override
+  String get arrivedAtPickupPoint => 'وصلت لنقطة الاستلام';
+
+  @override
+  String get orderPickedButton => 'تم الاستلام';
+
+  @override
+  String get startDeliver => 'بدء التوصيل';
+
+  @override
+  String get arrivedToUser => 'وصلت للعميل';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
+  String get paymentMethod => 'طريقة الدفع';
+
+  @override
+  String get cashOnDelivery => 'الدفع عند الاستلام';
+
+  @override
+  String get noAvailableOrders => 'لا توجد طلبات متاحة حالياً';
+
+  @override
+  String get orderClaimedSuccessfully => 'تم قبول الطلب بنجاح';
+
+  @override
+  String get orderStatusUpdatedSuccessfully => 'تم تحديث حالة الطلب بنجاح';
+
+  @override
+  String get callingNotSupported => 'تعذر إجراء الاتصال';
+
+  @override
+  String get whatsappNotSupported => 'تعذر فتح تطبيق واتساب';
 }

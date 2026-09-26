@@ -421,4 +421,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordChangedSuccess => 'Password changed successfully';
+
+  @override
+  String get homeTab => 'Home';
+
+  @override
+  String get ordersTab => 'Orders';
+
+  @override
+  String get flowerOrder => 'Flower order';
+
+  @override
+  String get pickupAddress => 'Pickup address';
+
+  @override
+  String get userAddress => 'User address';
+
+  @override
+  String get floweryStore => 'Flowery store';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get orderDetails => 'Order details';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get orderId => 'Order ID';
+
+  @override
+  String get statusAccepted => 'Accepted';
+
+  @override
+  String get statusArrivedAtPickup => 'Arrived at pickup';
+
+  @override
+  String get statusPicked => 'Picked';
+
+  @override
+  String get statusOutForDelivery => 'Out for delivery';
+
+  @override
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get arrivedAtPickupPoint => 'Arrived at Pickup point';
+
+  @override
+  String get orderPickedButton => 'Picked';
+
+  @override
+  String get startDeliver => 'Start deliver';
+
+  @override
+  String get arrivedToUser => 'Arrived to the user';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get paymentMethod => 'Payment method';
+
+  @override
+  String get cashOnDelivery => 'Cash on delivery';
+
+  @override
+  String get noAvailableOrders => 'No available orders right now';
+
+  @override
+  String get orderClaimedSuccessfully => 'Order accepted successfully';
+
+  @override
+  String get orderStatusUpdatedSuccessfully =>
+      'Order status updated successfully';
+
+  @override
+  String get callingNotSupported => 'Could not initiate call';
+
+  @override
+  String get whatsappNotSupported => 'Could not open WhatsApp';
 }

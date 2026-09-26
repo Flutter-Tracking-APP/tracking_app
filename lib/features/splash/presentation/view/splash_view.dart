@@ -28,7 +28,7 @@ class _SplashViewState extends State<SplashView> {
       if (!mounted) return;
 
       if (isRemembered) {
-        context.go(AppRoutes.profile);
+        context.go(AppRoutes.home);
       } else {
         context.go(AppRoutes.onBoarding);
       }

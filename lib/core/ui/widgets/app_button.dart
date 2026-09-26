@@ -10,6 +10,8 @@ class AppButton extends StatelessWidget {
   final Color? borderColor;
   final Color? textColor;
   final bool isLoading;
+  final EdgeInsetsGeometry? padding;
+  final TextStyle? textStyle;
 
   const AppButton({
     super.key,
@@ -19,6 +21,8 @@ class AppButton extends StatelessWidget {
     this.borderColor,
     this.textColor,
     this.isLoading = false,
+    this.padding,
+    this.textStyle,
   });
 
   @override
@@ -29,6 +33,7 @@ class AppButton extends StatelessWidget {
         backgroundColor: backgroundColor ?? AppColors.purpleBase,
         foregroundColor: textColor ?? AppColors.whiteBase,
         side: borderColor != null ? BorderSide(color: borderColor!) : null,
+        padding: padding,
       ),
       child: isLoading
           ? const SizedBox(
@@ -38,7 +43,7 @@ class AppButton extends StatelessWidget {
             )
           : Text(
               text,
-              style: AppStyles.medium16Inter.copyWith(
+              style: (textStyle ?? AppStyles.medium16Inter).copyWith(
                 color: textColor ?? AppColors.whiteBase,
               ),
             ),

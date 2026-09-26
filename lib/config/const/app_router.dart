@@ -15,6 +15,8 @@ import 'package:tracking_app/features/profile/presentation/view/edit_vehicle_inf
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/onboarding_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/splash_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/main_shell/view/driver_main_shell_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/order_details/view/order_details_view.dart';
 
 abstract final class AppRoutes {
   static const splash = '/';
@@ -26,6 +28,7 @@ abstract final class AppRoutes {
   static const editVehicleInfo = '/edit-vehicle-info';
   static const changePassword = '/change-password';
   static const home = '/home';
+  static const orderDetails = '/order-details';
   static const forgetPassword = '/forgot-password';
   static const onBoarding = '/onBoarding';
 }
@@ -115,46 +118,18 @@ abstract final class AppRouter {
         },
       ),
       GoRoute(
-        path: AppRoutes.applyDriver,
+        path: AppRoutes.home,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          return const ApplyAsDriverView();
+          return const DriverMainShellView();
         },
       ),
       GoRoute(
-        path: AppRoutes.applyDriverSuccess,
+        path: '${AppRoutes.orderDetails}/:orderId',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          return const SuccessApplyView();
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.profile,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          return const ProfileView();
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.editProfile,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          final profile = state.extra as UserProfileEntity?;
-          return EditProfileView(initialProfile: profile);
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.editVehicleInfo,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          return const EditVehicleInfoView();
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.changePassword,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          return const ChangePasswordView();
+          final orderId = state.pathParameters['orderId'] ?? '';
+          return OrderDetailsView(orderId: orderId);
         },
       ),
     ],
