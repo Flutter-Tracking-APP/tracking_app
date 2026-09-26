@@ -15,6 +15,16 @@ Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
                 responseData['error'] ??
                 responseData['msg'])
             ?.toString();
+        if ((message == null || message.trim().isEmpty) &&
+            responseData['errors'] is List &&
+            (responseData['errors'] as List).isNotEmpty) {
+          final firstError = (responseData['errors'] as List).first;
+          if (firstError is Map<String, dynamic>) {
+            message = firstError['message']?.toString();
+          } else {
+            message = firstError?.toString();
+          }
+        }
       } else if (responseData is String) {
         message = responseData;
       }

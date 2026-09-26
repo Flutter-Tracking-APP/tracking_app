@@ -506,4 +506,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whatsappNotSupported => 'Could not open WhatsApp';
+
+  @override
+  String get statusArrived => 'Arrived';
+
+  @override
+  String get handOrderToUser => 'Hand order to user';
 }

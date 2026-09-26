@@ -8,7 +8,8 @@ abstract class DriverOrdersRepository {
   Future<ApiResults<OrderDetailsEntity>> getOrderDetails(String orderId);
   Future<ApiResults<String>> updateOrderStatus(
     String orderId,
-    String status,
-  );
+    String status, {
+    String? note,
+  });
   Future<ApiResults<OrderDetailsEntity?>> getActiveOrder();
 }

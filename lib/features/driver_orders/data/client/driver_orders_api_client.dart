@@ -6,6 +6,7 @@ import 'package:tracking_app/features/driver_orders/data/models/request/update_o
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_action_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/data/models/response/update_order_status_response_dto.dart';
 
 part 'driver_orders_api_client.g.dart';
 
@@ -26,8 +27,8 @@ abstract class DriverOrdersApiClient {
     @Path('orderId') String orderId,
   );
 
-  @PUT(Endpoints.updateOrderStatus)
-  Future<OrderActionResponseDto> updateOrderStatus(
+  @PATCH(Endpoints.updateOrderStatus)
+  Future<UpdateOrderStatusResponseDto> updateOrderStatus(
     @Path('orderId') String orderId,
     @Body() UpdateOrderStatusRequestDto request,
   );

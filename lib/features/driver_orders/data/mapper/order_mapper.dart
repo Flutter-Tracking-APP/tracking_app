@@ -118,19 +118,26 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
   static OrderFulfillmentStatus _parseStatus(String? rawStatus) {
     if (rawStatus == null) return OrderFulfillmentStatus.accepted;
     final normalized = rawStatus.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
-    if (normalized.contains('deliver') || normalized == 'completed') {
-      if (normalized.contains('outfor') || normalized.contains('start') || normalized.contains('ondelivery')) {
-        return OrderFulfillmentStatus.outForDelivery;
-      }
+    if (normalized.contains('awaiting') ||
+        normalized.contains('deliver') ||
+        normalized == 'completed') {
       return OrderFulfillmentStatus.delivered;
     }
-    if (normalized.contains('outfordelivery') || normalized.contains('ontheway')) {
+    if (normalized.contains('arrivedtouser') ||
+        normalized == 'arrived' ||
+        normalized.contains('reached')) {
+      return OrderFulfillmentStatus.arrived;
+    }
+    if (normalized.contains('outfor') ||
+        normalized.contains('start') ||
+        normalized.contains('ondelivery') ||
+        normalized.contains('ontheway')) {
       return OrderFulfillmentStatus.outForDelivery;
     }
     if (normalized.contains('pick')) {
       return OrderFulfillmentStatus.picked;
     }
-    if (normalized.contains('arrivedatpickup') || normalized.contains('atpickup')) {
+    if (normalized.contains('atpickup') || normalized.contains('arrivedatpickup')) {
       return OrderFulfillmentStatus.arrivedAtPickup;
     }
     return OrderFulfillmentStatus.accepted;

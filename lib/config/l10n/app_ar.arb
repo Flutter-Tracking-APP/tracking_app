@@ -157,5 +157,7 @@
     "productOutOfStock": "المنتج غير متوفر",
     "productAvailableStock": "الكمية المتاحة من المنتج",
     "confirmPassword": "تأكيد كلمة المرور",
-    "signup": "إنشاء حساب"
+    "signup": "إنشاء حساب",
+    "statusArrived": "وصل",
+    "handOrderToUser": "تسليم الطلب للعميل"
 }

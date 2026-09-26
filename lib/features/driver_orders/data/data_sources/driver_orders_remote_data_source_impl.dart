@@ -5,6 +5,7 @@ import 'package:tracking_app/features/driver_orders/data/models/request/update_o
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_action_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/data/models/response/update_order_status_response_dto.dart';
 
 @Injectable(as: DriverOrdersRemoteDataSource)
 class DriverOrdersRemoteDataSourceImpl implements DriverOrdersRemoteDataSource {
@@ -28,7 +29,7 @@ class DriverOrdersRemoteDataSourceImpl implements DriverOrdersRemoteDataSource {
   }
 
   @override
-  Future<OrderActionResponseDto> updateOrderStatus(
+  Future<UpdateOrderStatusResponseDto> updateOrderStatus(
     String orderId,
     UpdateOrderStatusRequestDto request,
   ) {

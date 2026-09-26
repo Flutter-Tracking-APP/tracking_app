@@ -22,13 +22,15 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
   void doEvent(OrderDetailsEvent event) {
     switch (event) {
       case GetOrderDetailsEvent(:final orderId):
-        _getOrderDetails(orderId);
+        getOrderDetails(orderId);
       case UpdateOrderStatusEvent(:final orderId, :final targetStatus):
         _updateOrderStatus(orderId, targetStatus);
+      case UpdateNextStatusEvent(:final orderId):
+        updateNextStatus(orderId);
     }
   }
 
-  Future<void> _getOrderDetails(String orderId) async {
+  Future<void> getOrderDetails(String orderId) async {
     emit(
       state.copyWith(
         orderDetailsState: BaseState(
@@ -58,42 +60,117 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
     }
   }
 
+  Future<void> updateNextStatus(String orderId) async {
+    final currentOrder = state.orderDetailsState.data;
+    if (currentOrder == null) return;
+
+    final transition = _getNextTransition(currentOrder.status);
+    if (transition == null) return;
+
+    final (targetStatus, note, nextEnum) = transition;
+    emit(state.copyWith(
+      isUpdatingStatus: true,
+      updateStatusState: BaseState.loading(),
+    ));
+
+    final result = await _updateOrderStatusUseCase.call(
+      orderId,
+      targetStatus,
+      note: note,
+    );
+
+    _handleUpdateResult(result, nextEnum);
+  }
+
+  void _handleUpdateResult(
+    ApiResults<String> result,
+    OrderFulfillmentStatus nextStatus,
+  ) {
+    switch (result) {
+      case Success(data: final message):
+        _onUpdateSuccess(message, nextStatus);
+      case Failure(error: final error, message: final msg):
+        final errorMsg = msg ?? error.name;
+        emit(state.copyWith(
+          isUpdatingStatus: false,
+          updateStatusState: BaseState.error(errorMsg),
+        ));
+        emitEvent(DisplayError(errorMsg));
+    }
+  }
+
+  void _onUpdateSuccess(String message, OrderFulfillmentStatus nextStatus) {
+    final currentData = state.orderDetailsState.data;
+    if (currentData != null) {
+      final updatedData = OrderDetailsEntity(
+        id: currentData.id,
+        orderNumber: currentData.orderNumber,
+        status: nextStatus,
+        formattedDate: currentData.formattedDate,
+        store: currentData.store,
+        user: currentData.user,
+        items: currentData.items,
+        total: currentData.total,
+        paymentMethod: currentData.paymentMethod,
+      );
+      emit(state.copyWith(
+        orderDetailsState: BaseState.success(updatedData),
+        isUpdatingStatus: false,
+        updateStatusState: BaseState.success(message),
+      ));
+    } else {
+      emit(state.copyWith(
+        isUpdatingStatus: false,
+        updateStatusState: BaseState.success(message),
+      ));
+    }
+    emitEvent(OrderStatusUpdatedUiEvent(nextStatus));
+    if (nextStatus == OrderFulfillmentStatus.delivered) {
+      emitEvent(const OrderDeliveredUiEvent());
+    }
+  }
+
+  (String, String, OrderFulfillmentStatus)? _getNextTransition(
+    OrderFulfillmentStatus currentStatus,
+  ) {
+    return switch (currentStatus) {
+      OrderFulfillmentStatus.accepted ||
+      OrderFulfillmentStatus.arrivedAtPickup => (
+          'PICKED_UP',
+          'Collected from pickup store',
+          OrderFulfillmentStatus.picked,
+        ),
+      OrderFulfillmentStatus.picked => (
+          'OUT_FOR_DELIVERY',
+          'Heading to customer',
+          OrderFulfillmentStatus.outForDelivery,
+        ),
+      OrderFulfillmentStatus.outForDelivery => (
+          'ARRIVED',
+          'Driver reached the delivery address',
+          OrderFulfillmentStatus.arrived,
+        ),
+      OrderFulfillmentStatus.arrived => (
+          'AWAITING_DELIVERY_CONFIRMATION',
+          'Order handed to customer',
+          OrderFulfillmentStatus.delivered,
+        ),
+      OrderFulfillmentStatus.delivered => null,
+    };
+  }
+
   Future<void> _updateOrderStatus(
     String orderId,
     OrderFulfillmentStatus targetStatus,
   ) async {
-    emit(state.copyWith(updateStatusState: BaseState.loading()));
+    emit(state.copyWith(
+      isUpdatingStatus: true,
+      updateStatusState: BaseState.loading(),
+    ));
 
     final statusString = _statusToApiString(targetStatus);
     final result = await _updateOrderStatusUseCase.call(orderId, statusString);
-
-    switch (result) {
-      case Success(data: final message):
-        emit(state.copyWith(updateStatusState: BaseState.success(message)));
-        final currentData = state.orderDetailsState.data;
-        if (currentData != null) {
-          final updatedData = OrderDetailsEntity(
-            id: currentData.id,
-            orderNumber: currentData.orderNumber,
-            status: targetStatus,
-            formattedDate: currentData.formattedDate,
-            store: currentData.store,
-            user: currentData.user,
-            items: currentData.items,
-            total: currentData.total,
-            paymentMethod: currentData.paymentMethod,
-          );
-          emit(state.copyWith(orderDetailsState: BaseState.success(updatedData)));
-        }
-        emitEvent(OrderStatusUpdatedUiEvent(targetStatus));
-        if (targetStatus == OrderFulfillmentStatus.delivered) {
-          emitEvent(const OrderDeliveredUiEvent());
-        }
-      case Failure(error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
-        emit(state.copyWith(updateStatusState: BaseState.error(errorMsg)));
-        emitEvent(DisplayError(errorMsg));
-    }
+    _handleUpdateResult(result, targetStatus);
   }
 
   String _statusToApiString(OrderFulfillmentStatus status) {
@@ -102,6 +179,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
       OrderFulfillmentStatus.arrivedAtPickup => 'arrived_at_pickup',
       OrderFulfillmentStatus.picked => 'picked',
       OrderFulfillmentStatus.outForDelivery => 'out_for_delivery',
+      OrderFulfillmentStatus.arrived => 'arrived',
       OrderFulfillmentStatus.delivered => 'delivered',
     };
   }

@@ -7,6 +7,8 @@ import 'package:tracking_app/features/driver_orders/presentation/order_details/c
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_events.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_state.dart';
 
+typedef OrderDetailsBottomActionButton = DynamicActionButton;
+
 class DynamicActionButton extends StatelessWidget {
   final String orderId;
 
@@ -17,18 +19,17 @@ class DynamicActionButton extends StatelessWidget {
     return BlocBuilder<OrderDetailsCubit, OrderDetailsState>(
       buildWhen: (previous, current) =>
           previous.orderDetailsState != current.orderDetailsState ||
+          previous.isUpdatingStatus != current.isUpdatingStatus ||
           previous.updateStatusState != current.updateStatusState,
       builder: (context, state) {
         final order = state.orderDetailsState.data;
         if (order == null) return const SizedBox.shrink();
 
         final localizations = AppLocalizations.of(context)!;
-        final (label, nextStatus) = _getActionConfig(
-          localizations,
-          order.status,
-        );
+        final label = _getActionLabel(localizations, order.status);
+        if (label == null) return const SizedBox.shrink();
 
-        final isUpdating = state.updateStatusState.isLoading;
+        final isUpdating = state.isUpdatingStatus || state.updateStatusState.isLoading;
 
         return Padding(
           padding: const EdgeInsetsDirectional.all(16),
@@ -38,14 +39,11 @@ class DynamicActionButton extends StatelessWidget {
             child: AppButton(
               text: label,
               isLoading: isUpdating,
-              onPressed: nextStatus == null || isUpdating
+              onPressed: isUpdating
                   ? null
                   : () {
                       context.read<OrderDetailsCubit>().doEvent(
-                            UpdateOrderStatusEvent(
-                              orderId: orderId,
-                              targetStatus: nextStatus,
-                            ),
+                            UpdateNextStatusEvent(orderId),
                           );
                     },
             ),
@@ -55,31 +53,18 @@ class DynamicActionButton extends StatelessWidget {
     );
   }
 
-  (String, OrderFulfillmentStatus?) _getActionConfig(
+  String? _getActionLabel(
     AppLocalizations localizations,
     OrderFulfillmentStatus status,
   ) {
     return switch (status) {
-      OrderFulfillmentStatus.accepted => (
-          localizations.arrivedAtPickupPoint,
-          OrderFulfillmentStatus.arrivedAtPickup,
-        ),
-      OrderFulfillmentStatus.arrivedAtPickup => (
-          localizations.orderPickedButton,
-          OrderFulfillmentStatus.picked,
-        ),
-      OrderFulfillmentStatus.picked => (
-          localizations.startDeliver,
-          OrderFulfillmentStatus.outForDelivery,
-        ),
-      OrderFulfillmentStatus.outForDelivery => (
-          localizations.arrivedToUser,
-          OrderFulfillmentStatus.delivered,
-        ),
-      OrderFulfillmentStatus.delivered => (
-          localizations.statusDelivered,
-          null,
-        ),
+      OrderFulfillmentStatus.accepted ||
+      OrderFulfillmentStatus.arrivedAtPickup =>
+        localizations.arrivedAtPickupPoint,
+      OrderFulfillmentStatus.picked => localizations.startDeliver,
+      OrderFulfillmentStatus.outForDelivery => localizations.arrivedToUser,
+      OrderFulfillmentStatus.arrived => localizations.handOrderToUser,
+      OrderFulfillmentStatus.delivered => null,
     };
   }
 }

@@ -503,4 +503,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get whatsappNotSupported => 'تعذر فتح تطبيق واتساب';
+
+  @override
+  String get statusArrived => 'وصل';
+
+  @override
+  String get handOrderToUser => 'تسليم الطلب للعميل';
 }

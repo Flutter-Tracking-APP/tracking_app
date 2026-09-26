@@ -9,10 +9,11 @@ class OrderStatusProgressBar extends StatelessWidget {
 
   int get _activeStepsCount {
     return switch (status) {
-      OrderFulfillmentStatus.accepted => 1,
-      OrderFulfillmentStatus.arrivedAtPickup => 2,
-      OrderFulfillmentStatus.picked => 3,
-      OrderFulfillmentStatus.outForDelivery => 4,
+      OrderFulfillmentStatus.accepted ||
+      OrderFulfillmentStatus.arrivedAtPickup => 1,
+      OrderFulfillmentStatus.picked => 2,
+      OrderFulfillmentStatus.outForDelivery => 3,
+      OrderFulfillmentStatus.arrived => 4,
       OrderFulfillmentStatus.delivered => 5,
     };
   }

@@ -44,8 +44,9 @@ class FakeOrderDetailsRepository implements DriverOrdersRepository {
   @override
   Future<ApiResults<String>> updateOrderStatus(
     String orderId,
-    String status,
-  ) async {
+    String status, {
+    String? note,
+  }) async {
     updatedStatus = status;
     return const Success('Status updated successfully');
   }
@@ -161,9 +162,10 @@ void main() {
     expect(actionButton, findsOneWidget);
 
     await tester.tap(actionButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(fakeRepo.updatedStatus, equals('arrived_at_pickup'));
+    expect(fakeRepo.updatedStatus, equals('PICKED_UP'));
+    expect(find.widgetWithText(ElevatedButton, 'Start deliver'), findsOneWidget);
   });
 
   testWidgets('renders error message when order details fails to load',

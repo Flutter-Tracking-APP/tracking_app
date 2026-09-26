@@ -8,7 +8,11 @@ class UpdateOrderStatusUseCase {
 
   UpdateOrderStatusUseCase(this._repository);
 
-  Future<ApiResults<String>> call(String orderId, String status) {
-    return _repository.updateOrderStatus(orderId, status);
+  Future<ApiResults<String>> call(
+    String orderId,
+    String status, {
+    String? note,
+  }) {
+    return _repository.updateOrderStatus(orderId, status, note: note);
   }
 }

@@ -19,6 +19,11 @@ final class UpdateOrderStatusEvent extends OrderDetailsEvent {
   });
 }
 
+final class UpdateNextStatusEvent extends OrderDetailsEvent {
+  final String orderId;
+  const UpdateNextStatusEvent(this.orderId);
+}
+
 sealed class OrderDetailsUiEvent extends BaseEvent {
   const OrderDetailsUiEvent();
 }

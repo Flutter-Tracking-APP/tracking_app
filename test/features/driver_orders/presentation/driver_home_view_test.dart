@@ -73,8 +73,9 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
   @override
   Future<ApiResults<String>> updateOrderStatus(
     String orderId,
-    String status,
-  ) async {
+    String status, {
+    String? note,
+  }) async {
     return const Success('Status updated successfully');
   }
 

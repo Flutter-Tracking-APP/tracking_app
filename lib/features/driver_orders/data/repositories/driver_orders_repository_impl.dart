@@ -49,12 +49,13 @@ class DriverOrdersRepositoryImpl implements DriverOrdersRepository {
   @override
   Future<ApiResults<String>> updateOrderStatus(
     String orderId,
-    String status,
-  ) {
+    String status, {
+    String? note,
+  }) {
     return safeCall(() async {
       final response = await _remoteDataSource.updateOrderStatus(
         orderId,
-        UpdateOrderStatusRequestDto(status: status),
+        UpdateOrderStatusRequestDto(status: status, note: note),
       );
       return Success(response.message ?? 'Order status updated successfully');
     });

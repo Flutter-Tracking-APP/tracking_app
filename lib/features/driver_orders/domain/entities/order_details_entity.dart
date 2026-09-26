@@ -8,6 +8,7 @@ enum OrderFulfillmentStatus {
   arrivedAtPickup,
   picked,
   outForDelivery,
+  arrived,
   delivered,
 }
 

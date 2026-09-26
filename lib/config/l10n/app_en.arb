@@ -159,5 +159,7 @@
     "orderClaimedSuccessfully": "Order accepted successfully",
     "orderStatusUpdatedSuccessfully": "Order status updated successfully",
     "callingNotSupported": "Could not initiate call",
-    "whatsappNotSupported": "Could not open WhatsApp"
+    "whatsappNotSupported": "Could not open WhatsApp",
+    "statusArrived": "Arrived",
+    "handOrderToUser": "Hand order to user"
 }

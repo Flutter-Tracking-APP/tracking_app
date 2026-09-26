@@ -1045,6 +1045,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not open WhatsApp'**
   String get whatsappNotSupported;
+
+  /// No description provided for @statusArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get statusArrived;
+
+  /// No description provided for @handOrderToUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand order to user'**
+  String get handOrderToUser;
 }
 
 class _AppLocalizationsDelegate
