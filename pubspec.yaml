@@ -93,6 +93,8 @@ flutter:
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter_Regular.ttf
+  assets:
+    - shorebird.yaml
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
