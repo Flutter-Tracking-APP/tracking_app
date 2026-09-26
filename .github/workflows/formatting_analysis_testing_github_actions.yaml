@@ -1,0 +1,90 @@
+# ==============================================================================
+# FLUTTER UNIT TESTS & QUALITY GATE WORKFLOW
+# ==============================================================================
+# Overview:
+#   This GitHub Actions workflow automatically validates code quality, formatting,
+#   and test coverage for your Flutter project. It acts as a mandatory continuous
+#   integration (CI) quality gate prior to merging code into key branches.
+#
+# Trigger Events:
+#   - Pushes to: main, development, feature/*
+#   - Pull Requests targeting: main, development, feature/*
+#
+# Key Features & Optimizations:
+#   - Concurrency Management: Automatically cancels older, in-progress pipeline
+#     runs for the same branch/PR when new commits are pushed to save compute time.
+#   - Flutter Version Pinning: Locks the Flutter environment to version 3.47.0
+#     on the 'stable' channel to guarantee reproducible builds across environments.
+#   - Dependency Caching: Caches Flutter binaries and Pub dependencies to speed
+#     up overall build times.
+#
+# Execution Steps:
+#   1. Checkout Code: Clones the project repository into the runner.
+#   2. Set up Java: Installs Java OpenJDK (Zulu 17) required for Android dependencies.
+#   3. Set up Flutter: Installs Flutter 3.47.0 (stable channel) with Pub cache enabled.
+#   4. Install Dependencies: Downloads all packages listed in pubspec.yaml.
+#   5. Run Build Runner: Generate files before analysis.
+#   6. Check Code Formatting: Fails the build if code isn't formatted via 'dart format'.
+#   7. Run Static Code Analysis: Scans for code issues and treats info logs as errors.
+#   8. Run Unit Tests with Coverage: Executes all unit tests and outputs lcov.info.
+#   9. Upload Coverage Report: Uploads the test coverage report as a build artifact,
+#      even if prior steps failed.
+# ==============================================================================
+
+name: Flutter Formatting, Analysis & Unit Tests
+
+on:
+  push:
+    branches: [ main, development, 'feature/*' ]
+  pull_request:
+    branches: [ main, development, 'feature/*' ]
+
+# Automatically cancel out-of-date runs when new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit_tests:
+    name: Run Flutter Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.47.0'
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:${{ hashFiles('**/pubspec.lock') }}"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Generate Code (build_runner)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Check Code Formatting
+        run: dart format --set-exit-if-changed lib test
+
+      - name: Run Static Code Analysis
+        run: flutter analyze --fatal-infos
+
+      - name: Run Unit Tests with Coverage
+        run: flutter test --coverage
+
+      - name: Upload Test Coverage Report (Optional Artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/lcov.info

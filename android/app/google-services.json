@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "167727860132",
+    "project_id": "flowrist-driver",
+    "storage_bucket": "flowrist-driver.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167727860132:android:6a936335632f3d69925931",
+        "android_client_info": {
+          "package_name": "com.example.tracking_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1_nGhKDqJUPAQDmPrT_BCutok6Qh3r1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

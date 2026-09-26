@@ -1,0 +1,39 @@
+name: Check Branch Naming Convention
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - development
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate_branch_name:
+    name: Validate Branch Name
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Branch Name Pattern
+        env:
+          # Extract branch name depending on event type (PR vs direct push)
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          # Allowed pattern: feature/*, bugfix/*, hotfix/*, release/*, chore/*, or fix/*
+          ALLOWED_REGEX: '^(feature|bugfix|hotfix|release|chore|fix)\/[a-zA-Z0-9._-]+$'
+        run: |
+          echo "Checking branch name: '$BRANCH_NAME'"
+          
+          if [[ "$BRANCH_NAME" =~ $ALLOWED_REGEX ]]; then
+            echo "✅ Branch name '$BRANCH_NAME' matches the required naming convention."
+          else
+            echo "❌ ERROR: Invalid branch name '$BRANCH_NAME'."
+            echo ""
+            echo "Branch names must follow this format:"
+            echo "  - feature/feature-description"
+            echo "  - bugfix/bug-description"
+            echo "  - hotfix/critical-fix"
+            echo "  - release/v1.0.0"
+            echo "  - chore/update-deps"
+            echo "  - fix/quick-fix"
+            exit 1
+          fi

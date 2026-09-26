@@ -19,9 +19,7 @@ abstract final class AppRouter {
         path: AppRoutes.splash,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: Center(child: LinearProgressIndicator()));
         },
       ),
       GoRoute(
