@@ -7,16 +7,7 @@ class OrderStatusProgressBar extends StatelessWidget {
 
   const OrderStatusProgressBar({super.key, required this.status});
 
-  int get _activeStepsCount {
-    return switch (status) {
-      OrderFulfillmentStatus.accepted ||
-      OrderFulfillmentStatus.arrivedAtPickup => 1,
-      OrderFulfillmentStatus.picked => 2,
-      OrderFulfillmentStatus.outForDelivery => 3,
-      OrderFulfillmentStatus.arrived => 4,
-      OrderFulfillmentStatus.delivered => 5,
-    };
-  }
+  int get _activeStepsCount => status.stepIndex;
 
   @override
   Widget build(BuildContext context) {

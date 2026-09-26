@@ -509,4 +509,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get handOrderToUser => 'تسليم الطلب للعميل';
+
+  @override
+  String get waitingForConfirmation => 'في انتظار تأكيد العميل';
 }

@@ -191,4 +191,37 @@ void main() {
     expect(find.byType(OrderStatusCard), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+      'renders disabled Waiting for confirmation button when order is delivered',
+      (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    fakeRepo.details = OrderDetailsEntity(
+      id: fakeRepo.details!.id,
+      orderNumber: fakeRepo.details!.orderNumber,
+      status: OrderFulfillmentStatus.delivered,
+      formattedDate: fakeRepo.details!.formattedDate,
+      store: fakeRepo.details!.store,
+      user: fakeRepo.details!.user,
+      items: fakeRepo.details!.items,
+      total: fakeRepo.details!.total,
+      paymentMethod: fakeRepo.details!.paymentMethod,
+    );
+
+    await tester.pumpWidget(createOrderDetailsTestWidget(orderId: 'ord-123456'));
+    await tester.pumpAndSettle();
+
+    final button =
+        find.widgetWithText(ElevatedButton, 'Waiting for confirmation');
+    expect(button, findsOneWidget);
+
+    final elevatedButton = tester.widget<ElevatedButton>(button);
+    expect(elevatedButton.onPressed, isNull);
+  });
 }

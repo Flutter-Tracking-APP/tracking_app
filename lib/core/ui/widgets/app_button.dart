@@ -7,8 +7,10 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   final Color? backgroundColor;
+  final Color? disabledBackgroundColor;
   final Color? borderColor;
   final Color? textColor;
+  final Color? disabledTextColor;
   final bool isLoading;
   final EdgeInsetsGeometry? padding;
   final TextStyle? textStyle;
@@ -18,8 +20,10 @@ class AppButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.backgroundColor,
+    this.disabledBackgroundColor,
     this.borderColor,
     this.textColor,
+    this.disabledTextColor,
     this.isLoading = false,
     this.padding,
     this.textStyle,
@@ -32,6 +36,10 @@ class AppButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? AppColors.purpleBase,
         foregroundColor: textColor ?? AppColors.whiteBase,
+        disabledBackgroundColor:
+            disabledBackgroundColor ?? AppColors.white[500],
+        disabledForegroundColor:
+            disabledTextColor ?? AppColors.whiteBase,
         side: borderColor != null ? BorderSide(color: borderColor!) : null,
         padding: padding,
       ),
@@ -44,7 +52,9 @@ class AppButton extends StatelessWidget {
           : Text(
               text,
               style: (textStyle ?? AppStyles.medium16Inter).copyWith(
-                color: textColor ?? AppColors.whiteBase,
+                color: onPressed != null
+                    ? (textColor ?? AppColors.whiteBase)
+                    : (disabledTextColor ?? AppColors.whiteBase),
               ),
             ),
     );

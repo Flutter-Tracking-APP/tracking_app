@@ -1057,6 +1057,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hand order to user'**
   String get handOrderToUser;
+
+  /// No description provided for @waitingForConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for confirmation'**
+  String get waitingForConfirmation;
 }
 
 class _AppLocalizationsDelegate

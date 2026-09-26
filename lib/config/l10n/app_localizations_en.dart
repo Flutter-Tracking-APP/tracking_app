@@ -512,4 +512,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get handOrderToUser => 'Hand order to user';
+
+  @override
+  String get waitingForConfirmation => 'Waiting for confirmation';
 }

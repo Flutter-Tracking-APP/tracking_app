@@ -159,5 +159,6 @@
     "confirmPassword": "تأكيد كلمة المرور",
     "signup": "إنشاء حساب",
     "statusArrived": "وصل",
-    "handOrderToUser": "تسليم الطلب للعميل"
+    "handOrderToUser": "تسليم الطلب للعميل",
+    "waitingForConfirmation": "في انتظار تأكيد العميل"
 }

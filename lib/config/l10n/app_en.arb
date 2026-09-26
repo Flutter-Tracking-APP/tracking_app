@@ -161,5 +161,6 @@
     "callingNotSupported": "Could not initiate call",
     "whatsappNotSupported": "Could not open WhatsApp",
     "statusArrived": "Arrived",
-    "handOrderToUser": "Hand order to user"
+    "handOrderToUser": "Hand order to user",
+    "waitingForConfirmation": "Waiting for confirmation"
 }

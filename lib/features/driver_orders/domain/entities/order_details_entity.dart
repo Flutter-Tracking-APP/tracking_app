@@ -4,12 +4,15 @@ import 'package:tracking_app/features/driver_orders/domain/entities/store_addres
 import 'package:tracking_app/features/driver_orders/domain/entities/user_address_entity.dart';
 
 enum OrderFulfillmentStatus {
-  accepted,
-  arrivedAtPickup,
-  picked,
-  outForDelivery,
-  arrived,
-  delivered,
+  accepted(1),
+  arrivedAtPickup(1),
+  picked(2),
+  outForDelivery(3),
+  arrived(4),
+  delivered(5);
+
+  final int stepIndex;
+  const OrderFulfillmentStatus(this.stepIndex);
 }
 
 class OrderDetailsEntity extends Equatable {

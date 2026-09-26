@@ -162,25 +162,6 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
   Future<void> _updateOrderStatus(
     String orderId,
     OrderFulfillmentStatus targetStatus,
-  ) async {
-    emit(state.copyWith(
-      isUpdatingStatus: true,
-      updateStatusState: BaseState.loading(),
-    ));
-
-    final statusString = _statusToApiString(targetStatus);
-    final result = await _updateOrderStatusUseCase.call(orderId, statusString);
-    _handleUpdateResult(result, targetStatus);
-  }
-
-  String _statusToApiString(OrderFulfillmentStatus status) {
-    return switch (status) {
-      OrderFulfillmentStatus.accepted => 'accepted',
-      OrderFulfillmentStatus.arrivedAtPickup => 'arrived_at_pickup',
-      OrderFulfillmentStatus.picked => 'picked',
-      OrderFulfillmentStatus.outForDelivery => 'out_for_delivery',
-      OrderFulfillmentStatus.arrived => 'arrived',
-      OrderFulfillmentStatus.delivered => 'delivered',
-    };
-  }
+  ) =>
+      updateNextStatus(orderId);
 }

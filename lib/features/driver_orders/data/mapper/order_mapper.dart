@@ -137,8 +137,12 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
     if (normalized.contains('pick')) {
       return OrderFulfillmentStatus.picked;
     }
-    if (normalized.contains('atpickup') || normalized.contains('arrivedatpickup')) {
-      return OrderFulfillmentStatus.arrivedAtPickup;
+    if (normalized.contains('prepare') ||
+        normalized.contains('placed') ||
+        normalized.contains('accept') ||
+        normalized.contains('atpickup') ||
+        normalized.contains('arrivedatpickup')) {
+      return OrderFulfillmentStatus.accepted;
     }
     return OrderFulfillmentStatus.accepted;
   }
