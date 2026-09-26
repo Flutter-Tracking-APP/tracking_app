@@ -15,3 +15,13 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Git Hooks
+
+This project uses shared Git hooks located in the `scripts/git-hooks` directory to maintain code quality. 
+
+After cloning the repository, you must run the initial setup script once to configure Git's default hooks directory:
+
+```bash
+./scripts/git-hooks/initial-setup.sh
+```

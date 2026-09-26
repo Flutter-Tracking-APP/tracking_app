@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 
-
 class AppErrorHandler {
-  static String getLocalizedMessage(
-    BuildContext context,
-    AppError error,
-  ) {
+  static String getLocalizedMessage(BuildContext context, AppError error) {
     final l10n = AppLocalizations.of(context)!;
 
     switch (error) {

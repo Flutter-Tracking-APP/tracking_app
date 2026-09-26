@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# Exit immediately if any command fails
+set -e
+
+# ==============================================================================
+# COLOR & FORMATTING DEFINITIONS
+# ==============================================================================
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+# Theme Colors
+CYAN='\033[0;36m'
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+DIM='\033[2m'
+
+# Status Indicators
+CHECK="${GREEN}✔${NC}"
+CROSS="${RED}✖${NC}"
+ARROW="${CYAN}➜${NC}"
+
+# Start Timer
+START_TIME=$(date +%s)
+
+# ==============================================================================
+# ERROR HANDLING
+# ==============================================================================
+trap 'on_error' ERR
+
+on_error() {
+  echo ""
+  echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${CROSS} ${BOLD}${RED}Pre-commit checks failed!${NC}"
+  echo -e "${DIM}Please fix the errors above before committing.${NC}"
+  echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo ""
+  exit 1
+}
+
+print_step() {
+  local step_num=$1
+  local title=$2
+  echo ""
+  echo -e "${BLUE}---------------------------------------------------------------------${NC}"
+  echo -e "${ARROW} ${BOLD}Step [${step_num}/5]:${NC} ${CYAN}${title}${NC}"
+  echo -e "${BLUE}---------------------------------------------------------------------${NC}"
+}
+
+# ==============================================================================
+# START SCRIPT
+# ==============================================================================
+echo ""
+echo -e "${BOLD}${CYAN}🚀 [Pre-Commit Hook] Running Flutter Quality Pipeline${NC}"
+
+# 1. Install Dependencies
+print_step "1" "Fetching Flutter Dependencies"
+flutter pub get
+echo -e "${CHECK} ${GREEN}Dependencies up to date.${NC}"
+
+# 2. Generate Code
+print_step "2" "Running Code Generation (build_runner)"
+dart run build_runner build --delete-conflicting-outputs
+echo -e "${CHECK} ${GREEN}Code generation complete.${NC}"
+
+# 3. Code Formatting Check
+print_step "3" "Checking Code Formatting"
+dart format --set-exit-if-changed lib test
+echo -e "${CHECK} ${GREEN}Code formatting is clean.${NC}"
+
+# 4. Static Code Analysis
+print_step "4" "Running Static Code Analysis"
+flutter analyze --fatal-infos
+echo -e "${CHECK} ${GREEN}Static analysis clean (0 issues).${NC}"
+
+# 5. Unit Tests
+print_step "5" "Executing Unit Tests with Coverage"
+flutter test --coverage
+echo -e "${CHECK} ${GREEN}All unit tests passed.${NC}"
+
+# ==============================================================================
+# SUCCESS SUMMARY
+# ==============================================================================
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
+echo ""
+echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CHECK} ${BOLD}${GREEN}All pre-commit checks passed successfully!${NC} ${DIM}(${DURATION}s)${NC}"
+echo -e "${DIM}Proceeding with commit...${NC}"
+echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+exit 0
