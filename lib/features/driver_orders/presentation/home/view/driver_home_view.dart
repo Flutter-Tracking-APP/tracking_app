@@ -17,6 +17,17 @@ class DriverHomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DriverHomeCubit? existingCubit;
+    try {
+      existingCubit = context.read<DriverHomeCubit>();
+    } catch (_) {
+      existingCubit = null;
+    }
+
+    if (existingCubit != null) {
+      return const _DriverHomeContent();
+    }
+
     return BlocProvider(
       create: (context) => getIt<DriverHomeCubit>(),
       child: const _DriverHomeContent(),

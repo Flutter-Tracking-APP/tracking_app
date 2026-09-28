@@ -17,6 +17,10 @@ final class ClaimOrderEvent extends DriverHomeEvent {
   const ClaimOrderEvent(this.orderId);
 }
 
+final class ClearActiveOrderEvent extends DriverHomeEvent {
+  const ClearActiveOrderEvent();
+}
+
 sealed class DriverHomeUiEvent extends BaseEvent {
   const DriverHomeUiEvent();
 }

@@ -16,6 +16,7 @@ import 'package:tracking_app/features/profile/presentation/view/profile_view.dar
 import 'package:tracking_app/features/splash/presentation/view/onboarding_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/splash_view.dart';
 import 'package:tracking_app/features/driver_orders/presentation/main_shell/view/driver_main_shell_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/order_details/view/delivery_success_view.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/view/order_details_view.dart';
 
 abstract final class AppRoutes {
@@ -23,6 +24,7 @@ abstract final class AppRoutes {
   static const login = '/login';
   static const applyDriver = '/apply-driver';
   static const applyDriverSuccess = '/apply-driver-success';
+  static const deliverySuccess = '/delivery-success';
   static const profile = '/profile';
   static const editProfile = '/edit-profile';
   static const editVehicleInfo = '/edit-vehicle-info';
@@ -118,6 +120,7 @@ abstract final class AppRouter {
         },
       ),
       GoRoute(
+        name: AppRoutes.home,
         path: AppRoutes.home,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
@@ -130,6 +133,15 @@ abstract final class AppRouter {
         builder: (context, state) {
           final orderId = state.pathParameters['orderId'] ?? '';
           return OrderDetailsView(orderId: orderId);
+        },
+      ),
+      GoRoute(
+        name: AppRoutes.deliverySuccess,
+        path: AppRoutes.deliverySuccess,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final onDone = state.extra as VoidCallback?;
+          return DeliverySuccessView(onDone: onDone);
         },
       ),
     ],

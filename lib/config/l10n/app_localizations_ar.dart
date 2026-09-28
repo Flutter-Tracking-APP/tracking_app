@@ -512,4 +512,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get waitingForConfirmation => 'في انتظار تأكيد العميل';
+
+  @override
+  String get waitingForStoreApproval => 'في انتظار موافقة المتجر';
+
+  @override
+  String get thankYou => 'شكراً لك!!';
+
+  @override
+  String get orderDeliveredSuccessfullyTitle => 'تم توصيل الطلب بنجاح';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get success => 'نجاح';
 }

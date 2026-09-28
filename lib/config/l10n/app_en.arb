@@ -162,5 +162,10 @@
     "whatsappNotSupported": "Could not open WhatsApp",
     "statusArrived": "Arrived",
     "handOrderToUser": "Hand order to user",
-    "waitingForConfirmation": "Waiting for confirmation"
+    "waitingForConfirmation": "Waiting for confirmation",
+    "waitingForStoreApproval": "Waiting for store approval",
+    "thankYou": "Thank you!!",
+    "orderDeliveredSuccessfullyTitle": "The order delivered successfully",
+    "done": "Done",
+    "success": "Success"
 }

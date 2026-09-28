@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
@@ -63,6 +64,12 @@ Widget createOrderDetailsTestWidget({
   return MaterialApp(
     theme: AppTheme.lightTheme,
     locale: locale,
+    routes: {
+      AppRoutes.deliverySuccess: (context) =>
+          const Scaffold(body: Text('Delivery Success Screen')),
+      AppRoutes.home: (context) =>
+          const Scaffold(body: Text('Home Screen')),
+    },
     localizationsDelegates: const [
       AppLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
@@ -145,7 +152,7 @@ void main() {
     expect(find.byIcon(Icons.phone_outlined), findsNWidgets(2));
   });
 
-  testWidgets('tapping dynamic action button triggers updateOrderStatus',
+  testWidgets('tapping dynamic action button triggers updateOrderStatus and transitions to Start deliver',
       (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 1.0;
@@ -162,9 +169,13 @@ void main() {
     expect(actionButton, findsOneWidget);
 
     await tester.tap(actionButton);
+    await tester.pump();
+    expect(fakeRepo.updatedStatus, equals('PICKED_UP'));
+
+    // Settle past the 1200ms checkmark transition
+    await tester.pump(const Duration(milliseconds: 1300));
     await tester.pumpAndSettle();
 
-    expect(fakeRepo.updatedStatus, equals('PICKED_UP'));
     expect(find.widgetWithText(ElevatedButton, 'Start deliver'), findsOneWidget);
   });
 
@@ -193,7 +204,7 @@ void main() {
   });
 
   testWidgets(
-      'renders disabled Waiting for confirmation button when order is delivered',
+      'renders enabled Hand order to user button when order is arrived and taps to update status',
       (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 1.0;
@@ -205,7 +216,44 @@ void main() {
     fakeRepo.details = OrderDetailsEntity(
       id: fakeRepo.details!.id,
       orderNumber: fakeRepo.details!.orderNumber,
-      status: OrderFulfillmentStatus.delivered,
+      status: OrderFulfillmentStatus.arrived,
+      formattedDate: fakeRepo.details!.formattedDate,
+      store: fakeRepo.details!.store,
+      user: fakeRepo.details!.user,
+      items: fakeRepo.details!.items,
+      total: fakeRepo.details!.total,
+      paymentMethod: fakeRepo.details!.paymentMethod,
+    );
+
+    await tester.pumpWidget(createOrderDetailsTestWidget(orderId: 'ord-123456'));
+    await tester.pumpAndSettle();
+
+    final button =
+        find.widgetWithText(ElevatedButton, 'Hand order to user');
+    expect(button, findsOneWidget);
+
+    final elevatedButton = tester.widget<ElevatedButton>(button);
+    expect(elevatedButton.onPressed, isNotNull);
+
+    await tester.tap(button);
+    await tester.pump();
+    expect(fakeRepo.updatedStatus, equals('AWAITING_DELIVERY_CONFIRMATION'));
+  });
+
+  testWidgets(
+      'renders disabled Waiting for confirmation button when order is awaitingConfirmation',
+      (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    fakeRepo.details = OrderDetailsEntity(
+      id: fakeRepo.details!.id,
+      orderNumber: fakeRepo.details!.orderNumber,
+      status: OrderFulfillmentStatus.awaitingConfirmation,
       formattedDate: fakeRepo.details!.formattedDate,
       store: fakeRepo.details!.store,
       user: fakeRepo.details!.user,
@@ -223,5 +271,34 @@ void main() {
 
     final elevatedButton = tester.widget<ElevatedButton>(button);
     expect(elevatedButton.onPressed, isNull);
+  });
+
+  testWidgets(
+      'navigates to deliverySuccess screen when order status is DELIVERED',
+      (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    fakeRepo.details = OrderDetailsEntity(
+      id: fakeRepo.details!.id,
+      orderNumber: fakeRepo.details!.orderNumber,
+      status: OrderFulfillmentStatus.delivered,
+      rawStatus: 'DELIVERED',
+      formattedDate: fakeRepo.details!.formattedDate,
+      store: fakeRepo.details!.store,
+      user: fakeRepo.details!.user,
+      items: fakeRepo.details!.items,
+      total: fakeRepo.details!.total,
+      paymentMethod: fakeRepo.details!.paymentMethod,
+    );
+
+    await tester.pumpWidget(createOrderDetailsTestWidget(orderId: 'ord-123456'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delivery Success Screen'), findsOneWidget);
   });
 }

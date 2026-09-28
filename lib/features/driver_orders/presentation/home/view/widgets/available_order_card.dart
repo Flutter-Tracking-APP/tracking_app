@@ -4,6 +4,7 @@ import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
+import 'package:tracking_app/core/utils/currency_formatter.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_cubit.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_state.dart';
@@ -78,7 +79,7 @@ class AvailableOrderCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '${localizations.egp} ${order.totalAmount}',
+                order.totalAmount.toCurrency(localizations.egp),
                 style: AppStyles.bold20Inter,
               ),
               BlocBuilder<DriverHomeCubit, DriverHomeState>(

@@ -515,4 +515,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitingForConfirmation => 'Waiting for confirmation';
+
+  @override
+  String get waitingForStoreApproval => 'Waiting for store approval';
+
+  @override
+  String get thankYou => 'Thank you!!';
+
+  @override
+  String get orderDeliveredSuccessfullyTitle =>
+      'The order delivered successfully';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get success => 'Success';
 }

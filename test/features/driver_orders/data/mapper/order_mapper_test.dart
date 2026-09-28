@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/features/driver_orders/data/mapper/order_mapper.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 
 void main() {
   group('OrderDtoMapper', () {
@@ -117,6 +118,50 @@ void main() {
 
       expect(entity.formattedDate, equals('Wed, 03 Sep 2024, 11:00 AM'));
       expect(entity.paymentMethod, equals('Cash on delivery'));
+    });
+
+    test('maps status ARRIVED to OrderFulfillmentStatus.arrived (Step 4)', () {
+      const detailsDto = OrderDetailsDataDto(
+        orderId: 'ord-arrived',
+        status: 'ARRIVED',
+      );
+      final entity = detailsDto.toEntity();
+      expect(entity.status, equals(OrderFulfillmentStatus.arrived));
+      expect(entity.status.stepIndex, equals(4));
+    });
+
+    test('maps status AWAITING_DELIVERY_CONFIRMATION to OrderFulfillmentStatus.awaitingConfirmation (Step 5)', () {
+      const detailsDto = OrderDetailsDataDto(
+        orderId: 'ord-awaiting',
+        status: 'AWAITING_DELIVERY_CONFIRMATION',
+      );
+      final entity = detailsDto.toEntity();
+      expect(entity.status, equals(OrderFulfillmentStatus.awaitingConfirmation));
+      expect(entity.status.stepIndex, equals(5));
+      expect(entity.rawStatus, equals('AWAITING_DELIVERY_CONFIRMATION'));
+      expect(entity.isFinalDelivered, isFalse);
+    });
+
+    test('maps status DELIVERED to OrderFulfillmentStatus.delivered (Step 5)', () {
+      const detailsDto = OrderDetailsDataDto(
+        orderId: 'ord-delivered',
+        status: 'DELIVERED',
+      );
+      final entity = detailsDto.toEntity();
+      expect(entity.status, equals(OrderFulfillmentStatus.delivered));
+      expect(entity.status.stepIndex, equals(5));
+      expect(entity.rawStatus, equals('DELIVERED'));
+      expect(entity.isFinalDelivered, isTrue);
+    });
+
+    test('maps status ARRIVED_AT_PICKUP to OrderFulfillmentStatus.arrivedAtPickup without being caught by pick', () {
+      const detailsDto = OrderDetailsDataDto(
+        orderId: 'ord-at-pickup',
+        status: 'ARRIVED_AT_PICKUP',
+      );
+      final entity = detailsDto.toEntity();
+      expect(entity.status, equals(OrderFulfillmentStatus.arrivedAtPickup));
+      expect(entity.status.stepIndex, equals(1));
     });
   });
 

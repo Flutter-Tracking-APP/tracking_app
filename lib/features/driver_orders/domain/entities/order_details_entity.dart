@@ -9,6 +9,7 @@ enum OrderFulfillmentStatus {
   picked(2),
   outForDelivery(3),
   arrived(4),
+  awaitingConfirmation(5),
   delivered(5);
 
   final int stepIndex;
@@ -19,6 +20,7 @@ class OrderDetailsEntity extends Equatable {
   final String id;
   final String orderNumber;
   final OrderFulfillmentStatus status;
+  final String? rawStatus;
   final String? formattedDate;
   final StoreAddressEntity store;
   final UserAddressEntity user;
@@ -30,6 +32,7 @@ class OrderDetailsEntity extends Equatable {
     required this.id,
     required this.orderNumber,
     required this.status,
+    this.rawStatus,
     required this.formattedDate,
     required this.store,
     required this.user,
@@ -40,11 +43,16 @@ class OrderDetailsEntity extends Equatable {
 
   String get paymentMethodDisplay => paymentMethod;
 
+  bool get isFinalDelivered =>
+      status == OrderFulfillmentStatus.delivered ||
+      rawStatus?.toUpperCase() == 'DELIVERED';
+
   @override
   List<Object?> get props => [
     id,
     orderNumber,
     status,
+    rawStatus,
     formattedDate,
     store,
     user,

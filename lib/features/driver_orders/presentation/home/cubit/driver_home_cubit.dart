@@ -5,6 +5,7 @@ import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/claim_order_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_available_orders_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_driver_active_order_use_case.dart';
@@ -31,20 +32,30 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         _getAvailableOrders();
       case ClaimOrderEvent(:final orderId):
         _claimOrder(orderId);
+      case ClearActiveOrderEvent():
+        clearActiveOrder();
     }
+  }
+
+  void clearActiveOrder() {
+    if (isClosed) return;
+    emit(state.copyWith(activeOrder: null, checkingActiveOrder: false));
   }
 
   Future<void> _initHome() async {
     log('DriverHomeCubit: _initHome started, emitting checkingActiveOrder = true');
+    if (isClosed) return;
     emit(state.copyWith(checkingActiveOrder: true));
 
     final activeResult = await _getActiveOrderUseCase.call();
     log('DriverHomeCubit: _getActiveOrderUseCase result: $activeResult');
+    if (isClosed) return;
 
     switch (activeResult) {
       case Success(data: final active)
           when active != null && active.id.isNotEmpty:
         log('DriverHomeCubit: active order found -> id: ${active.id}, status: ${active.status}');
+        if (isClosed) return;
         emit(
           state.copyWith(
             checkingActiveOrder: false,
@@ -52,6 +63,7 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
             ordersState: const BaseState.initial(),
           ),
         );
+        if (isClosed) return;
         emitEvent(NavigateToActiveOrderEvent(active.id));
         return;
       case Success(data: final active):
@@ -60,11 +72,13 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         log('DriverHomeCubit: getActiveOrder failure: msg=$msg, error=$error');
     }
 
+    if (isClosed) return;
     emit(state.copyWith(checkingActiveOrder: false, activeOrder: null));
     await _getAvailableOrders();
   }
 
   Future<void> _getAvailableOrders() async {
+    if (isClosed) return;
     emit(
       state.copyWith(
         ordersState: BaseState(
@@ -76,9 +90,10 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
     );
 
     final result = await _getAvailableOrdersUseCase.call();
+    if (isClosed) return;
     switch (result) {
       case Success(data: final orders):
-        emit(state.copyWith(ordersState: BaseState.success(orders)));
+        emit(state.copyWith(ordersState: BaseState.success(_sortOrders(orders))));
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         emit(
@@ -90,11 +105,27 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
             ),
           ),
         );
+        if (isClosed) return;
         emitEvent(DisplayError(errorMsg));
     }
   }
 
+  List<OrderEntity> _sortOrders(List<OrderEntity> orders) {
+    return List<OrderEntity>.from(orders)..sort((a, b) {
+      if (a.createdAt != null && b.createdAt != null) {
+        final dateA = DateTime.tryParse(a.createdAt!);
+        final dateB = DateTime.tryParse(b.createdAt!);
+        if (dateA != null && dateB != null) {
+          final cmp = dateB.compareTo(dateA);
+          if (cmp != 0) return cmp;
+        }
+      }
+      return b.id.compareTo(a.id);
+    });
+  }
+
   Future<void> _claimOrder(String orderId) async {
+    if (isClosed) return;
     emit(
       state.copyWith(
         claimingOrderId: orderId,
@@ -102,6 +133,7 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
       ),
     );
     final result = await _claimOrderUseCase.call(orderId);
+    if (isClosed) return;
     switch (result) {
       case Success(data: final message):
         emit(
@@ -110,6 +142,7 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
             claimOrderState: BaseState.success(message),
           ),
         );
+        if (isClosed) return;
         emitEvent(OrderClaimedSuccessUiEvent(orderId));
       case Failure(error: final error, message: final msg)
           when error == AppError.conflict:
@@ -119,7 +152,7 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
             claimOrderState: BaseState.error(msg ?? 'Conflict'),
           ),
         );
-        if (msg != null && msg.isNotEmpty) {
+        if (msg != null && msg.isNotEmpty && !isClosed) {
           emitEvent(DisplayError(msg));
         }
         await _handleConflictActiveOrder();
@@ -131,15 +164,18 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
             claimOrderState: BaseState.error(errorMsg),
           ),
         );
+        if (isClosed) return;
         emitEvent(DisplayError(errorMsg));
     }
   }
 
   Future<void> _handleConflictActiveOrder() async {
     log('DriverHomeCubit: _handleConflictActiveOrder started');
+    if (isClosed) return;
     emit(state.copyWith(checkingActiveOrder: true));
     final activeResult = await _getActiveOrderUseCase.call();
     log('DriverHomeCubit: _handleConflictActiveOrder result: $activeResult');
+    if (isClosed) return;
     switch (activeResult) {
       case Success(data: final active)
           when active != null && active.id.isNotEmpty:
@@ -151,6 +187,7 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
             ordersState: const BaseState.initial(),
           ),
         );
+        if (isClosed) return;
         emitEvent(NavigateToActiveOrderEvent(active.id));
         return;
       case _:
@@ -158,4 +195,5 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         break;
     }
   }
+
 }

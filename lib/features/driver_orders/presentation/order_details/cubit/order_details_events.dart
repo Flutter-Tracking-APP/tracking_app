@@ -24,6 +24,11 @@ final class UpdateNextStatusEvent extends OrderDetailsEvent {
   const UpdateNextStatusEvent(this.orderId);
 }
 
+final class ExternalOrderStatusUpdatedEvent extends OrderDetailsEvent {
+  final OrderFulfillmentStatus newStatus;
+  const ExternalOrderStatusUpdatedEvent(this.newStatus);
+}
+
 sealed class OrderDetailsUiEvent extends BaseEvent {
   const OrderDetailsUiEvent();
 }
@@ -36,3 +41,11 @@ final class OrderStatusUpdatedUiEvent extends OrderDetailsUiEvent {
 final class OrderDeliveredUiEvent extends OrderDetailsUiEvent {
   const OrderDeliveredUiEvent();
 }
+
+final class NavigateToDeliverySuccessEvent extends OrderDetailsUiEvent {
+  final String? orderId;
+  const NavigateToDeliverySuccessEvent([this.orderId]);
+}
+
+typedef NavigateToDeliverySuccessUiEvent = NavigateToDeliverySuccessEvent;
+

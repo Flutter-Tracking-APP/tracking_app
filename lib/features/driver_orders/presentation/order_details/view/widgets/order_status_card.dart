@@ -12,13 +12,14 @@ class OrderStatusCard extends StatelessWidget {
   String _statusLabel(BuildContext context, OrderFulfillmentStatus status) {
     final localizations = AppLocalizations.of(context)!;
     return switch (status) {
-      OrderFulfillmentStatus.accepted ||
+      OrderFulfillmentStatus.accepted => localizations.statusAccepted,
       OrderFulfillmentStatus.arrivedAtPickup =>
-        localizations.statusAccepted,
+        localizations.statusArrivedAtPickup,
       OrderFulfillmentStatus.picked => localizations.statusPicked,
       OrderFulfillmentStatus.outForDelivery =>
         localizations.statusOutForDelivery,
       OrderFulfillmentStatus.arrived => localizations.statusArrived,
+      OrderFulfillmentStatus.awaitingConfirmation ||
       OrderFulfillmentStatus.delivered => localizations.statusDelivered,
     };
   }

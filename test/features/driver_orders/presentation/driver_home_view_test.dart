@@ -15,6 +15,7 @@ import 'package:tracking_app/features/driver_orders/domain/use_cases/claim_order
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_available_orders_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_driver_active_order_use_case.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_cubit.dart';
+import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_events.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/view/driver_home_view.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/view/widgets/available_order_card.dart';
 
@@ -239,7 +240,46 @@ void main() {
     completer.complete(const Success('Order claimed successfully'));
     await tester.pumpAndSettle();
 
-    expect(fakeRepo.claimedOrderId, equals('ord-1'));
+    expect(fakeRepo.claimedOrderId, equals('ord-2'));
+  });
+
+  testWidgets(
+      'available orders are sorted descending by date or ID (newest first)',
+      (tester) async {
+    fakeRepo.orders = [
+      OrderEntity(
+        id: 'ord-10',
+        title: 'Older order',
+        totalAmount: 1000,
+        status: 'pending',
+        storeName: 'Store 1',
+        storeAddress: 'Address 1',
+        customerName: 'Customer 1',
+        customerAddress: 'Cust Address 1',
+        createdAt: '2026-09-20T10:00:00Z',
+      ),
+      OrderEntity(
+        id: 'ord-20',
+        title: 'Newer order',
+        totalAmount: 2000,
+        status: 'pending',
+        storeName: 'Store 2',
+        storeAddress: 'Address 2',
+        customerName: 'Customer 2',
+        customerAddress: 'Cust Address 2',
+        createdAt: '2026-09-25T10:00:00Z',
+      ),
+    ];
+
+    await tester.pumpWidget(createHomeTestWidget());
+    await tester.pumpAndSettle();
+
+    final cards = find.byType(AvailableOrderCard);
+    expect(cards, findsNWidgets(2));
+    final firstCard = tester.widget<AvailableOrderCard>(cards.first);
+    expect(firstCard.order.id, equals('ord-20'));
+    final secondCard = tester.widget<AvailableOrderCard>(cards.at(1));
+    expect(secondCard.order.id, equals('ord-10'));
   });
 
   testWidgets('displays error state and retry button when fetching fails',
@@ -340,5 +380,29 @@ void main() {
 
     // Now available orders are shown
     expect(find.byType(AvailableOrderCard), findsOneWidget);
+  });
+
+  test('closing DriverHomeCubit during async _initHome does not throw StateError', () async {
+    final activeCompleter = Completer<ApiResults<OrderDetailsEntity?>>();
+    fakeRepo.activeOrderCompleter = activeCompleter;
+
+    final cubit = DriverHomeCubit(
+      getIt<GetAvailableOrdersUseCase>(),
+      getIt<GetDriverActiveOrderUseCase>(),
+      getIt<ClaimOrderUseCase>(),
+    );
+
+    cubit.doEvent(const InitHomeEvent());
+
+    // Close while _initHome is awaiting _getActiveOrderUseCase
+    await cubit.close();
+
+    // Now complete the future after the cubit is closed
+    activeCompleter.complete(const Success(null));
+
+    // Allow pending microtasks to finish
+    await Future<void>.delayed(Duration.zero);
+
+    expect(cubit.isClosed, isTrue);
   });
 }

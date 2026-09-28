@@ -84,6 +84,7 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
       id: effectiveId,
       orderNumber: effectiveOrderNumber,
       status: _parseStatus(status),
+      rawStatus: status,
       formattedDate: _formatDate(effectiveDate),
       store: effectiveStore.toEntity(),
       user: user.toEntity(),
@@ -118,8 +119,10 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
   static OrderFulfillmentStatus _parseStatus(String? rawStatus) {
     if (rawStatus == null) return OrderFulfillmentStatus.accepted;
     final normalized = rawStatus.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
-    if (normalized.contains('awaiting') ||
-        normalized.contains('deliver') ||
+    if (normalized.contains('awaiting')) {
+      return OrderFulfillmentStatus.awaitingConfirmation;
+    }
+    if (normalized.contains('deliver') ||
         normalized == 'completed') {
       return OrderFulfillmentStatus.delivered;
     }
@@ -134,14 +137,16 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
         normalized.contains('ontheway')) {
       return OrderFulfillmentStatus.outForDelivery;
     }
+    if (normalized.contains('atpickup') ||
+        normalized.contains('arrivedatpickup')) {
+      return OrderFulfillmentStatus.arrivedAtPickup;
+    }
     if (normalized.contains('pick')) {
       return OrderFulfillmentStatus.picked;
     }
     if (normalized.contains('prepare') ||
         normalized.contains('placed') ||
-        normalized.contains('accept') ||
-        normalized.contains('atpickup') ||
-        normalized.contains('arrivedatpickup')) {
+        normalized.contains('accept')) {
       return OrderFulfillmentStatus.accepted;
     }
     return OrderFulfillmentStatus.accepted;

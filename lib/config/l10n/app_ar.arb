@@ -160,5 +160,10 @@
     "signup": "إنشاء حساب",
     "statusArrived": "وصل",
     "handOrderToUser": "تسليم الطلب للعميل",
-    "waitingForConfirmation": "في انتظار تأكيد العميل"
+    "waitingForConfirmation": "في انتظار تأكيد العميل",
+    "waitingForStoreApproval": "في انتظار موافقة المتجر",
+    "thankYou": "شكراً لك!!",
+    "orderDeliveredSuccessfullyTitle": "تم توصيل الطلب بنجاح",
+    "done": "تم",
+    "success": "نجاح"
 }

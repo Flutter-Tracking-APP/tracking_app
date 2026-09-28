@@ -6,22 +6,26 @@ class OrderDetailsState extends Equatable {
   final BaseState<OrderDetailsEntity> orderDetailsState;
   final BaseState<String> updateStatusState;
   final bool isUpdatingStatus;
+  final bool isDelivered;
 
   const OrderDetailsState({
     this.orderDetailsState = const BaseState.initial(),
     this.updateStatusState = const BaseState.initial(),
     this.isUpdatingStatus = false,
+    this.isDelivered = false,
   });
 
   OrderDetailsState copyWith({
     BaseState<OrderDetailsEntity>? orderDetailsState,
     BaseState<String>? updateStatusState,
     bool? isUpdatingStatus,
+    bool? isDelivered,
   }) {
     return OrderDetailsState(
       orderDetailsState: orderDetailsState ?? this.orderDetailsState,
       updateStatusState: updateStatusState ?? this.updateStatusState,
       isUpdatingStatus: isUpdatingStatus ?? this.isUpdatingStatus,
+      isDelivered: isDelivered ?? this.isDelivered,
     );
   }
 
@@ -30,5 +34,6 @@ class OrderDetailsState extends Equatable {
         orderDetailsState,
         updateStatusState,
         isUpdatingStatus,
+        isDelivered,
       ];
 }

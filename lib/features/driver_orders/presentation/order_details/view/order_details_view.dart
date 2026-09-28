@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
+import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
@@ -72,15 +74,23 @@ class _OrderDetailsContentState extends State<_OrderDetailsContent>
 
   @override
   void onCustomEvent(BaseEvent event) {
-    final localizations = AppLocalizations.of(context)!;
     switch (event) {
-      case OrderStatusUpdatedUiEvent():
-        showSuccessSnackBar(localizations.orderStatusUpdatedSuccessfully);
+      case NavigateToDeliverySuccessEvent():
       case OrderDeliveredUiEvent():
-        showSuccessSnackBar(localizations.statusDelivered);
-        widget.onOrderCompleted?.call();
+        _navigateToSuccess();
       case _:
         break;
+    }
+  }
+
+  void _navigateToSuccess() {
+    widget.onOrderCompleted?.call();
+    try {
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.deliverySuccess,
+      );
+    } catch (_) {
+      context.pushReplacement(AppRoutes.deliverySuccess);
     }
   }
 
@@ -88,24 +98,31 @@ class _OrderDetailsContentState extends State<_OrderDetailsContent>
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.orderDetails),
-        automaticallyImplyLeading: false,
-        leading: widget.showBackButton && Navigator.of(context).canPop()
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-                onPressed: () => Navigator.of(context).maybePop(),
-              )
-            : null,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildProgressBar(),
-            Expanded(child: _buildDetailsBody()),
-            DynamicActionButton(orderId: widget.orderId),
-          ],
+    return BlocListener<OrderDetailsCubit, OrderDetailsState>(
+      listenWhen: (previous, current) =>
+          !previous.isDelivered && current.isDelivered,
+      listener: (context, state) {
+        _navigateToSuccess();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(localizations.orderDetails),
+          automaticallyImplyLeading: false,
+          leading: widget.showBackButton && Navigator.of(context).canPop()
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                  onPressed: () => Navigator.of(context).maybePop(),
+                )
+              : null,
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildProgressBar(),
+              Expanded(child: _buildDetailsBody()),
+              DynamicActionButton(orderId: widget.orderId),
+            ],
+          ),
         ),
       ),
     );

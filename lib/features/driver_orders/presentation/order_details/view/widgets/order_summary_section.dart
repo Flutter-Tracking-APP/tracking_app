@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/utils/currency_formatter.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 
 class OrderSummarySection extends StatelessWidget {
@@ -37,7 +38,7 @@ class OrderSummarySection extends StatelessWidget {
                   style: AppStyles.regular13W500,
                 ),
                 Text(
-                  '${localizations.egp} ${order.total}',
+                  order.total.toCurrency(localizations.egp),
                   style: AppStyles.medium18Inter.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

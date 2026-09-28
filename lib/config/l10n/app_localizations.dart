@@ -1063,6 +1063,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for confirmation'**
   String get waitingForConfirmation;
+
+  /// No description provided for @waitingForStoreApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for store approval'**
+  String get waitingForStoreApproval;
+
+  /// No description provided for @thankYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you!!'**
+  String get thankYou;
+
+  /// No description provided for @orderDeliveredSuccessfullyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The order delivered successfully'**
+  String get orderDeliveredSuccessfullyTitle;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
 }
 
 class _AppLocalizationsDelegate

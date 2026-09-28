@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/utils/currency_formatter.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_item_entity.dart';
 
 class OrderItemTile extends StatelessWidget {
@@ -62,7 +63,7 @@ class OrderItemTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${localizations.egp} ${item.price}',
+                  item.price.toCurrency(localizations.egp),
                   style: AppStyles.regular12Roboto.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.blackBase,
