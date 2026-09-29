@@ -31,9 +31,9 @@ class OrderDetailsState extends Equatable {
 
   @override
   List<Object?> get props => [
-        orderDetailsState,
-        updateStatusState,
-        isUpdatingStatus,
-        isDelivered,
-      ];
+    orderDetailsState,
+    updateStatusState,
+    isUpdatingStatus,
+    isDelivered,
+  ];
 }

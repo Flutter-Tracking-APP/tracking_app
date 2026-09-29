@@ -15,7 +15,10 @@ class OrderSummarySection extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
       child: Column(
         children: [
           Container(
@@ -33,10 +36,7 @@ class OrderSummarySection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  localizations.total,
-                  style: AppStyles.regular13W500,
-                ),
+                Text(localizations.total, style: AppStyles.regular13W500),
                 Text(
                   order.total.toCurrency(localizations.egp),
                   style: AppStyles.medium18Inter.copyWith(

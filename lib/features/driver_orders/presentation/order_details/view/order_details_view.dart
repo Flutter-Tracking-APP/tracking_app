@@ -86,9 +86,7 @@ class _OrderDetailsContentState extends State<_OrderDetailsContent>
   void _navigateToSuccess() {
     widget.onOrderCompleted?.call();
     try {
-      Navigator.of(context).pushReplacementNamed(
-        AppRoutes.deliverySuccess,
-      );
+      Navigator.of(context).pushReplacementNamed(AppRoutes.deliverySuccess);
     } catch (_) {
       context.pushReplacement(AppRoutes.deliverySuccess);
     }
@@ -135,7 +133,8 @@ class _OrderDetailsContentState extends State<_OrderDetailsContent>
           current.orderDetailsState.data?.status,
       builder: (context, state) {
         final status =
-            state.orderDetailsState.data?.status ?? OrderFulfillmentStatus.accepted;
+            state.orderDetailsState.data?.status ??
+            OrderFulfillmentStatus.accepted;
         return OrderStatusProgressBar(status: status);
       },
     );

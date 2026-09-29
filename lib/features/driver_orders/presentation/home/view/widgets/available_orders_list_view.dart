@@ -41,8 +41,8 @@ class AvailableOrdersListView extends StatelessWidget {
           color: AppColors.purpleBase,
           onRefresh: () async {
             context.read<DriverHomeCubit>().doEvent(
-                  const GetAvailableOrdersEvent(),
-                );
+              const GetAvailableOrdersEvent(),
+            );
           },
           child: ListView.builder(
             padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
@@ -53,8 +53,8 @@ class AvailableOrdersListView extends StatelessWidget {
                 order: order,
                 onAccept: (orderId) {
                   context.read<DriverHomeCubit>().doEvent(
-                        ClaimOrderEvent(orderId),
-                      );
+                    ClaimOrderEvent(orderId),
+                  );
                 },
               );
             },
@@ -72,11 +72,7 @@ class AvailableOrdersListView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.inbox_outlined,
-              size: 64,
-              color: AppColors.grey,
-            ),
+            const Icon(Icons.inbox_outlined, size: 64, color: AppColors.grey),
             const SizedBox(height: 16),
             Text(
               localizations.noAvailableOrders,
@@ -91,8 +87,8 @@ class AvailableOrdersListView extends StatelessWidget {
                 text: localizations.updateButton,
                 onPressed: () {
                   context.read<DriverHomeCubit>().doEvent(
-                        const GetAvailableOrdersEvent(),
-                      );
+                    const GetAvailableOrdersEvent(),
+                  );
                 },
               ),
             ),
@@ -110,11 +106,7 @@ class AvailableOrdersListView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 56,
-              color: AppColors.error,
-            ),
+            const Icon(Icons.error_outline, size: 56, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
               error,
@@ -129,8 +121,8 @@ class AvailableOrdersListView extends StatelessWidget {
                 text: localizations.updateButton,
                 onPressed: () {
                   context.read<DriverHomeCubit>().doEvent(
-                        const GetAvailableOrdersEvent(),
-                      );
+                    const GetAvailableOrdersEvent(),
+                  );
                 },
               ),
             ),

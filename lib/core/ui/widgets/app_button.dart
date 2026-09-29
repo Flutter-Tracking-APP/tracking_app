@@ -38,8 +38,7 @@ class AppButton extends StatelessWidget {
         foregroundColor: textColor ?? AppColors.whiteBase,
         disabledBackgroundColor:
             disabledBackgroundColor ?? AppColors.white[500],
-        disabledForegroundColor:
-            disabledTextColor ?? AppColors.whiteBase,
+        disabledForegroundColor: disabledTextColor ?? AppColors.whiteBase,
         side: borderColor != null ? BorderSide(color: borderColor!) : null,
         padding: padding,
       ),

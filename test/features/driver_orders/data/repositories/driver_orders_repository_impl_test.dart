@@ -6,12 +6,16 @@ import 'package:tracking_app/features/driver_orders/data/models/request/update_o
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_action_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/data/models/response/order_history_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/update_order_status_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/repositories/driver_orders_repository_impl.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 
 class FakeRemoteDataSource implements DriverOrdersRemoteDataSource {
   OrderDetailsResponseDto? assignedOrderResponse;
+  OrderHistoryResponseDto? orderHistoryResponse;
   bool shouldThrowOnAssigned = false;
   int assignedThrowStatusCode = 404;
 
@@ -36,21 +40,44 @@ class FakeRemoteDataSource implements DriverOrdersRemoteDataSource {
   Future<UpdateOrderStatusResponseDto> updateOrderStatus(
     String orderId,
     UpdateOrderStatusRequestDto request,
-  ) async =>
-      const UpdateOrderStatusResponseDto(message: 'Updated');
+  ) async => const UpdateOrderStatusResponseDto(message: 'Updated');
 
   @override
   Future<OrderDetailsResponseDto> getAssignedOrder() async {
     if (shouldThrowOnAssigned) {
       throw DioException(
-        requestOptions: RequestOptions(path: 'api/orders/drivers/me/assigned-order'),
+        requestOptions: RequestOptions(
+          path: 'api/orders/drivers/me/assigned-order',
+        ),
         response: Response(
-          requestOptions: RequestOptions(path: 'api/orders/drivers/me/assigned-order'),
+          requestOptions: RequestOptions(
+            path: 'api/orders/drivers/me/assigned-order',
+          ),
           statusCode: assignedThrowStatusCode,
         ),
       );
     }
     return assignedOrderResponse ?? const OrderDetailsResponseDto();
+  }
+
+  @override
+  Future<OrderHistoryResponseDto> getDriverOrderHistory({
+    int page = 1,
+    int pageSize = 20,
+    String? status,
+  }) async {
+    return orderHistoryResponse ??
+        const OrderHistoryResponseDto(
+          status: true,
+          data: [
+            OrderHistoryItemDto(
+              id: 'hist-1',
+              orderNumber: 'ORD-1',
+              status: 'DELIVERED',
+              total: 100,
+            ),
+          ],
+        );
   }
 }
 
@@ -65,14 +92,15 @@ void main() {
 
   group('DriverOrdersRepositoryImpl.getActiveOrder (getAssignedOrder)', () {
     test('returns Success(entity) when assigned order is active', () async {
-      fakeRemoteDataSource.assignedOrderResponse = const OrderDetailsResponseDto(
-        data: OrderDetailsDataDto(
-          id: 'f9e9668b-1fbc-4149-ac10-2339e51c21f2',
-          orderNumber: 'ORD-20260905-4D13D1',
-          status: 'PLACED',
-          total: 58.98,
-        ),
-      );
+      fakeRemoteDataSource.assignedOrderResponse =
+          const OrderDetailsResponseDto(
+            data: OrderDetailsDataDto(
+              id: 'f9e9668b-1fbc-4149-ac10-2339e51c21f2',
+              orderNumber: 'ORD-20260905-4D13D1',
+              status: 'PLACED',
+              total: 58.98,
+            ),
+          );
 
       final result = await repository.getActiveOrder();
 
@@ -85,24 +113,24 @@ void main() {
       expect(data.total, equals(58.98));
     });
 
-    test('returns Success(null) when assigned order response has no data', () async {
-      fakeRemoteDataSource.assignedOrderResponse = const OrderDetailsResponseDto(
-        data: null,
-      );
+    test(
+      'returns Success(null) when assigned order response has no data',
+      () async {
+        fakeRemoteDataSource.assignedOrderResponse =
+            const OrderDetailsResponseDto(data: null);
 
-      final result = await repository.getActiveOrder();
+        final result = await repository.getActiveOrder();
 
-      expect(result, isA<Success<OrderDetailsEntity?>>());
-      expect((result as Success<OrderDetailsEntity?>).data, isNull);
-    });
+        expect(result, isA<Success<OrderDetailsEntity?>>());
+        expect((result as Success<OrderDetailsEntity?>).data, isNull);
+      },
+    );
 
     test('returns Success(null) when assigned order is delivered', () async {
-      fakeRemoteDataSource.assignedOrderResponse = const OrderDetailsResponseDto(
-        data: OrderDetailsDataDto(
-          id: 'ord-delivered',
-          status: 'DELIVERED',
-        ),
-      );
+      fakeRemoteDataSource.assignedOrderResponse =
+          const OrderDetailsResponseDto(
+            data: OrderDetailsDataDto(id: 'ord-delivered', status: 'DELIVERED'),
+          );
 
       final result = await repository.getActiveOrder();
 
@@ -110,22 +138,46 @@ void main() {
       expect((result as Success<OrderDetailsEntity?>).data, isNull);
     });
 
-    test('returns Success(null) when getAssignedOrder throws 404 (no assigned order)', () async {
-      fakeRemoteDataSource.shouldThrowOnAssigned = true;
-      fakeRemoteDataSource.assignedThrowStatusCode = 404;
+    test(
+      'returns Success(null) when getAssignedOrder throws 404 (no assigned order)',
+      () async {
+        fakeRemoteDataSource.shouldThrowOnAssigned = true;
+        fakeRemoteDataSource.assignedThrowStatusCode = 404;
 
-      final result = await repository.getActiveOrder();
+        final result = await repository.getActiveOrder();
 
-      expect(result, isA<Success<OrderDetailsEntity?>>());
-      expect((result as Success<OrderDetailsEntity?>).data, isNull);
-    });
+        expect(result, isA<Success<OrderDetailsEntity?>>());
+        expect((result as Success<OrderDetailsEntity?>).data, isNull);
+      },
+    );
 
     test('claimOrder and updateOrderStatus execute successfully', () async {
       final claimResult = await repository.claimOrder('ord-123');
       expect(claimResult, isA<Success<String>>());
 
-      final updateResult = await repository.updateOrderStatus('ord-123', 'delivered');
+      final updateResult = await repository.updateOrderStatus(
+        'ord-123',
+        'delivered',
+      );
       expect(updateResult, isA<Success<String>>());
+    });
+
+    test('getDriverOrderHistory maps items to entities successfully', () async {
+      final result = await repository.getDriverOrderHistory();
+      expect(result, isA<Success<List<OrderHistoryEntity>>>());
+      final orders = (result as Success<List<OrderHistoryEntity>>).data;
+      expect(orders.length, equals(1));
+      expect(orders.first.id, equals('hist-1'));
+      expect(orders.first.isCompleted, isTrue);
+    });
+
+    test('getHistoricalOrderDetails returns historical order entity', () async {
+      final result = await repository.getHistoricalOrderDetails(
+        'ord-details-1',
+      );
+      expect(result, isA<Success<HistoricalOrderDetailsEntity>>());
+      final details = (result as Success<HistoricalOrderDetailsEntity>).data;
+      expect(details.id, equals('ord-details-1'));
     });
   });
 }

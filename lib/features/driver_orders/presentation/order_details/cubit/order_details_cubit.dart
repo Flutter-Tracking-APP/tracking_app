@@ -50,18 +50,24 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
       case Success(data: final details):
         if (details.isFinalDelivered) {
           _pollingTimer?.cancel();
-          emit(state.copyWith(
-            orderDetailsState: BaseState.success(details),
-            isDelivered: true,
-          ));
-          emitEvent(OrderStatusUpdatedUiEvent(OrderFulfillmentStatus.delivered));
+          emit(
+            state.copyWith(
+              orderDetailsState: BaseState.success(details),
+              isDelivered: true,
+            ),
+          );
+          emitEvent(
+            OrderStatusUpdatedUiEvent(OrderFulfillmentStatus.delivered),
+          );
           emitEvent(const OrderDeliveredUiEvent());
           emitEvent(NavigateToDeliverySuccessEvent(details.id));
         } else {
-          emit(state.copyWith(
-            orderDetailsState: BaseState.success(details),
-            isDelivered: false,
-          ));
+          emit(
+            state.copyWith(
+              orderDetailsState: BaseState.success(details),
+              isDelivered: false,
+            ),
+          );
           _startPollingIfNeeded(details.status, details.id);
         }
       case Failure(error: final error, message: final msg):
@@ -87,10 +93,12 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
     if (transition == null) return;
 
     final (targetStatus, note, nextEnum) = transition;
-    emit(state.copyWith(
-      isUpdatingStatus: true,
-      updateStatusState: BaseState.loading(),
-    ));
+    emit(
+      state.copyWith(
+        isUpdatingStatus: true,
+        updateStatusState: BaseState.loading(),
+      ),
+    );
 
     final result = await _updateOrderStatusUseCase.call(
       orderId,
@@ -110,10 +118,12 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
         _onUpdateSuccess(message, nextStatus);
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
-        emit(state.copyWith(
-          isUpdatingStatus: false,
-          updateStatusState: BaseState.error(errorMsg),
-        ));
+        emit(
+          state.copyWith(
+            isUpdatingStatus: false,
+            updateStatusState: BaseState.error(errorMsg),
+          ),
+        );
         emitEvent(DisplayError(errorMsg));
     }
   }
@@ -135,17 +145,21 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
         total: currentData.total,
         paymentMethod: currentData.paymentMethod,
       );
-      emit(state.copyWith(
-        orderDetailsState: BaseState.success(updatedData),
-        isUpdatingStatus: false,
-        updateStatusState: BaseState.success(message),
-      ));
+      emit(
+        state.copyWith(
+          orderDetailsState: BaseState.success(updatedData),
+          isUpdatingStatus: false,
+          updateStatusState: BaseState.success(message),
+        ),
+      );
       _startPollingIfNeeded(nextStatus, updatedData.id);
     } else {
-      emit(state.copyWith(
-        isUpdatingStatus: false,
-        updateStatusState: BaseState.success(message),
-      ));
+      emit(
+        state.copyWith(
+          isUpdatingStatus: false,
+          updateStatusState: BaseState.success(message),
+        ),
+      );
     }
     emitEvent(OrderStatusUpdatedUiEvent(nextStatus));
   }
@@ -168,10 +182,12 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
 
       if (polled.isFinalDelivered) {
         _pollingTimer?.cancel();
-        emit(state.copyWith(
-          orderDetailsState: BaseState.success(polled),
-          isDelivered: true,
-        ));
+        emit(
+          state.copyWith(
+            orderDetailsState: BaseState.success(polled),
+            isDelivered: true,
+          ),
+        );
         emitEvent(OrderStatusUpdatedUiEvent(OrderFulfillmentStatus.delivered));
         emitEvent(const OrderDeliveredUiEvent());
         emitEvent(NavigateToDeliverySuccessEvent(polled.id));
@@ -180,7 +196,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
 
       if (current == OrderFulfillmentStatus.arrivedAtPickup &&
           (polled.status == OrderFulfillmentStatus.picked ||
-           polled.status == OrderFulfillmentStatus.outForDelivery)) {
+              polled.status == OrderFulfillmentStatus.outForDelivery)) {
         _applyExternalStatus(polled.status);
       } else if (current == OrderFulfillmentStatus.arrived &&
           polled.status == OrderFulfillmentStatus.delivered) {
@@ -206,10 +222,12 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
         total: currentData.total,
         paymentMethod: currentData.paymentMethod,
       );
-      emit(state.copyWith(
-        orderDetailsState: BaseState.success(updatedData),
-        isDelivered: isDelivered,
-      ));
+      emit(
+        state.copyWith(
+          orderDetailsState: BaseState.success(updatedData),
+          isDelivered: isDelivered,
+        ),
+      );
     }
     emitEvent(OrderStatusUpdatedUiEvent(newStatus));
     if (isDelivered) {
@@ -224,25 +242,25 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
     return switch (currentStatus) {
       OrderFulfillmentStatus.accepted ||
       OrderFulfillmentStatus.arrivedAtPickup => (
-          'PICKED_UP',
-          'Collected from pickup store',
-          OrderFulfillmentStatus.picked,
-        ),
+        'PICKED_UP',
+        'Collected from pickup store',
+        OrderFulfillmentStatus.picked,
+      ),
       OrderFulfillmentStatus.picked => (
-          'OUT_FOR_DELIVERY',
-          'Heading to customer',
-          OrderFulfillmentStatus.outForDelivery,
-        ),
+        'OUT_FOR_DELIVERY',
+        'Heading to customer',
+        OrderFulfillmentStatus.outForDelivery,
+      ),
       OrderFulfillmentStatus.outForDelivery => (
-          'ARRIVED',
-          'Driver reached the delivery address',
-          OrderFulfillmentStatus.arrived,
-        ),
+        'ARRIVED',
+        'Driver reached the delivery address',
+        OrderFulfillmentStatus.arrived,
+      ),
       OrderFulfillmentStatus.arrived => (
-          'AWAITING_DELIVERY_CONFIRMATION',
-          'Order handed to customer',
-          OrderFulfillmentStatus.awaitingConfirmation,
-        ),
+        'AWAITING_DELIVERY_CONFIRMATION',
+        'Order handed to customer',
+        OrderFulfillmentStatus.awaitingConfirmation,
+      ),
       OrderFulfillmentStatus.awaitingConfirmation ||
       OrderFulfillmentStatus.delivered => null,
     };
@@ -251,8 +269,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
   Future<void> _updateOrderStatus(
     String orderId,
     OrderFulfillmentStatus targetStatus,
-  ) =>
-      updateNextStatus(orderId);
+  ) => updateNextStatus(orderId);
 
   @override
   Future<void> close() {
@@ -260,4 +277,3 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
     return super.close();
   }
 }
-

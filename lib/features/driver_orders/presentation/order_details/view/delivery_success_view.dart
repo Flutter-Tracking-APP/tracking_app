@@ -115,10 +115,9 @@ class DeliverySuccessView extends StatelessWidget {
         onPressed: () {
           onDone?.call();
           try {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              AppRoutes.home,
-              (route) => false,
-            );
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
           } catch (_) {
             context.go(AppRoutes.home);
           }

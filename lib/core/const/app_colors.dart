@@ -69,4 +69,7 @@ abstract final class AppColors {
   static const Color amber10 = Color(0xFFFEF3E7);
   static const Color amber90 = Color(0xFF914D16);
   static const Color amber100 = Color(0xFF452A10);
+
+  static const Color lightRed = Color(0xFFFDE8E8);
+  static const Color lightGreen = Color(0xFFEAF8F1);
 }

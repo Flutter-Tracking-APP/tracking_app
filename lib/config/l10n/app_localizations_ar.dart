@@ -527,4 +527,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get success => 'نجاح';
+
+  @override
+  String get myOrders => 'طلباتي';
+
+  @override
+  String get cancelled => 'ملغي';
+
+  @override
+  String get completed => 'مكتمل';
+
+  @override
+  String get recentOrders => 'الطلبات الأخيرة';
+
+  @override
+  String get noOrdersFound => 'لا توجد طلبات';
+
+  @override
+  String get retry => 'إعادة المحاولة';
 }

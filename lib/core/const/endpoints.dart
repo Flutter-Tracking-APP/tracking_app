@@ -14,7 +14,10 @@ abstract final class Endpoints {
   static const login = 'api/identity/auth/login';
   static const String availableOrders = 'api/orders/drivers/available-orders';
   static const String claimOrder = 'api/orders/{orderId}/claim';
-  static const String driverOrderDetails = 'api/orders/drivers/me/orders/{orderId}';
+  static const String driverOrderDetails =
+      'api/orders/drivers/me/orders/{orderId}';
   static const String updateOrderStatus = 'api/orders/{orderId}/status';
-  static const String driverAssignedOrder = 'api/orders/drivers/me/assigned-order';
+  static const String driverAssignedOrder =
+      'api/orders/drivers/me/assigned-order';
+  static const String driverOrderHistory = 'api/orders/drivers/me/orders';
 }

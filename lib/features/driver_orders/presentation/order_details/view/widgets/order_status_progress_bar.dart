@@ -15,7 +15,10 @@ class OrderStatusProgressBar extends StatelessWidget {
     final activeCount = _activeStepsCount;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
       child: Row(
         children: List.generate(totalBars, (index) {
           final isCompleted = index < activeCount;

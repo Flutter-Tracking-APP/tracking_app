@@ -31,7 +31,10 @@ class OrderStatusCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsetsDirectional.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
       padding: const EdgeInsetsDirectional.all(16),
       decoration: BoxDecoration(
         color: AppColors.lightPink,
@@ -55,12 +58,10 @@ class OrderStatusCard extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          if (order.formattedDate != null && order.formattedDate!.isNotEmpty) ...[
+          if (order.formattedDate != null &&
+              order.formattedDate!.isNotEmpty) ...[
             const SizedBox(height: 4),
-            Text(
-              order.formattedDate!,
-              style: AppStyles.regular12Inter,
-            ),
+            Text(order.formattedDate!, style: AppStyles.regular12Inter),
           ],
         ],
       ),

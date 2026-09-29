@@ -2,6 +2,7 @@ import 'package:tracking_app/features/driver_orders/data/models/request/update_o
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_action_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/data/models/response/order_history_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/update_order_status_response_dto.dart';
 
 abstract class DriverOrdersRemoteDataSource {
@@ -13,4 +14,9 @@ abstract class DriverOrdersRemoteDataSource {
     UpdateOrderStatusRequestDto request,
   );
   Future<OrderDetailsResponseDto> getAssignedOrder();
+  Future<OrderHistoryResponseDto> getDriverOrderHistory({
+    int page = 1,
+    int pageSize = 20,
+    String? status,
+  });
 }

@@ -167,5 +167,11 @@
     "thankYou": "Thank you!!",
     "orderDeliveredSuccessfullyTitle": "The order delivered successfully",
     "done": "Done",
-    "success": "Success"
+    "success": "Success",
+    "myOrders": "My orders",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "recentOrders": "Recent orders",
+    "noOrdersFound": "No orders found",
+    "retry": "Retry"
 }

@@ -165,5 +165,11 @@
     "thankYou": "شكراً لك!!",
     "orderDeliveredSuccessfullyTitle": "تم توصيل الطلب بنجاح",
     "done": "تم",
-    "success": "نجاح"
+    "success": "نجاح",
+    "myOrders": "طلباتي",
+    "cancelled": "ملغي",
+    "completed": "مكتمل",
+    "recentOrders": "الطلبات الأخيرة",
+    "noOrdersFound": "لا توجد طلبات",
+    "retry": "إعادة المحاولة"
 }

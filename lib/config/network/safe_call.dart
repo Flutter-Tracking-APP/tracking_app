@@ -11,10 +11,11 @@ Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
     if (e is DioException) {
       final responseData = e.response?.data;
       if (responseData is Map<String, dynamic>) {
-        message = (responseData['message'] ??
-                responseData['error'] ??
-                responseData['msg'])
-            ?.toString();
+        message =
+            (responseData['message'] ??
+                    responseData['error'] ??
+                    responseData['msg'])
+                ?.toString();
         if ((message == null || message.trim().isEmpty) &&
             responseData['errors'] is List &&
             (responseData['errors'] as List).isNotEmpty) {

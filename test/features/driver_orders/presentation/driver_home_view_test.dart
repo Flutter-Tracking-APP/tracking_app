@@ -8,8 +8,10 @@ import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/repositories/driver_orders_repository.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/claim_order_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_available_orders_use_case.dart';
@@ -39,7 +41,10 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
   @override
   Future<ApiResults<List<OrderEntity>>> getAvailableOrders() async {
     if (returnError) {
-      return const Failure('Failed to fetch available orders', AppError.noConnection);
+      return const Failure(
+        'Failed to fetch available orders',
+        AppError.noConnection,
+      );
     }
     return Success(orders);
   }
@@ -58,17 +63,20 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
 
   @override
   Future<ApiResults<OrderDetailsEntity>> getOrderDetails(String orderId) async {
-    return Success(activeOrderToReturn ?? const OrderDetailsEntity(
-      id: 'active-ord-777',
-      orderNumber: 'ORD-777',
-      status: OrderFulfillmentStatus.accepted,
-      formattedDate: '2026-09-26',
-      store: StoreAddressEntity(name: 'Store', address: 'Addr'),
-      user: UserAddressEntity(name: 'User', address: 'Addr'),
-      items: [],
-      total: 100,
-      paymentMethod: 'Cash',
-    ));
+    return Success(
+      activeOrderToReturn ??
+          const OrderDetailsEntity(
+            id: 'active-ord-777',
+            orderNumber: 'ORD-777',
+            status: OrderFulfillmentStatus.accepted,
+            formattedDate: '2026-09-26',
+            store: StoreAddressEntity(name: 'Store', address: 'Addr'),
+            user: UserAddressEntity(name: 'User', address: 'Addr'),
+            items: [],
+            total: 100,
+            paymentMethod: 'Cash',
+          ),
+    );
   }
 
   @override
@@ -87,6 +95,18 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
     }
     return Success(activeOrderToReturn);
   }
+
+  @override
+  Future<ApiResults<List<OrderHistoryEntity>>> getDriverOrderHistory({
+    int page = 1,
+    int pageSize = 20,
+    String? status,
+  }) async => const Success([]);
+
+  @override
+  Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
+    String orderId,
+  ) async => throw UnimplementedError();
 }
 
 Widget createHomeTestWidget({Locale locale = const Locale('en')}) {
@@ -99,7 +119,8 @@ Widget createHomeTestWidget({Locale locale = const Locale('en')}) {
       ),
       GoRoute(
         path: '/order-details/:orderId',
-        builder: (context, state) => const Scaffold(body: Text('Order Details Screen')),
+        builder: (context, state) =>
+            const Scaffold(body: Text('Order Details Screen')),
       ),
     ],
   );
@@ -163,18 +184,20 @@ void main() {
     await getIt.reset();
   });
 
-  testWidgets('renders Flowery rider header and available order card with details',
-      (tester) async {
-    await tester.pumpWidget(createHomeTestWidget());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'renders Flowery rider header and available order card with details',
+    (tester) async {
+      await tester.pumpWidget(createHomeTestWidget());
+      await tester.pumpAndSettle();
 
-    expect(find.text('Flowery rider'), findsOneWidget);
-    expect(find.text('Flower order'), findsOneWidget);
-    expect(find.text('Flowery store'), findsOneWidget);
-    expect(find.text('Nour mohamed'), findsOneWidget);
-    expect(find.text('EGP 3000'), findsOneWidget);
-    expect(find.text('Accept'), findsOneWidget);
-  });
+      expect(find.text('Flowery rider'), findsOneWidget);
+      expect(find.text('Flower order'), findsOneWidget);
+      expect(find.text('Flowery store'), findsOneWidget);
+      expect(find.text('Nour mohamed'), findsOneWidget);
+      expect(find.text('EGP 3000'), findsOneWidget);
+      expect(find.text('Accept'), findsOneWidget);
+    },
+  );
 
   testWidgets('tapping Accept button calls claimOrder', (tester) async {
     await tester.pumpWidget(createHomeTestWidget());
@@ -190,100 +213,106 @@ void main() {
   });
 
   testWidgets(
-      'tapping Accept on one card shows loading only for that card while other cards remain normal',
-      (tester) async {
-    final completer = Completer<ApiResults<String>>();
-    fakeRepo.claimCompleter = completer;
+    'tapping Accept on one card shows loading only for that card while other cards remain normal',
+    (tester) async {
+      final completer = Completer<ApiResults<String>>();
+      fakeRepo.claimCompleter = completer;
 
-    fakeRepo.orders = [
-      OrderEntity(
-        id: 'ord-1',
-        title: 'Flower order 1',
-        totalAmount: 1000,
-        status: 'pending',
-        storeName: 'Store 1',
-        storeAddress: 'Address 1',
-        customerName: 'Customer 1',
-        customerAddress: 'Cust Address 1',
-      ),
-      OrderEntity(
-        id: 'ord-2',
-        title: 'Flower order 2',
-        totalAmount: 2000,
-        status: 'pending',
-        storeName: 'Store 2',
-        storeAddress: 'Address 2',
-        customerName: 'Customer 2',
-        customerAddress: 'Cust Address 2',
-      ),
-    ];
+      fakeRepo.orders = [
+        OrderEntity(
+          id: 'ord-1',
+          title: 'Flower order 1',
+          totalAmount: 1000,
+          status: 'pending',
+          storeName: 'Store 1',
+          storeAddress: 'Address 1',
+          customerName: 'Customer 1',
+          customerAddress: 'Cust Address 1',
+        ),
+        OrderEntity(
+          id: 'ord-2',
+          title: 'Flower order 2',
+          totalAmount: 2000,
+          status: 'pending',
+          storeName: 'Store 2',
+          storeAddress: 'Address 2',
+          customerName: 'Customer 2',
+          customerAddress: 'Cust Address 2',
+        ),
+      ];
 
-    await tester.pumpWidget(createHomeTestWidget());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(createHomeTestWidget());
+      await tester.pumpAndSettle();
 
-    // Verify two cards rendered with Accept buttons
-    expect(find.byType(AvailableOrderCard), findsNWidgets(2));
-    expect(find.widgetWithText(ElevatedButton, 'Accept'), findsNWidgets(2));
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+      // Verify two cards rendered with Accept buttons
+      expect(find.byType(AvailableOrderCard), findsNWidgets(2));
+      expect(find.widgetWithText(ElevatedButton, 'Accept'), findsNWidgets(2));
+      expect(find.byType(CircularProgressIndicator), findsNothing);
 
-    // Tap Accept on the first order
-    final firstAcceptButton = find.widgetWithText(ElevatedButton, 'Accept').first;
-    await tester.tap(firstAcceptButton);
-    await tester.pump(); // Pump frame to trigger state update while future is pending
+      // Tap Accept on the first order
+      final firstAcceptButton = find
+          .widgetWithText(ElevatedButton, 'Accept')
+          .first;
+      await tester.tap(firstAcceptButton);
+      await tester
+          .pump(); // Pump frame to trigger state update while future is pending
 
-    // First card's button shows loading indicator
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    // Second card's button still shows text 'Accept'
-    expect(find.widgetWithText(ElevatedButton, 'Accept'), findsOneWidget);
+      // First card's button shows loading indicator
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      // Second card's button still shows text 'Accept'
+      expect(find.widgetWithText(ElevatedButton, 'Accept'), findsOneWidget);
 
-    // Complete the claim operation
-    completer.complete(const Success('Order claimed successfully'));
-    await tester.pumpAndSettle();
+      // Complete the claim operation
+      completer.complete(const Success('Order claimed successfully'));
+      await tester.pumpAndSettle();
 
-    expect(fakeRepo.claimedOrderId, equals('ord-2'));
-  });
+      expect(fakeRepo.claimedOrderId, equals('ord-2'));
+    },
+  );
 
   testWidgets(
-      'available orders are sorted descending by date or ID (newest first)',
-      (tester) async {
-    fakeRepo.orders = [
-      OrderEntity(
-        id: 'ord-10',
-        title: 'Older order',
-        totalAmount: 1000,
-        status: 'pending',
-        storeName: 'Store 1',
-        storeAddress: 'Address 1',
-        customerName: 'Customer 1',
-        customerAddress: 'Cust Address 1',
-        createdAt: '2026-09-20T10:00:00Z',
-      ),
-      OrderEntity(
-        id: 'ord-20',
-        title: 'Newer order',
-        totalAmount: 2000,
-        status: 'pending',
-        storeName: 'Store 2',
-        storeAddress: 'Address 2',
-        customerName: 'Customer 2',
-        customerAddress: 'Cust Address 2',
-        createdAt: '2026-09-25T10:00:00Z',
-      ),
-    ];
+    'available orders are sorted descending by date or ID (newest first)',
+    (tester) async {
+      fakeRepo.orders = [
+        OrderEntity(
+          id: 'ord-10',
+          title: 'Older order',
+          totalAmount: 1000,
+          status: 'pending',
+          storeName: 'Store 1',
+          storeAddress: 'Address 1',
+          customerName: 'Customer 1',
+          customerAddress: 'Cust Address 1',
+          createdAt: '2026-09-20T10:00:00Z',
+        ),
+        OrderEntity(
+          id: 'ord-20',
+          title: 'Newer order',
+          totalAmount: 2000,
+          status: 'pending',
+          storeName: 'Store 2',
+          storeAddress: 'Address 2',
+          customerName: 'Customer 2',
+          customerAddress: 'Cust Address 2',
+          createdAt: '2026-09-25T10:00:00Z',
+        ),
+      ];
 
-    await tester.pumpWidget(createHomeTestWidget());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(createHomeTestWidget());
+      await tester.pumpAndSettle();
 
-    final cards = find.byType(AvailableOrderCard);
-    expect(cards, findsNWidgets(2));
-    final firstCard = tester.widget<AvailableOrderCard>(cards.first);
-    expect(firstCard.order.id, equals('ord-20'));
-    final secondCard = tester.widget<AvailableOrderCard>(cards.at(1));
-    expect(secondCard.order.id, equals('ord-10'));
-  });
+      final cards = find.byType(AvailableOrderCard);
+      expect(cards, findsNWidgets(2));
+      final firstCard = tester.widget<AvailableOrderCard>(cards.first);
+      expect(firstCard.order.id, equals('ord-20'));
+      final secondCard = tester.widget<AvailableOrderCard>(cards.at(1));
+      expect(secondCard.order.id, equals('ord-10'));
+    },
+  );
 
-  testWidgets('displays error state and retry button when fetching fails',
-      (tester) async {
+  testWidgets('displays error state and retry button when fetching fails', (
+    tester,
+  ) async {
     fakeRepo.returnError = true;
 
     await tester.pumpWidget(createHomeTestWidget());
@@ -292,8 +321,9 @@ void main() {
     expect(find.text('Failed to fetch available orders'), findsAtLeast(1));
   });
 
-  testWidgets('renders properly in Arabic (RTL) without overflow',
-      (tester) async {
+  testWidgets('renders properly in Arabic (RTL) without overflow', (
+    tester,
+  ) async {
     await tester.pumpWidget(createHomeTestWidget(locale: const Locale('ar')));
     await tester.pumpAndSettle();
 
@@ -302,107 +332,113 @@ void main() {
   });
 
   testWidgets(
-      'displays OrderDetailsView directly when active order exists on initialization',
-      (tester) async {
-    fakeRepo.activeOrderToReturn = const OrderDetailsEntity(
-      id: 'active-ord-777',
-      orderNumber: 'ORD-777',
-      status: OrderFulfillmentStatus.accepted,
-      formattedDate: '2026-09-26',
-      store: StoreAddressEntity(name: 'Store', address: 'Addr'),
-      user: UserAddressEntity(name: 'User', address: 'Addr'),
-      items: [],
-      total: 100,
-      paymentMethod: 'Cash',
-    );
+    'displays OrderDetailsView directly when active order exists on initialization',
+    (tester) async {
+      fakeRepo.activeOrderToReturn = const OrderDetailsEntity(
+        id: 'active-ord-777',
+        orderNumber: 'ORD-777',
+        status: OrderFulfillmentStatus.accepted,
+        formattedDate: '2026-09-26',
+        store: StoreAddressEntity(name: 'Store', address: 'Addr'),
+        user: UserAddressEntity(name: 'User', address: 'Addr'),
+        items: [],
+        total: 100,
+        paymentMethod: 'Cash',
+      );
 
-    await tester.pumpWidget(createHomeTestWidget());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(createHomeTestWidget());
+      await tester.pumpAndSettle();
 
-    expect(find.byType(OrderDetailsView), findsOneWidget);
-    expect(find.byType(AvailableOrderCard), findsNothing);
-    expect(find.byIcon(Icons.arrow_back_ios_new), findsNothing);
-  });
-
-  testWidgets(
-      'displays OrderDetailsView when claiming order returns 409 Conflict',
-      (tester) async {
-    fakeRepo.claimError = AppError.conflict;
-    fakeRepo.claimErrorMessage =
-        'Finish your current assigned order before claiming another one';
-
-    // Initially no active order
-    fakeRepo.activeOrderToReturn = null;
-
-    await tester.pumpWidget(createHomeTestWidget());
-    await tester.pumpAndSettle();
-
-    expect(find.byType(AvailableOrderCard), findsOneWidget);
-
-    // Active order returns when checked after conflict
-    fakeRepo.activeOrderToReturn = const OrderDetailsEntity(
-      id: 'active-ord-conflict-888',
-      orderNumber: 'ORD-888',
-      status: OrderFulfillmentStatus.accepted,
-      formattedDate: '2026-09-26',
-      store: StoreAddressEntity(name: 'Store', address: 'Addr'),
-      user: UserAddressEntity(name: 'User', address: 'Addr'),
-      items: [],
-      total: 100,
-      paymentMethod: 'Cash',
-    );
-
-    final acceptButton = find.widgetWithText(ElevatedButton, 'Accept');
-    await tester.tap(acceptButton);
-    await tester.pumpAndSettle();
-
-    expect(find.byType(OrderDetailsView), findsOneWidget);
-    expect(find.byType(AvailableOrderCard), findsNothing);
-    expect(find.byIcon(Icons.arrow_back_ios_new), findsNothing);
-  });
+      expect(find.byType(OrderDetailsView), findsOneWidget);
+      expect(find.byType(AvailableOrderCard), findsNothing);
+      expect(find.byIcon(Icons.arrow_back_ios_new), findsNothing);
+    },
+  );
 
   testWidgets(
-      'displays CircularProgressIndicator and does not flash available orders while checking active order',
-      (tester) async {
-    final completer = Completer<ApiResults<OrderDetailsEntity?>>();
-    fakeRepo.activeOrderCompleter = completer;
+    'displays OrderDetailsView when claiming order returns 409 Conflict',
+    (tester) async {
+      fakeRepo.claimError = AppError.conflict;
+      fakeRepo.claimErrorMessage =
+          'Finish your current assigned order before claiming another one';
 
-    await tester.pumpWidget(createHomeTestWidget());
-    await tester.pump();
+      // Initially no active order
+      fakeRepo.activeOrderToReturn = null;
 
-    // Verify loading indicator is displayed and AvailableOrderCard is NOT rendered
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    expect(find.byType(AvailableOrderCard), findsNothing);
+      await tester.pumpWidget(createHomeTestWidget());
+      await tester.pumpAndSettle();
 
-    // Complete checking active order with null
-    completer.complete(const Success(null));
-    await tester.pumpAndSettle();
+      expect(find.byType(AvailableOrderCard), findsOneWidget);
 
-    // Now available orders are shown
-    expect(find.byType(AvailableOrderCard), findsOneWidget);
-  });
+      // Active order returns when checked after conflict
+      fakeRepo.activeOrderToReturn = const OrderDetailsEntity(
+        id: 'active-ord-conflict-888',
+        orderNumber: 'ORD-888',
+        status: OrderFulfillmentStatus.accepted,
+        formattedDate: '2026-09-26',
+        store: StoreAddressEntity(name: 'Store', address: 'Addr'),
+        user: UserAddressEntity(name: 'User', address: 'Addr'),
+        items: [],
+        total: 100,
+        paymentMethod: 'Cash',
+      );
 
-  test('closing DriverHomeCubit during async _initHome does not throw StateError', () async {
-    final activeCompleter = Completer<ApiResults<OrderDetailsEntity?>>();
-    fakeRepo.activeOrderCompleter = activeCompleter;
+      final acceptButton = find.widgetWithText(ElevatedButton, 'Accept');
+      await tester.tap(acceptButton);
+      await tester.pumpAndSettle();
 
-    final cubit = DriverHomeCubit(
-      getIt<GetAvailableOrdersUseCase>(),
-      getIt<GetDriverActiveOrderUseCase>(),
-      getIt<ClaimOrderUseCase>(),
-    );
+      expect(find.byType(OrderDetailsView), findsOneWidget);
+      expect(find.byType(AvailableOrderCard), findsNothing);
+      expect(find.byIcon(Icons.arrow_back_ios_new), findsNothing);
+    },
+  );
 
-    cubit.doEvent(const InitHomeEvent());
+  testWidgets(
+    'displays CircularProgressIndicator and does not flash available orders while checking active order',
+    (tester) async {
+      final completer = Completer<ApiResults<OrderDetailsEntity?>>();
+      fakeRepo.activeOrderCompleter = completer;
 
-    // Close while _initHome is awaiting _getActiveOrderUseCase
-    await cubit.close();
+      await tester.pumpWidget(createHomeTestWidget());
+      await tester.pump();
 
-    // Now complete the future after the cubit is closed
-    activeCompleter.complete(const Success(null));
+      // Verify loading indicator is displayed and AvailableOrderCard is NOT rendered
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(AvailableOrderCard), findsNothing);
 
-    // Allow pending microtasks to finish
-    await Future<void>.delayed(Duration.zero);
+      // Complete checking active order with null
+      completer.complete(const Success(null));
+      await tester.pumpAndSettle();
 
-    expect(cubit.isClosed, isTrue);
-  });
+      // Now available orders are shown
+      expect(find.byType(AvailableOrderCard), findsOneWidget);
+    },
+  );
+
+  test(
+    'closing DriverHomeCubit during async _initHome does not throw StateError',
+    () async {
+      final activeCompleter = Completer<ApiResults<OrderDetailsEntity?>>();
+      fakeRepo.activeOrderCompleter = activeCompleter;
+
+      final cubit = DriverHomeCubit(
+        getIt<GetAvailableOrdersUseCase>(),
+        getIt<GetDriverActiveOrderUseCase>(),
+        getIt<ClaimOrderUseCase>(),
+      );
+
+      cubit.doEvent(const InitHomeEvent());
+
+      // Close while _initHome is awaiting _getActiveOrderUseCase
+      await cubit.close();
+
+      // Now complete the future after the cubit is closed
+      activeCompleter.complete(const Success(null));
+
+      // Allow pending microtasks to finish
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.isClosed, isTrue);
+    },
+  );
 }

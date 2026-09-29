@@ -6,8 +6,10 @@ import 'package:tracking_app/config/network/safe_call.dart';
 import 'package:tracking_app/features/driver_orders/data/data_sources/contract/driver_orders_remote_data_source.dart';
 import 'package:tracking_app/features/driver_orders/data/mapper/order_mapper.dart';
 import 'package:tracking_app/features/driver_orders/data/models/request/update_order_status_request_dto.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/repositories/driver_orders_repository.dart';
 
 @Injectable(as: DriverOrdersRepository)
@@ -74,20 +76,62 @@ class DriverOrdersRepositoryImpl implements DriverOrdersRepository {
 
         final entity = data.toEntity();
         if (entity.status == OrderFulfillmentStatus.delivered) {
-          log('DriverOrdersRepositoryImpl.getActiveOrder: assigned order is delivered');
+          log(
+            'DriverOrdersRepositoryImpl.getActiveOrder: assigned order is delivered',
+          );
           return const Success(null);
         }
 
-        log('DriverOrdersRepositoryImpl.getActiveOrder: assigned order found -> ${entity.id}');
+        log(
+          'DriverOrdersRepositoryImpl.getActiveOrder: assigned order found -> ${entity.id}',
+        );
         return Success(entity);
       } catch (e, stack) {
-        if (e is DioException && (e.response?.statusCode == 404 || e.response?.statusCode == 204)) {
-          log('DriverOrdersRepositoryImpl.getActiveOrder: 404/204 - no active assigned order');
+        if (e is DioException &&
+            (e.response?.statusCode == 404 || e.response?.statusCode == 204)) {
+          log(
+            'DriverOrdersRepositoryImpl.getActiveOrder: 404/204 - no active assigned order',
+          );
           return const Success(null);
         }
-        log('DriverOrdersRepositoryImpl.getActiveOrder error: $e', stackTrace: stack);
+        log(
+          'DriverOrdersRepositoryImpl.getActiveOrder error: $e',
+          stackTrace: stack,
+        );
         return const Success(null);
       }
+    });
+  }
+
+  @override
+  Future<ApiResults<List<OrderHistoryEntity>>> getDriverOrderHistory({
+    int page = 1,
+    int pageSize = 20,
+    String? status,
+  }) {
+    return safeCall(() async {
+      final response = await _remoteDataSource.getDriverOrderHistory(
+        page: page,
+        pageSize: pageSize,
+        status: status,
+      );
+      final list = response.data ?? [];
+      final entities = list.map((dto) => dto.toEntity()).toList();
+      return Success(entities);
+    });
+  }
+
+  @override
+  Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
+    String orderId,
+  ) {
+    return safeCall(() async {
+      final response = await _remoteDataSource.getOrderDetails(orderId);
+      final data = response.effectiveData;
+      if (data == null) {
+        throw Exception('Historical order details not found');
+      }
+      return Success(data.toHistoricalEntity());
     });
   }
 }

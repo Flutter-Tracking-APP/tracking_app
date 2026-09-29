@@ -65,26 +65,24 @@ class OrderDto {
   String get effectiveId => orderId ?? id ?? mongoId ?? '';
   num get effectiveTotalAmount => totalAmount ?? totalPrice ?? price ?? 0;
   num get effectivePrice => effectiveTotalAmount;
-  String get effectiveTitle =>
-      (orderTitle != null && orderTitle!.isNotEmpty)
-          ? orderTitle!
-          : (title ?? 'Flower order');
-  String get effectiveStoreName =>
-      (storeName != null && storeName!.isNotEmpty)
-          ? storeName!
-          : (store?.name ?? 'Flowery store');
+  String get effectiveTitle => (orderTitle != null && orderTitle!.isNotEmpty)
+      ? orderTitle!
+      : (title ?? 'Flower order');
+  String get effectiveStoreName => (storeName != null && storeName!.isNotEmpty)
+      ? storeName!
+      : (store?.name ?? 'Flowery store');
   String get effectiveStoreAddress =>
       (storeAddress != null && storeAddress!.isNotEmpty)
-          ? storeAddress!
-          : (store?.address ?? '');
+      ? storeAddress!
+      : (store?.address ?? '');
   String get effectiveCustomerName =>
       (customerName != null && customerName!.isNotEmpty)
-          ? customerName!
-          : (user?.effectiveName ?? 'Customer');
+      ? customerName!
+      : (user?.effectiveName ?? 'Customer');
   String get effectiveCustomerAddress =>
       (customerAddress != null && customerAddress!.isNotEmpty)
-          ? customerAddress!
-          : (user?.address ?? '');
+      ? customerAddress!
+      : (user?.address ?? '');
 }
 
 @JsonSerializable(createToJson: false)

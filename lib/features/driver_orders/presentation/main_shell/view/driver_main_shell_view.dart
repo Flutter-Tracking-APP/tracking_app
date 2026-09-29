@@ -7,6 +7,7 @@ import 'package:tracking_app/core/const/app_styles.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_cubit.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_state.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/view/driver_home_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/order_history/view/driver_order_history_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 
 class DriverMainShellView extends StatefulWidget {
@@ -40,15 +41,12 @@ class _DriverMainShellViewState extends State<DriverMainShellView> {
 
           final tabs = [
             const DriverHomeView(),
-            _buildOrdersPlaceholder(localizations),
+            const DriverOrderHistoryView(),
             const ProfileView(),
           ];
 
           return Scaffold(
-            body: IndexedStack(
-              index: _currentIndex,
-              children: tabs,
-            ),
+            body: IndexedStack(index: _currentIndex, children: tabs),
             bottomNavigationBar: hasActiveOrder
                 ? null
                 : _buildBottomNavigationBar(localizations),
@@ -86,26 +84,6 @@ class _DriverMainShellViewState extends State<DriverMainShellView> {
           label: localizations.profileTitle,
         ),
       ],
-    );
-  }
-
-  Widget _buildOrdersPlaceholder(AppLocalizations localizations) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.receipt_long_outlined,
-            size: 64,
-            color: AppColors.grey,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            localizations.ordersTab,
-            style: AppStyles.medium18Inter,
-          ),
-        ],
-      ),
     );
   }
 }

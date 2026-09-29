@@ -10,12 +10,16 @@ class UserAddressCard extends StatelessWidget {
   final UserAddressEntity user;
   final VoidCallback? onCall;
   final VoidCallback? onWhatsApp;
+  final bool showActions;
+  final EdgeInsetsDirectional? padding;
 
   const UserAddressCard({
     super.key,
     required this.user,
     this.onCall,
     this.onWhatsApp,
+    this.showActions = true,
+    this.padding,
   });
 
   @override
@@ -23,14 +27,13 @@ class UserAddressCard extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
+      padding:
+          padding ??
+          const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            localizations.userAddress,
-            style: AppStyles.regular14InterW500,
-          ),
+          Text(localizations.userAddress, style: AppStyles.regular14InterW500),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsetsDirectional.all(12),
@@ -87,22 +90,30 @@ class UserAddressCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.phone_outlined, color: AppColors.purpleBase, size: 20),
-                  onPressed: onCall ??
-                      (user.phone != null && user.phone!.isNotEmpty
-                          ? () => _handleCall(context)
-                          : null),
-                  visualDensity: VisualDensity.compact,
-                ),
-                IconButton(
-                  icon: const WhatsAppIcon(size: 20),
-                  onPressed: onWhatsApp ??
-                      (user.phone != null && user.phone!.isNotEmpty
-                          ? () => _handleWhatsApp(context)
-                          : null),
-                  visualDensity: VisualDensity.compact,
-                ),
+                if (showActions) ...[
+                  IconButton(
+                    icon: const Icon(
+                      Icons.phone_outlined,
+                      color: AppColors.purpleBase,
+                      size: 20,
+                    ),
+                    onPressed:
+                        onCall ??
+                        (user.phone != null && user.phone!.isNotEmpty
+                            ? () => _handleCall(context)
+                            : null),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: const WhatsAppIcon(size: 20),
+                    onPressed:
+                        onWhatsApp ??
+                        (user.phone != null && user.phone!.isNotEmpty
+                            ? () => _handleWhatsApp(context)
+                            : null),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
               ],
             ),
           ),

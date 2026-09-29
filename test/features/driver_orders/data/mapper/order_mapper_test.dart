@@ -21,14 +21,10 @@ void main() {
     });
 
     test('falls back to id or mongoId if orderId is null', () {
-      const orderDtoWithId = OrderDto(
-        id: 'fallback-id-123',
-      );
+      const orderDtoWithId = OrderDto(id: 'fallback-id-123');
       expect(orderDtoWithId.toEntity().id, equals('fallback-id-123'));
 
-      const orderDtoWithMongoId = OrderDto(
-        mongoId: 'mongo-id-456',
-      );
+      const orderDtoWithMongoId = OrderDto(mongoId: 'mongo-id-456');
       expect(orderDtoWithMongoId.toEntity().id, equals('mongo-id-456'));
     });
   });
@@ -88,7 +84,10 @@ void main() {
       expect(entity.items.first.title, equals('Red Roses Bouquet'));
       expect(entity.items.first.name, equals('Red Roses Bouquet'));
       expect(entity.items.first.price, equals(250.0));
-      expect(entity.items.first.imageUrl, equals('https://example.com/roses.png'));
+      expect(
+        entity.items.first.imageUrl,
+        equals('https://example.com/roses.png'),
+      );
       expect(entity.items.first.quantity, equals(2));
     });
 
@@ -130,58 +129,73 @@ void main() {
       expect(entity.status.stepIndex, equals(4));
     });
 
-    test('maps status AWAITING_DELIVERY_CONFIRMATION to OrderFulfillmentStatus.awaitingConfirmation (Step 5)', () {
-      const detailsDto = OrderDetailsDataDto(
-        orderId: 'ord-awaiting',
-        status: 'AWAITING_DELIVERY_CONFIRMATION',
-      );
-      final entity = detailsDto.toEntity();
-      expect(entity.status, equals(OrderFulfillmentStatus.awaitingConfirmation));
-      expect(entity.status.stepIndex, equals(5));
-      expect(entity.rawStatus, equals('AWAITING_DELIVERY_CONFIRMATION'));
-      expect(entity.isFinalDelivered, isFalse);
-    });
+    test(
+      'maps status AWAITING_DELIVERY_CONFIRMATION to OrderFulfillmentStatus.awaitingConfirmation (Step 5)',
+      () {
+        const detailsDto = OrderDetailsDataDto(
+          orderId: 'ord-awaiting',
+          status: 'AWAITING_DELIVERY_CONFIRMATION',
+        );
+        final entity = detailsDto.toEntity();
+        expect(
+          entity.status,
+          equals(OrderFulfillmentStatus.awaitingConfirmation),
+        );
+        expect(entity.status.stepIndex, equals(5));
+        expect(entity.rawStatus, equals('AWAITING_DELIVERY_CONFIRMATION'));
+        expect(entity.isFinalDelivered, isFalse);
+      },
+    );
 
-    test('maps status DELIVERED to OrderFulfillmentStatus.delivered (Step 5)', () {
-      const detailsDto = OrderDetailsDataDto(
-        orderId: 'ord-delivered',
-        status: 'DELIVERED',
-      );
-      final entity = detailsDto.toEntity();
-      expect(entity.status, equals(OrderFulfillmentStatus.delivered));
-      expect(entity.status.stepIndex, equals(5));
-      expect(entity.rawStatus, equals('DELIVERED'));
-      expect(entity.isFinalDelivered, isTrue);
-    });
+    test(
+      'maps status DELIVERED to OrderFulfillmentStatus.delivered (Step 5)',
+      () {
+        const detailsDto = OrderDetailsDataDto(
+          orderId: 'ord-delivered',
+          status: 'DELIVERED',
+        );
+        final entity = detailsDto.toEntity();
+        expect(entity.status, equals(OrderFulfillmentStatus.delivered));
+        expect(entity.status.stepIndex, equals(5));
+        expect(entity.rawStatus, equals('DELIVERED'));
+        expect(entity.isFinalDelivered, isTrue);
+      },
+    );
 
-    test('maps status ARRIVED_AT_PICKUP to OrderFulfillmentStatus.arrivedAtPickup without being caught by pick', () {
-      const detailsDto = OrderDetailsDataDto(
-        orderId: 'ord-at-pickup',
-        status: 'ARRIVED_AT_PICKUP',
-      );
-      final entity = detailsDto.toEntity();
-      expect(entity.status, equals(OrderFulfillmentStatus.arrivedAtPickup));
-      expect(entity.status.stepIndex, equals(1));
-    });
+    test(
+      'maps status ARRIVED_AT_PICKUP to OrderFulfillmentStatus.arrivedAtPickup without being caught by pick',
+      () {
+        const detailsDto = OrderDetailsDataDto(
+          orderId: 'ord-at-pickup',
+          status: 'ARRIVED_AT_PICKUP',
+        );
+        final entity = detailsDto.toEntity();
+        expect(entity.status, equals(OrderFulfillmentStatus.arrivedAtPickup));
+        expect(entity.status.stepIndex, equals(1));
+      },
+    );
   });
 
   group('StoreAddressDtoMapper', () {
-    test('maps addressLine, phoneNumber, whatsAppNumber and storeName correctly', () {
-      const dto = StoreAddressDto(
-        storeName: 'Bouquet Paradise',
-        addressLine: '77 Nile Corniche',
-        phoneNumber: '01122334455',
-        whatsAppNumber: '01122334466',
-      );
+    test(
+      'maps addressLine, phoneNumber, whatsAppNumber and storeName correctly',
+      () {
+        const dto = StoreAddressDto(
+          storeName: 'Bouquet Paradise',
+          addressLine: '77 Nile Corniche',
+          phoneNumber: '01122334455',
+          whatsAppNumber: '01122334466',
+        );
 
-      final entity = dto.toEntity();
-      expect(entity.name, equals('Bouquet Paradise'));
-      expect(entity.address, equals('77 Nile Corniche'));
-      expect(entity.addressLine, equals('77 Nile Corniche'));
-      expect(entity.phone, equals('01122334455'));
-      expect(entity.phoneNumber, equals('01122334455'));
-      expect(entity.whatsAppNumber, equals('01122334466'));
-    });
+        final entity = dto.toEntity();
+        expect(entity.name, equals('Bouquet Paradise'));
+        expect(entity.address, equals('77 Nile Corniche'));
+        expect(entity.addressLine, equals('77 Nile Corniche'));
+        expect(entity.phone, equals('01122334455'));
+        expect(entity.phoneNumber, equals('01122334455'));
+        expect(entity.whatsAppNumber, equals('01122334466'));
+      },
+    );
   });
 
   group('UserAddressDtoMapper', () {
@@ -227,7 +241,7 @@ void main() {
             'orderId': 'ord-list-1',
             'orderNumber': 'ORD-LIST-1',
             'totalPrice': 200.0,
-          }
+          },
         ],
       };
 
@@ -245,7 +259,7 @@ void main() {
             'orderId': 'ord-orders-1',
             'orderNumber': 'ORD-ORDERS-1',
             'totalPrice': 350.0,
-          }
+          },
         ],
       };
 

@@ -21,9 +21,7 @@ class OrderItemTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white[50],
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.white[500]!.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: AppColors.white[500]!.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
@@ -56,7 +54,9 @@ class OrderItemTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.title.isNotEmpty ? item.title : localizations.flowerOrder,
+                  item.title.isNotEmpty
+                      ? item.title
+                      : localizations.flowerOrder,
                   style: AppStyles.regular13W500,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

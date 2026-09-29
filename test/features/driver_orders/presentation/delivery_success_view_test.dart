@@ -39,7 +39,9 @@ Widget createSuccessTestWidget({
 }
 
 void main() {
-  testWidgets('renders all DeliverySuccessView elements properly', (tester) async {
+  testWidgets('renders all DeliverySuccessView elements properly', (
+    tester,
+  ) async {
     await tester.pumpWidget(createSuccessTestWidget());
     await tester.pumpAndSettle();
 
@@ -50,9 +52,13 @@ void main() {
     expect(find.widgetWithText(ElevatedButton, 'Done'), findsOneWidget);
   });
 
-  testWidgets('tapping Done calls onDone callback and routes to home', (tester) async {
+  testWidgets('tapping Done calls onDone callback and routes to home', (
+    tester,
+  ) async {
     bool doneCalled = false;
-    await tester.pumpWidget(createSuccessTestWidget(onDone: () => doneCalled = true));
+    await tester.pumpWidget(
+      createSuccessTestWidget(onDone: () => doneCalled = true),
+    );
     await tester.pumpAndSettle();
 
     final doneButton = find.widgetWithText(ElevatedButton, 'Done');
@@ -63,8 +69,12 @@ void main() {
     expect(find.text('Home Screen'), findsOneWidget);
   });
 
-  testWidgets('renders properly in Arabic (RTL) without layout overflow', (tester) async {
-    await tester.pumpWidget(createSuccessTestWidget(locale: const Locale('ar')));
+  testWidgets('renders properly in Arabic (RTL) without layout overflow', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      createSuccessTestWidget(locale: const Locale('ar')),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('نجاح'), findsOneWidget);

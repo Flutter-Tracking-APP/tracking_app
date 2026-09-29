@@ -10,12 +10,16 @@ class StoreAddressCard extends StatelessWidget {
   final StoreAddressEntity store;
   final VoidCallback? onCall;
   final VoidCallback? onWhatsApp;
+  final bool showActions;
+  final EdgeInsetsDirectional? padding;
 
   const StoreAddressCard({
     super.key,
     required this.store,
     this.onCall,
     this.onWhatsApp,
+    this.showActions = true,
+    this.padding,
   });
 
   @override
@@ -23,7 +27,9 @@ class StoreAddressCard extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
+      padding:
+          padding ??
+          const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,7 +64,9 @@ class StoreAddressCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        store.name.isNotEmpty ? store.name : localizations.floweryStore,
+                        store.name.isNotEmpty
+                            ? store.name
+                            : localizations.floweryStore,
                         style: AppStyles.regular13W500,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -87,23 +95,32 @@ class StoreAddressCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.phone_outlined, color: AppColors.purpleBase, size: 20),
-                  onPressed: onCall ??
-                      (store.phone != null && store.phone!.isNotEmpty
-                          ? () => _handleCall(context)
-                          : null),
-                  visualDensity: VisualDensity.compact,
-                ),
-                IconButton(
-                  icon: const WhatsAppIcon(size: 20),
-                  onPressed: onWhatsApp ??
-                      ((store.whatsAppNumber != null && store.whatsAppNumber!.isNotEmpty) ||
-                              (store.phone != null && store.phone!.isNotEmpty)
-                          ? () => _handleWhatsApp(context)
-                          : null),
-                  visualDensity: VisualDensity.compact,
-                ),
+                if (showActions) ...[
+                  IconButton(
+                    icon: const Icon(
+                      Icons.phone_outlined,
+                      color: AppColors.purpleBase,
+                      size: 20,
+                    ),
+                    onPressed:
+                        onCall ??
+                        (store.phone != null && store.phone!.isNotEmpty
+                            ? () => _handleCall(context)
+                            : null),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: const WhatsAppIcon(size: 20),
+                    onPressed:
+                        onWhatsApp ??
+                        ((store.whatsAppNumber != null &&
+                                    store.whatsAppNumber!.isNotEmpty) ||
+                                (store.phone != null && store.phone!.isNotEmpty)
+                            ? () => _handleWhatsApp(context)
+                            : null),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
               ],
             ),
           ),
@@ -127,7 +144,8 @@ class StoreAddressCard extends StatelessWidget {
   }
 
   Future<void> _handleWhatsApp(BuildContext context) async {
-    final target = (store.whatsAppNumber != null && store.whatsAppNumber!.isNotEmpty)
+    final target =
+        (store.whatsAppNumber != null && store.whatsAppNumber!.isNotEmpty)
         ? store.whatsAppNumber!
         : store.phone;
     if (target == null || target.isEmpty) return;

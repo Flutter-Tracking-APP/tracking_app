@@ -52,10 +52,7 @@ class AvailableOrderCard extends StatelessWidget {
             style: AppStyles.regular14InterW500,
           ),
           const SizedBox(height: 12),
-          Text(
-            localizations.pickupAddress,
-            style: AppStyles.regular12Inter,
-          ),
+          Text(localizations.pickupAddress, style: AppStyles.regular12Inter),
           const SizedBox(height: 6),
           _buildAddressTile(
             title: storeName,
@@ -63,10 +60,7 @@ class AvailableOrderCard extends StatelessWidget {
             isStore: true,
           ),
           const SizedBox(height: 12),
-          Text(
-            localizations.userAddress,
-            style: AppStyles.regular12Inter,
-          ),
+          Text(localizations.userAddress, style: AppStyles.regular12Inter),
           const SizedBox(height: 6),
           _buildAddressTile(
             title: customerName,

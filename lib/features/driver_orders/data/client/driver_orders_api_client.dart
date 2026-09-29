@@ -6,6 +6,7 @@ import 'package:tracking_app/features/driver_orders/data/models/request/update_o
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_action_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/data/models/response/order_history_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/update_order_status_response_dto.dart';
 
 part 'driver_orders_api_client.g.dart';
@@ -35,4 +36,11 @@ abstract class DriverOrdersApiClient {
 
   @GET(Endpoints.driverAssignedOrder)
   Future<OrderDetailsResponseDto> getAssignedOrder();
+
+  @GET(Endpoints.driverOrderHistory)
+  Future<OrderHistoryResponseDto> getDriverOrderHistory({
+    @Query('page') int page = 1,
+    @Query('pageSize') int pageSize = 20,
+    @Query('status') String? status,
+  });
 }

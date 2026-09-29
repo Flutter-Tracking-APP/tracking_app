@@ -2,8 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/store_address_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/user_address_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/repositories/driver_orders_repository.dart';
@@ -28,8 +30,9 @@ class MockDriverOrdersRepository implements DriverOrdersRepository {
       const Success('Claimed');
 
   @override
-  Future<ApiResults<OrderDetailsEntity>> getOrderDetails(String orderId) async =>
-      Success(details!);
+  Future<ApiResults<OrderDetailsEntity>> getOrderDetails(
+    String orderId,
+  ) async => Success(details!);
 
   @override
   Future<ApiResults<String>> updateOrderStatus(
@@ -51,6 +54,18 @@ class MockDriverOrdersRepository implements DriverOrdersRepository {
   @override
   Future<ApiResults<OrderDetailsEntity?>> getActiveOrder() async =>
       Success(details);
+
+  @override
+  Future<ApiResults<List<OrderHistoryEntity>>> getDriverOrderHistory({
+    int page = 1,
+    int pageSize = 20,
+    String? status,
+  }) async => const Success([]);
+
+  @override
+  Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
+    String orderId,
+  ) async => throw UnimplementedError();
 }
 
 void main() {
@@ -84,222 +99,271 @@ void main() {
   });
 
   group('OrderDetailsCubit.updateNextStatus', () {
-    test('Step 1 (accepted) -> sends PICKED_UP and transitions to picked',
-        () async {
-      await cubit.getOrderDetails('ord-test-1');
+    test(
+      'Step 1 (accepted) -> sends PICKED_UP and transitions to picked',
+      () async {
+        await cubit.getOrderDetails('ord-test-1');
 
-      await cubit.updateNextStatus('ord-test-1');
+        await cubit.updateNextStatus('ord-test-1');
 
-      expect(mockRepo.lastUpdatedStatus, equals('PICKED_UP'));
-      expect(mockRepo.lastUpdatedNote, equals('Collected from pickup store'));
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.picked));
-      expect(cubit.state.isUpdatingStatus, isFalse);
-    });
-
-    test('Step 2 (arrivedAtPickup) -> receives store approval and transitions to picked',
-        () async {
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.arrivedAtPickup,
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-      await cubit.getOrderDetails('ord-test-1');
-
-      cubit.doEvent(const ExternalOrderStatusUpdatedEvent(OrderFulfillmentStatus.picked));
-
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.picked));
-    });
-
-    test('Step 3 (picked) -> sends OUT_FOR_DELIVERY and transitions to outForDelivery',
-        () async {
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.picked,
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-      await cubit.getOrderDetails('ord-test-1');
-
-      await cubit.updateNextStatus('ord-test-1');
-
-      expect(mockRepo.lastUpdatedStatus, equals('OUT_FOR_DELIVERY'));
-      expect(mockRepo.lastUpdatedNote, equals('Heading to customer'));
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.outForDelivery));
-      expect(cubit.state.isUpdatingStatus, isFalse);
-    });
-
-    test('Step 4 (outForDelivery) -> sends ARRIVED and transitions to arrived',
-        () async {
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.outForDelivery,
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-      await cubit.getOrderDetails('ord-test-1');
-
-      await cubit.updateNextStatus('ord-test-1');
-
-      expect(mockRepo.lastUpdatedStatus, equals('ARRIVED'));
-      expect(mockRepo.lastUpdatedNote,
-          equals('Driver reached the delivery address'));
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.arrived));
-      expect(cubit.state.isUpdatingStatus, isFalse);
-    });
+        expect(mockRepo.lastUpdatedStatus, equals('PICKED_UP'));
+        expect(mockRepo.lastUpdatedNote, equals('Collected from pickup store'));
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.picked),
+        );
+        expect(cubit.state.isUpdatingStatus, isFalse);
+      },
+    );
 
     test(
-        'Step 4 (arrived) -> sends AWAITING_DELIVERY_CONFIRMATION and transitions to awaitingConfirmation',
-        () async {
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.arrived,
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-      await cubit.getOrderDetails('ord-test-1');
+      'Step 2 (arrivedAtPickup) -> receives store approval and transitions to picked',
+      () async {
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.arrivedAtPickup,
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+        await cubit.getOrderDetails('ord-test-1');
 
-      final emittedEvents = <BaseEvent>[];
-      final subscription = cubit.eventStream.listen(emittedEvents.add);
+        cubit.doEvent(
+          const ExternalOrderStatusUpdatedEvent(OrderFulfillmentStatus.picked),
+        );
 
-      await cubit.updateNextStatus('ord-test-1');
-      await Future<void>.delayed(Duration.zero);
-
-      expect(mockRepo.lastUpdatedStatus, equals('AWAITING_DELIVERY_CONFIRMATION'));
-      expect(mockRepo.lastUpdatedNote, equals('Order handed to customer'));
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.awaitingConfirmation));
-      expect(cubit.state.isDelivered, isFalse);
-      expect(cubit.state.isUpdatingStatus, isFalse);
-      expect(emittedEvents.any((e) => e is NavigateToDeliverySuccessEvent), isFalse);
-
-      await subscription.cancel();
-    });
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.picked),
+        );
+      },
+    );
 
     test(
-        'Polling DELIVERED status immediately cancels timer, updates state, and emits NavigateToDeliverySuccessEvent',
-        () async {
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.awaitingConfirmation,
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-      await cubit.getOrderDetails('ord-test-1');
+      'Step 3 (picked) -> sends OUT_FOR_DELIVERY and transitions to outForDelivery',
+      () async {
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.picked,
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+        await cubit.getOrderDetails('ord-test-1');
 
-      final emittedEvents = <BaseEvent>[];
-      final subscription = cubit.eventStream.listen(emittedEvents.add);
+        await cubit.updateNextStatus('ord-test-1');
 
-      // Now customer confirms delivery on server
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.delivered,
-        rawStatus: 'DELIVERED',
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-
-      // Trigger order fetch / polling refresh
-      await cubit.getOrderDetails('ord-test-1');
-      await Future<void>.delayed(Duration.zero);
-
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.delivered));
-      expect(cubit.state.isDelivered, isTrue);
-      expect(emittedEvents.any((e) => e is NavigateToDeliverySuccessEvent), isTrue);
-
-      await subscription.cancel();
-    });
+        expect(mockRepo.lastUpdatedStatus, equals('OUT_FOR_DELIVERY'));
+        expect(mockRepo.lastUpdatedNote, equals('Heading to customer'));
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.outForDelivery),
+        );
+        expect(cubit.state.isUpdatingStatus, isFalse);
+      },
+    );
 
     test(
-        'Step 5 (delivered) -> receives customer confirmation and transitions to delivered',
-        () async {
-      mockRepo.details = OrderDetailsEntity(
-        id: baseOrder.id,
-        orderNumber: baseOrder.orderNumber,
-        status: OrderFulfillmentStatus.delivered,
-        formattedDate: baseOrder.formattedDate,
-        store: baseOrder.store,
-        user: baseOrder.user,
-        items: baseOrder.items,
-        total: baseOrder.total,
-        paymentMethod: baseOrder.paymentMethod,
-      );
-      await cubit.getOrderDetails('ord-test-1');
+      'Step 4 (outForDelivery) -> sends ARRIVED and transitions to arrived',
+      () async {
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.outForDelivery,
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+        await cubit.getOrderDetails('ord-test-1');
 
-      final emittedEvents = <BaseEvent>[];
-      final subscription = cubit.eventStream.listen(emittedEvents.add);
+        await cubit.updateNextStatus('ord-test-1');
 
-      cubit.doEvent(const ExternalOrderStatusUpdatedEvent(OrderFulfillmentStatus.delivered));
-      await Future<void>.delayed(Duration.zero);
+        expect(mockRepo.lastUpdatedStatus, equals('ARRIVED'));
+        expect(
+          mockRepo.lastUpdatedNote,
+          equals('Driver reached the delivery address'),
+        );
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.arrived),
+        );
+        expect(cubit.state.isUpdatingStatus, isFalse);
+      },
+    );
 
-      expect(cubit.state.orderDetailsState.data?.status,
-          equals(OrderFulfillmentStatus.delivered));
-      expect(cubit.state.isDelivered, isTrue);
-      expect(emittedEvents.any((e) => e is OrderDeliveredUiEvent), isTrue);
-      expect(emittedEvents.any((e) => e is NavigateToDeliverySuccessEvent), isTrue);
+    test(
+      'Step 4 (arrived) -> sends AWAITING_DELIVERY_CONFIRMATION and transitions to awaitingConfirmation',
+      () async {
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.arrived,
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+        await cubit.getOrderDetails('ord-test-1');
 
-      await subscription.cancel();
-    });
+        final emittedEvents = <BaseEvent>[];
+        final subscription = cubit.eventStream.listen(emittedEvents.add);
 
-    test('Conflict (409) -> resets isUpdatingStatus and emits DisplayError',
-        () async {
-      mockRepo.shouldFailUpdate = true;
-      mockRepo.failMessage =
-          'An order cannot go from Placed to OutForDelivery.';
+        await cubit.updateNextStatus('ord-test-1');
+        await Future<void>.delayed(Duration.zero);
 
-      await cubit.getOrderDetails('ord-test-1');
+        expect(
+          mockRepo.lastUpdatedStatus,
+          equals('AWAITING_DELIVERY_CONFIRMATION'),
+        );
+        expect(mockRepo.lastUpdatedNote, equals('Order handed to customer'));
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.awaitingConfirmation),
+        );
+        expect(cubit.state.isDelivered, isFalse);
+        expect(cubit.state.isUpdatingStatus, isFalse);
+        expect(
+          emittedEvents.any((e) => e is NavigateToDeliverySuccessEvent),
+          isFalse,
+        );
 
-      final emittedEvents = <BaseEvent>[];
-      final subscription = cubit.eventStream.listen(emittedEvents.add);
+        await subscription.cancel();
+      },
+    );
 
-      await cubit.updateNextStatus('ord-test-1');
-      await Future<void>.delayed(Duration.zero);
+    test(
+      'Polling DELIVERED status immediately cancels timer, updates state, and emits NavigateToDeliverySuccessEvent',
+      () async {
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.awaitingConfirmation,
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+        await cubit.getOrderDetails('ord-test-1');
 
-      expect(cubit.state.isUpdatingStatus, isFalse);
-      expect(cubit.state.updateStatusState.errorMessage,
-          equals('An order cannot go from Placed to OutForDelivery.'));
-      expect(emittedEvents, hasLength(1));
-      expect(
-        (emittedEvents.first as DisplayError).errorMsg,
-        equals('An order cannot go from Placed to OutForDelivery.'),
-      );
+        final emittedEvents = <BaseEvent>[];
+        final subscription = cubit.eventStream.listen(emittedEvents.add);
 
-      await subscription.cancel();
-    });
+        // Now customer confirms delivery on server
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.delivered,
+          rawStatus: 'DELIVERED',
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+
+        // Trigger order fetch / polling refresh
+        await cubit.getOrderDetails('ord-test-1');
+        await Future<void>.delayed(Duration.zero);
+
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.delivered),
+        );
+        expect(cubit.state.isDelivered, isTrue);
+        expect(
+          emittedEvents.any((e) => e is NavigateToDeliverySuccessEvent),
+          isTrue,
+        );
+
+        await subscription.cancel();
+      },
+    );
+
+    test(
+      'Step 5 (delivered) -> receives customer confirmation and transitions to delivered',
+      () async {
+        mockRepo.details = OrderDetailsEntity(
+          id: baseOrder.id,
+          orderNumber: baseOrder.orderNumber,
+          status: OrderFulfillmentStatus.delivered,
+          formattedDate: baseOrder.formattedDate,
+          store: baseOrder.store,
+          user: baseOrder.user,
+          items: baseOrder.items,
+          total: baseOrder.total,
+          paymentMethod: baseOrder.paymentMethod,
+        );
+        await cubit.getOrderDetails('ord-test-1');
+
+        final emittedEvents = <BaseEvent>[];
+        final subscription = cubit.eventStream.listen(emittedEvents.add);
+
+        cubit.doEvent(
+          const ExternalOrderStatusUpdatedEvent(
+            OrderFulfillmentStatus.delivered,
+          ),
+        );
+        await Future<void>.delayed(Duration.zero);
+
+        expect(
+          cubit.state.orderDetailsState.data?.status,
+          equals(OrderFulfillmentStatus.delivered),
+        );
+        expect(cubit.state.isDelivered, isTrue);
+        expect(emittedEvents.any((e) => e is OrderDeliveredUiEvent), isTrue);
+        expect(
+          emittedEvents.any((e) => e is NavigateToDeliverySuccessEvent),
+          isTrue,
+        );
+
+        await subscription.cancel();
+      },
+    );
+
+    test(
+      'Conflict (409) -> resets isUpdatingStatus and emits DisplayError',
+      () async {
+        mockRepo.shouldFailUpdate = true;
+        mockRepo.failMessage =
+            'An order cannot go from Placed to OutForDelivery.';
+
+        await cubit.getOrderDetails('ord-test-1');
+
+        final emittedEvents = <BaseEvent>[];
+        final subscription = cubit.eventStream.listen(emittedEvents.add);
+
+        await cubit.updateNextStatus('ord-test-1');
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.isUpdatingStatus, isFalse);
+        expect(
+          cubit.state.updateStatusState.errorMessage,
+          equals('An order cannot go from Placed to OutForDelivery.'),
+        );
+        expect(emittedEvents, hasLength(1));
+        expect(
+          (emittedEvents.first as DisplayError).errorMsg,
+          equals('An order cannot go from Placed to OutForDelivery.'),
+        );
+
+        await subscription.cancel();
+      },
+    );
   });
 }

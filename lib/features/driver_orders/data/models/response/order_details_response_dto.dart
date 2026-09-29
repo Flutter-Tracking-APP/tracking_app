@@ -109,7 +109,10 @@ class OrderDetailsDataDto {
 
   String get effectiveId => orderId ?? id ?? mongoId ?? '';
   String get effectiveOrderNumber =>
-      orderNumber ?? (effectiveId.length > 6 ? effectiveId.substring(effectiveId.length - 6) : effectiveId);
+      orderNumber ??
+      (effectiveId.length > 6
+          ? effectiveId.substring(effectiveId.length - 6)
+          : effectiveId);
   StoreAddressDto? get effectiveStore => pickup ?? store;
   num get effectiveTotal => totalPrice ?? total ?? 0;
   List<OrderItemDto> get effectiveItems => orderItems ?? items ?? [];

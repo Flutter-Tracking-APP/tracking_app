@@ -80,10 +80,7 @@ class _DynamicActionButtonState extends State<DynamicActionButton> {
                   height: 48,
                   child: Stack(
                     alignment: Alignment.center,
-                    children: <Widget>[
-                      ...previousChildren,
-                      ?currentChild,
-                    ],
+                    children: <Widget>[...previousChildren, ?currentChild],
                   ),
                 );
               },
@@ -111,13 +108,11 @@ class _DynamicActionButtonState extends State<DynamicActionButton> {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.success,
           disabledBackgroundColor: AppColors.success,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-        child: const Icon(
-          Icons.check,
-          color: AppColors.whiteBase,
-          size: 24,
-        ),
+        child: const Icon(Icons.check, color: AppColors.whiteBase, size: 24),
       ),
     );
   }
@@ -140,8 +135,8 @@ class _DynamicActionButtonState extends State<DynamicActionButton> {
             ? null
             : () {
                 context.read<OrderDetailsCubit>().doEvent(
-                      UpdateNextStatusEvent(widget.orderId),
-                    );
+                  UpdateNextStatusEvent(widget.orderId),
+                );
               },
       ),
     );
@@ -165,8 +160,7 @@ class _DynamicActionButtonState extends State<DynamicActionButton> {
       OrderFulfillmentStatus.outForDelivery => localizations.arrivedToUser,
       OrderFulfillmentStatus.arrived => localizations.handOrderToUser,
       OrderFulfillmentStatus.awaitingConfirmation ||
-      OrderFulfillmentStatus.delivered =>
-        localizations.waitingForConfirmation,
+      OrderFulfillmentStatus.delivered => localizations.waitingForConfirmation,
     };
   }
 }

@@ -14,14 +14,14 @@ class OrderItemsListView extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            localizations.orderDetails,
-            style: AppStyles.regular14InterW500,
-          ),
+          Text(localizations.orderDetails, style: AppStyles.regular14InterW500),
           const SizedBox(height: 8),
           ...items.map((item) => OrderItemTile(item: item)),
         ],

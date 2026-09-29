@@ -1,7 +1,10 @@
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_details_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/data/models/response/order_history_response_dto.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_item_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/store_address_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/user_address_entity.dart';
@@ -101,8 +104,18 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
     final dt = parsed.toLocal();
     const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     final weekday = weekdays[dt.weekday - 1];
     final day = dt.day.toString().padLeft(2, '0');
@@ -118,12 +131,14 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
 
   static OrderFulfillmentStatus _parseStatus(String? rawStatus) {
     if (rawStatus == null) return OrderFulfillmentStatus.accepted;
-    final normalized = rawStatus.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+    final normalized = rawStatus.toLowerCase().replaceAll(
+      RegExp(r'[^a-z]'),
+      '',
+    );
     if (normalized.contains('awaiting')) {
       return OrderFulfillmentStatus.awaitingConfirmation;
     }
-    if (normalized.contains('deliver') ||
-        normalized == 'completed') {
+    if (normalized.contains('deliver') || normalized == 'completed') {
       return OrderFulfillmentStatus.delivered;
     }
     if (normalized.contains('arrivedtouser') ||
@@ -150,5 +165,63 @@ extension OrderDetailsDataDtoMapper on OrderDetailsDataDto {
       return OrderFulfillmentStatus.accepted;
     }
     return OrderFulfillmentStatus.accepted;
+  }
+}
+
+extension DestinationDtoMapper on DestinationDto? {
+  UserAddressEntity toUserAddressEntity() {
+    return UserAddressEntity(
+      name: (this?.recipientName != null && this!.recipientName!.isNotEmpty)
+          ? this!.recipientName!
+          : 'Customer',
+      address: this?.effectiveAddress ?? '',
+      phone: this?.recipientPhone,
+    );
+  }
+}
+
+extension OrderHistoryItemDtoMapper on OrderHistoryItemDto {
+  OrderHistoryEntity toEntity() {
+    final userAddress = (user != null)
+        ? user.toEntity()
+        : destination.toUserAddressEntity();
+    final storeAddress = effectiveStore.toEntity();
+
+    return OrderHistoryEntity(
+      id: effectiveId,
+      orderNumber: effectiveOrderNumber,
+      status: effectiveStatus,
+      statusDisplay: effectiveStatusDisplay,
+      placedAt: effectiveDate,
+      assignedAt: assignedAt,
+      itemCount: itemCount ?? 1,
+      total: effectiveTotal,
+      isGift: isGift ?? false,
+      store: storeAddress,
+      user: userAddress,
+    );
+  }
+}
+
+extension OrderDetailsHistoricalMapper on OrderDetailsDataDto {
+  HistoricalOrderDetailsEntity toHistoricalEntity() {
+    return HistoricalOrderDetailsEntity(
+      id: effectiveId,
+      orderNumber: effectiveOrderNumber,
+      status: status ?? 'DELIVERED',
+      statusDisplay: statusDisplay ?? status ?? 'Delivered',
+      placedAt: effectiveDate,
+      assignedAt: null,
+      subtotal: total ?? totalPrice ?? 0,
+      deliveryFee: 0,
+      total: effectiveTotal,
+      paymentMethod: paymentMethod ?? 'Cod',
+      paymentMethodDisplay: effectivePaymentMethod,
+      currency: 'EGP',
+      isGift: false,
+      store: effectiveStore.toEntity(),
+      user: user.toEntity(),
+      items: effectiveItems.map((e) => e.toEntity()).toList(),
+    );
   }
 }

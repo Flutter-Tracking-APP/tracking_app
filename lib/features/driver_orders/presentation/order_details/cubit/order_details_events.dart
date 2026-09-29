@@ -48,4 +48,3 @@ final class NavigateToDeliverySuccessEvent extends OrderDetailsUiEvent {
 }
 
 typedef NavigateToDeliverySuccessUiEvent = NavigateToDeliverySuccessEvent;
-

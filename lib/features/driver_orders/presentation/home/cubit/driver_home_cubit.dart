@@ -43,7 +43,9 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
   }
 
   Future<void> _initHome() async {
-    log('DriverHomeCubit: _initHome started, emitting checkingActiveOrder = true');
+    log(
+      'DriverHomeCubit: _initHome started, emitting checkingActiveOrder = true',
+    );
     if (isClosed) return;
     emit(state.copyWith(checkingActiveOrder: true));
 
@@ -54,7 +56,9 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
     switch (activeResult) {
       case Success(data: final active)
           when active != null && active.id.isNotEmpty:
-        log('DriverHomeCubit: active order found -> id: ${active.id}, status: ${active.status}');
+        log(
+          'DriverHomeCubit: active order found -> id: ${active.id}, status: ${active.status}',
+        );
         if (isClosed) return;
         emit(
           state.copyWith(
@@ -93,7 +97,9 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
     if (isClosed) return;
     switch (result) {
       case Success(data: final orders):
-        emit(state.copyWith(ordersState: BaseState.success(_sortOrders(orders))));
+        emit(
+          state.copyWith(ordersState: BaseState.success(_sortOrders(orders))),
+        );
       case Failure(error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         emit(
@@ -179,7 +185,9 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
     switch (activeResult) {
       case Success(data: final active)
           when active != null && active.id.isNotEmpty:
-        log('DriverHomeCubit: active order found from conflict -> id: ${active.id}');
+        log(
+          'DriverHomeCubit: active order found from conflict -> id: ${active.id}',
+        );
         emit(
           state.copyWith(
             checkingActiveOrder: false,
@@ -195,5 +203,4 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         break;
     }
   }
-
 }

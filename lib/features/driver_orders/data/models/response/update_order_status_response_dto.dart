@@ -26,11 +26,7 @@ class UpdateOrderStatusDataDto {
   final String? status;
   final String? occurredAt;
 
-  const UpdateOrderStatusDataDto({
-    this.orderId,
-    this.status,
-    this.occurredAt,
-  });
+  const UpdateOrderStatusDataDto({this.orderId, this.status, this.occurredAt});
 
   factory UpdateOrderStatusDataDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateOrderStatusDataDtoFromJson(json);

@@ -7,10 +7,7 @@ class UpdateOrderStatusRequestDto {
   final String status;
   final String? note;
 
-  const UpdateOrderStatusRequestDto({
-    required this.status,
-    this.note,
-  });
+  const UpdateOrderStatusRequestDto({required this.status, this.note});
 
   Map<String, dynamic> toJson() => _$UpdateOrderStatusRequestDtoToJson(this);
 }
