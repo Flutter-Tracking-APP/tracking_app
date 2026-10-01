@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/core/const/api_params.dart';
 
 Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
   try {
@@ -12,16 +13,16 @@ Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
       final responseData = e.response?.data;
       if (responseData is Map<String, dynamic>) {
         message =
-            (responseData['message'] ??
-                    responseData['error'] ??
-                    responseData['msg'])
+            (responseData[ApiParams.message] ??
+                    responseData[ApiParams.error] ??
+                    responseData[ApiParams.msg])
                 ?.toString();
         if ((message == null || message.trim().isEmpty) &&
-            responseData['errors'] is List &&
-            (responseData['errors'] as List).isNotEmpty) {
-          final firstError = (responseData['errors'] as List).first;
+            responseData[ApiParams.errors] is List &&
+            (responseData[ApiParams.errors] as List).isNotEmpty) {
+          final firstError = (responseData[ApiParams.errors] as List).first;
           if (firstError is Map<String, dynamic>) {
-            message = firstError['message']?.toString();
+            message = firstError[ApiParams.message]?.toString();
           } else {
             message = firstError?.toString();
           }

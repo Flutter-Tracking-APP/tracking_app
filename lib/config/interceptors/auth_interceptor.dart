@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/config/network/network_constants.dart';
 import 'package:tracking_app/config/session/session_service.dart';
+import 'package:tracking_app/core/const/api_headers.dart';
 
 @lazySingleton
 class AuthInterceptor extends Interceptor {
@@ -24,7 +25,8 @@ class AuthInterceptor extends Interceptor {
       final token = await _sessionService.getToken();
 
       if (token.isNotEmpty) {
-        options.headers['Authorization'] = 'Bearer $token';
+        options.headers[ApiHeaders.authorization] =
+            '${ApiHeaders.bearerPrefix}$token';
       }
     } catch (error, stackTrace) {
       log(
