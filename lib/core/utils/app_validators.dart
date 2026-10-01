@@ -31,6 +31,17 @@ abstract final class AppValidators {
   static const String passwordNumberPattern = r'[0-9]';
   static const String passwordSpecialCharPattern = r'[#?!@$%^&*-]';
 
+  static final RegExp emailRegex = RegExp(emailPattern);
+  static final RegExp phoneRegex = RegExp(phonePattern);
+  static final RegExp nationalIdRegex = RegExp(nationalIdPattern);
+  static final RegExp usernameRegex = RegExp(usernamePattern);
+  static final RegExp nameRegex = RegExp(namePattern);
+
+  static final RegExp passwordUppercaseRegex = RegExp(passwordUppercasePattern);
+  static final RegExp passwordLowercaseRegex = RegExp(passwordLowercasePattern);
+  static final RegExp passwordNumberRegex = RegExp(passwordNumberPattern);
+  static final RegExp passwordSpecialCharRegex = RegExp(passwordSpecialCharPattern);
+
   static bool validate(String pattern, String input) {
     return RegExp(pattern).hasMatch(input);
   }
@@ -42,19 +53,19 @@ abstract final class AppValidators {
 
   static ValidationError? validateEmail(String? val) {
     if (val == null || val.trim().isEmpty) return ValidationError.empty;
-    if (!validate(emailPattern, val.trim())) return ValidationError.invalidEmail;
+    if (!emailRegex.hasMatch(val.trim())) return ValidationError.invalidEmail;
     return null;
   }
 
   static ValidationError? validatePhone(String? val) {
     if (val == null || val.trim().isEmpty) return ValidationError.empty;
-    if (!validate(phonePattern, val.trim())) return ValidationError.invalidPhone;
+    if (!phoneRegex.hasMatch(val.trim())) return ValidationError.invalidPhone;
     return null;
   }
 
   static ValidationError? validateNationalId(String? val) {
     if (val == null || val.trim().isEmpty) return ValidationError.empty;
-    if (!validate(nationalIdPattern, val.trim())) {
+    if (!nationalIdRegex.hasMatch(val.trim())) {
       return ValidationError.invalidNationalId;
     }
     return null;
@@ -63,10 +74,10 @@ abstract final class AppValidators {
   static ValidationError? validatePassword(String? val) {
     if (val == null || val.isEmpty) return ValidationError.empty;
     if (val.length < 8 ||
-        !validate(passwordUppercasePattern, val) ||
-        !validate(passwordLowercasePattern, val) ||
-        !validate(passwordNumberPattern, val) ||
-        !validate(passwordSpecialCharPattern, val)) {
+        !passwordUppercaseRegex.hasMatch(val) ||
+        !passwordLowercaseRegex.hasMatch(val) ||
+        !passwordNumberRegex.hasMatch(val) ||
+        !passwordSpecialCharRegex.hasMatch(val)) {
       return ValidationError.weakPassword;
     }
     return null;
@@ -75,16 +86,16 @@ abstract final class AppValidators {
   static ValidationError? validatePasswordDetailed(String? val) {
     if (val == null || val.isEmpty) return ValidationError.empty;
     if (val.length < 8) return ValidationError.passwordTooShort;
-    if (!validate(passwordUppercasePattern, val)) {
+    if (!passwordUppercaseRegex.hasMatch(val)) {
       return ValidationError.passwordMissingUppercase;
     }
-    if (!validate(passwordLowercasePattern, val)) {
+    if (!passwordLowercaseRegex.hasMatch(val)) {
       return ValidationError.passwordMissingLowercase;
     }
-    if (!validate(passwordNumberPattern, val)) {
+    if (!passwordNumberRegex.hasMatch(val)) {
       return ValidationError.passwordMissingNumber;
     }
-    if (!validate(passwordSpecialCharPattern, val)) {
+    if (!passwordSpecialCharRegex.hasMatch(val)) {
       return ValidationError.passwordMissingSpecialChar;
     }
     return null;

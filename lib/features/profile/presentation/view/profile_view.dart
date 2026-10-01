@@ -29,7 +29,10 @@ class ProfileView extends StatelessWidget {
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listenWhen: (prev, curr) =>
             prev.logoutState != curr.logoutState ||
-            prev.profileState.errorMessage != curr.profileState.errorMessage,
+            (prev.profileState.failure != curr.profileState.failure &&
+                curr.profileState.failure != null) ||
+            (prev.profileState.errorMessage != curr.profileState.errorMessage &&
+                curr.profileState.errorMessage != null),
         listener: _handleListener,
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
@@ -180,18 +183,21 @@ class ProfileView extends StatelessWidget {
   void _handleListener(BuildContext context, ProfileState state) {
     if (state.logoutState.data == true) {
       context.go(AppRoutes.login);
+      return;
     }
-    if (state.profileState.failure != null ||
-        state.profileState.errorMessage != null) {
+    final failure = state.profileState.failure;
+    final errorMessage = state.profileState.errorMessage;
+    if (failure != null || (errorMessage != null && errorMessage.isNotEmpty)) {
       final message =
-          state.profileState.failure?.toLocalizedMessage(context) ??
-              state.profileState.errorMessage!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.error,
-        ),
-      );
+          failure?.toLocalizedMessage(context) ?? errorMessage ?? '';
+      if (message.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
   }
 }

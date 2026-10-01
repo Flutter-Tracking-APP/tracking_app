@@ -346,6 +346,6 @@ class _EditProfileSubmitButton extends StatelessWidget {
     if (firstName.isEmpty || lastName.isEmpty || phone.isEmpty) {
       return false;
     }
-    return AppValidators.validate(AppValidators.phonePattern, phone);
+    return AppValidators.validatePhone(phone) == null;
   }
 }

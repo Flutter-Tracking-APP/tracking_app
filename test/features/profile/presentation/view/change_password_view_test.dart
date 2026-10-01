@@ -159,6 +159,33 @@ void main() {
     expect(find.text('This field is required'), findsWidgets);
   });
 
+  testWidgets('validates weak password and mismatched confirm password', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget());
+    await tester.pumpAndSettle();
+
+    final textFields = find.byType(TextField);
+    // Current password
+    await tester.enterText(textFields.at(0), 'OldPass123!');
+    // Weak new password
+    await tester.enterText(textFields.at(1), 'short');
+    // Mismatched confirm password
+    await tester.enterText(textFields.at(2), 'different');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Update'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Password must be at least 8 characters with uppercase, lowercase, number and special character',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Passwords do not match'), findsOneWidget);
+  });
+
   testWidgets('renders properly in Arabic (RTL)', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.0;

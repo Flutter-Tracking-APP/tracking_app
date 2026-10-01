@@ -64,21 +64,23 @@ class AppTextField extends StatelessWidget {
         errorMaxLines: 3,
       ),
       controller: controller,
-      validator: (val) {
-        if (errorValidator != null) {
-          final err = errorValidator!(val);
-          return err?.toLocalizedMessage(context);
-        }
-        if (validator != null) {
-          return validator!(val);
-        }
-        return defaultValidator(context, val);
-      },
+      validator: (val) => _resolveValidator(context, val),
       onChanged: onChange,
       obscureText: obscureText,
       readOnly: readOnly,
       keyboardType: keyboardType,
     );
+  }
+
+  String? _resolveValidator(BuildContext context, String? val) {
+    if (errorValidator != null) {
+      final err = errorValidator!(val);
+      return err?.toLocalizedMessage(context);
+    }
+    if (validator != null) {
+      return validator!(val);
+    }
+    return defaultValidator(context, val);
   }
 
   String? defaultValidator(BuildContext context, String? input) {

@@ -5,6 +5,7 @@ import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/core/errors/app_failure.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/claim_order_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_available_orders_use_case.dart';
@@ -100,8 +101,9 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         emit(
           state.copyWith(ordersState: BaseState.success(_sortOrders(orders))),
         );
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case Failure(:final failure, message: final msg):
+        final errorMsg =
+            msg ?? (failure is ServerMessageFailure ? failure.message : '');
         emit(
           state.copyWith(
             ordersState: BaseState(
@@ -166,8 +168,9 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
           emitEvent(DisplayError(msg ?? 'Conflict', failure: failure));
         }
         await _handleConflictActiveOrder();
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case Failure(:final failure, message: final msg):
+        final errorMsg =
+            msg ?? (failure is ServerMessageFailure ? failure.message : '');
         emit(
           state.copyWith(
             claimingOrderId: null,

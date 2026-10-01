@@ -35,7 +35,9 @@ mixin BaseViewMixin<
         final message = failure != null
             ? failure.toLocalizedMessage(context)
             : errorMsg;
-        showErrorSnackBar(message);
+        if (message.isNotEmpty) {
+          showErrorSnackBar(message);
+        }
       case DisplaySuccess(:final successMsg):
         showSuccessSnackBar(successMsg);
       case NavigateEvent(:final routeName, :final extra):

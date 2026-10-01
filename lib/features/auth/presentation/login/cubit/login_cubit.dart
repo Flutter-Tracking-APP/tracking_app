@@ -64,7 +64,7 @@ class LoginCubit extends Cubit<LoginState> {
             login: state.login.copyWith(isLoading: false, data: result.data),
           ),
         );
-        _uiEventController.add(ShowMessage('loginSuccessfully'));
+        _uiEventController.add(LoginSuccessMessage());
         _uiEventController.add(LoginSuccess());
 
       case Failure<LoginEntity>():
@@ -79,7 +79,7 @@ class LoginCubit extends Cubit<LoginState> {
         );
         _uiEventController.add(
           ShowMessage(
-            result.message ?? result.error.name,
+            result.message ?? '',
             failure: result.failure,
           ),
         );

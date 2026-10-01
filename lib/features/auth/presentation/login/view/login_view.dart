@@ -58,11 +58,18 @@ class _LoginViewState extends State<LoginView> {
         case ShowMessage(:final message, :final failure):
           final text = failure != null
               ? failure.toLocalizedMessage(context)
-              : (message == 'loginSuccessfully'
-                  ? AppLocalizations.of(context)!.loginSuccessfully
-                  : message);
+              : message;
+          if (text.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(text)),
+            );
+          }
+
+        case LoginSuccessMessage():
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(text)),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.loginSuccessfully),
+            ),
           );
 
         case LoginSuccess():

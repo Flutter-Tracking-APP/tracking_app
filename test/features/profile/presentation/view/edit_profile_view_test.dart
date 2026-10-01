@@ -205,6 +205,70 @@ void main() {
     );
   });
 
+  testWidgets('disables update button when phone is invalid Egyptian number', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget(profile: dummyProfile));
+    await tester.pumpAndSettle();
+
+    final phoneField = find.widgetWithText(
+      AppTextField,
+      'Phone number',
+    );
+    final textFinder = find.descendant(
+      of: phoneField,
+      matching: find.byType(TextField),
+    );
+
+    // 10 digits - invalid Egyptian phone
+    await tester.enterText(textFinder, '0121234567');
+    await tester.pumpAndSettle();
+
+    final buttonFinder = find.widgetWithText(ElevatedButton, 'Update');
+    final button = tester.widget<ElevatedButton>(buttonFinder);
+    expect(button.enabled, isFalse);
+
+    // Valid 11 digits Egyptian phone
+    await tester.enterText(textFinder, '01212345678');
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Update'))
+          .enabled,
+      isTrue,
+    );
+  });
+
+  testWidgets('displays validation error message when phone is invalid', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget(profile: dummyProfile));
+    await tester.pumpAndSettle();
+
+    final phoneField = find.widgetWithText(
+      AppTextField,
+      'Phone number',
+    );
+    final textFinder = find.descendant(
+      of: phoneField,
+      matching: find.byType(TextField),
+    );
+
+    await tester.enterText(textFinder, '0121234567');
+    await tester.pumpAndSettle();
+
+    // Trigger form validation by tapping submit or checking field
+    final formFinder = find.byType(Form);
+    final formState = tester.state<FormState>(formFinder);
+    formState.validate();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Please enter a valid Egyptian phone number'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('renders properly in Arabic (RTL)', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.0;

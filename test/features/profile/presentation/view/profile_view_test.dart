@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
+import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/core/errors/app_failure.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/config/storage/secure_storage_service.dart';
 import 'package:tracking_app/core/localization/locale_cubit.dart';
@@ -20,6 +22,40 @@ import 'package:tracking_app/features/profile/presentation/cubit/profile/profile
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/widgets/language_bottom_sheet.dart';
 import 'package:tracking_app/features/profile/presentation/view/widgets/logout_dialog.dart';
+
+class FailureProfileRepo implements ProfileRepository {
+  final ApiResults<UserProfileEntity> profileResult;
+  FailureProfileRepo(this.profileResult);
+
+  @override
+  Future<ApiResults<UserProfileEntity>> getProfile() async => profileResult;
+
+  @override
+  Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
+      const Success('ok');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async => const Success(
+        VehicleInfoEntity(
+          vehicleId: 'v-1',
+          vehicleTypeId: 'vt-1',
+          vehicleTypeName: 'Bike',
+          plateNumber: 'UP16DL0007',
+          capacity: 2,
+          licenseDocument: 'doc.png',
+        ),
+      );
+
+  @override
+  Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
+      const Success('ok');
+
+  @override
+  Future<ApiResults<String>> changePassword(
+    ChangePasswordParams params,
+  ) async =>
+      const Success('ok');
+}
 
 class FakeWidgetProfileRepo implements ProfileRepository {
   @override
@@ -234,5 +270,34 @@ void main() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     });
+  });
+
+  testWidgets('displays localized SnackBar on NetworkFailure', (tester) async {
+    getIt.unregister<ProfileCubit>();
+    final failRepo = FailureProfileRepo(
+      const Failure(
+        'no internet',
+        AppError.noConnection,
+        NetworkFailure(AppError.noConnection),
+      ),
+    );
+    getIt.registerFactory<ProfileCubit>(
+      () => ProfileCubit(
+        GetProfileUseCase(failRepo),
+        GetVehicleInfoUseCase(failRepo),
+        FakeWidgetSessionService(),
+      ),
+    );
+
+    await tester.pumpWidget(createTestWidget());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(
+      find.text(
+        'No internet connection. Please check your network and try again.',
+      ),
+      findsOneWidget,
+    );
   });
 }

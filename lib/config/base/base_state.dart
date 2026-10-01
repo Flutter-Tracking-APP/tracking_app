@@ -43,22 +43,41 @@ class BaseState<T> {
         data: data,
       );
 
+
   BaseState<T> copyWith({
     bool? isLoading,
     Object? data = unset,
     Object? errorMessage = unset,
     Object? failure = unset,
   }) {
+    final newFailure =
+        identical(failure, unset) ? this.failure : failure as AppFailure?;
+    final newErrorMessage = identical(errorMessage, unset)
+        ? (identical(failure, unset)
+            ? this.errorMessage
+            : (newFailure is ServerMessageFailure ? newFailure.message : null))
+        : errorMessage as String?;
+
     return BaseState<T>(
       isLoading: isLoading ?? this.isLoading,
       data: identical(data, unset) ? this.data : data as T?,
-      errorMessage: identical(errorMessage, unset)
-          ? this.errorMessage
-          : errorMessage as String?,
-      failure:
-          identical(failure, unset) ? this.failure : failure as AppFailure?,
+      errorMessage: newErrorMessage,
+      failure: newFailure,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BaseState<T> &&
+          runtimeType == other.runtimeType &&
+          isLoading == other.isLoading &&
+          errorMessage == other.errorMessage &&
+          failure == other.failure &&
+          data == other.data;
+
+  @override
+  int get hashCode => Object.hash(isLoading, errorMessage, failure, data);
 
   @override
   String toString() =>

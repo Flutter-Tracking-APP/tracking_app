@@ -55,9 +55,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                 state.errorMessage ??
                 '';
             if (msg.isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(msg)),
-              );
+              _showSnackBar(context, msg);
             }
           }
         }
@@ -161,6 +159,13 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }
