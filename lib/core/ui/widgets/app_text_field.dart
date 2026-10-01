@@ -67,9 +67,7 @@ class AppTextField extends StatelessWidget {
       validator: (val) {
         if (errorValidator != null) {
           final err = errorValidator!(val);
-          if (err != null) {
-            return err.toLocalizedMessage(context);
-          }
+          return err?.toLocalizedMessage(context);
         }
         if (validator != null) {
           return validator!(val);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 
 import '../../../../../core/ui/widgets/app_text_field.dart';
 import '../view_model/forget_password_event.dart';
@@ -54,8 +54,7 @@ class _ForgetPasswordEmailPageState extends State<ForgetPasswordEmailView> {
             hint: localizations.enterYourEmail,
             controller: _emailController,
             localizations: localizations,
-            validationPattern: FormValidator.emailPattern,
-            validationErrorMessage: localizations.invalidEmail,
+            errorValidator: AppValidators.validateEmail,
             keyboardType: TextInputType.emailAddress,
           ),
 

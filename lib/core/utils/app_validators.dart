@@ -6,8 +6,15 @@ enum ValidationError {
   invalidPhone,
   invalidNationalId,
   weakPassword,
+  passwordTooShort,
+  passwordMissingUppercase,
+  passwordMissingLowercase,
+  passwordMissingNumber,
+  passwordMissingSpecialChar,
   passwordMismatch,
   fileRequired,
+  licenseFileRequired,
+  nidFileRequired,
   dropdownRequired,
 }
 
@@ -65,6 +72,24 @@ abstract final class AppValidators {
     return null;
   }
 
+  static ValidationError? validatePasswordDetailed(String? val) {
+    if (val == null || val.isEmpty) return ValidationError.empty;
+    if (val.length < 8) return ValidationError.passwordTooShort;
+    if (!validate(passwordUppercasePattern, val)) {
+      return ValidationError.passwordMissingUppercase;
+    }
+    if (!validate(passwordLowercasePattern, val)) {
+      return ValidationError.passwordMissingLowercase;
+    }
+    if (!validate(passwordNumberPattern, val)) {
+      return ValidationError.passwordMissingNumber;
+    }
+    if (!validate(passwordSpecialCharPattern, val)) {
+      return ValidationError.passwordMissingSpecialChar;
+    }
+    return null;
+  }
+
   static ValidationError? validateConfirmPassword(
     String? val,
     String passwordToMatch,
@@ -74,8 +99,11 @@ abstract final class AppValidators {
     return null;
   }
 
-  static ValidationError? validateFile(File? file) {
-    if (file == null) return ValidationError.fileRequired;
+  static ValidationError? validateFile(
+    File? file, [
+    ValidationError error = ValidationError.fileRequired,
+  ]) {
+    if (file == null) return error;
     return null;
   }
 

@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/di/di.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/validation_error_extension.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/params/apply_driver_params.dart';
@@ -138,7 +139,7 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
           controller: _firstNameController,
           localizations: l10n,
           validator: (val) =>
-              FormValidator.validateRequired(val, l10n.emptyValidationError),
+              AppValidators.validateRequired(val)?.toLocalizedMessage(context),
         ),
         const SizedBox(height: 14),
         AppTextField(
@@ -147,7 +148,7 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
           controller: _lastNameController,
           localizations: l10n,
           validator: (val) =>
-              FormValidator.validateRequired(val, l10n.emptyValidationError),
+              AppValidators.validateRequired(val)?.toLocalizedMessage(context),
         ),
       ],
     );
@@ -166,10 +167,9 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
               vehicleTypes: state.vehicleTypesState.data ?? [],
               selectedVehicleType: state.selectedVehicleType,
               isLoading: state.vehicleTypesState.isLoading,
-              validator: (val) => FormValidator.validateDropdown(
+              validator: (val) => AppValidators.validateDropdown(
                 val,
-                l10n.vehicleTypeRequiredError,
-              ),
+              )?.toLocalizedMessage(context),
               onChanged: (val) {
                 if (val != null) {
                   _cubit.doEvent(SelectVehicleTypeEvent(val));
@@ -182,20 +182,19 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
               hint: l10n.vehicleNumberHint,
               controller: _vehicleNumberController,
               localizations: l10n,
-              validator: (val) => FormValidator.validateRequired(
+              validator: (val) => AppValidators.validateRequired(
                 val,
-                l10n.emptyValidationError,
-              ),
+              )?.toLocalizedMessage(context),
             ),
             const SizedBox(height: 14),
             FileUploadField(
               label: l10n.vehicleLicenseLabel,
               hint: l10n.vehicleLicenseHint,
               file: state.licenceImage,
-              validator: (val) => FormValidator.validateFile(
+              validator: (val) => AppValidators.validateFile(
                 val,
-                l10n.licenseImageRequiredError,
-              ),
+                ValidationError.licenseFileRequired,
+              )?.toLocalizedMessage(context),
               onTap: () => _cubit.doEvent(const PickLicenceImageEvent()),
             ),
           ],
@@ -213,11 +212,8 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           localizations: l10n,
-          validator: (val) => FormValidator.validateEmail(
-            val,
-            l10n.emptyValidationError,
-            l10n.invalidEmailError,
-          ),
+          validator: (val) =>
+              AppValidators.validateEmail(val)?.toLocalizedMessage(context),
         ),
         const SizedBox(height: 14),
         AppTextField(
@@ -226,11 +222,8 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
           controller: _phoneController,
           keyboardType: TextInputType.phone,
           localizations: l10n,
-          validator: (val) => FormValidator.validatePhone(
-            val,
-            l10n.emptyValidationError,
-            l10n.invalidPhoneError,
-          ),
+          validator: (val) =>
+              AppValidators.validatePhone(val)?.toLocalizedMessage(context),
         ),
       ],
     );
@@ -248,19 +241,19 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
               controller: _nidController,
               keyboardType: TextInputType.number,
               localizations: l10n,
-              validator: (val) => FormValidator.validateNationalId(
+              validator: (val) => AppValidators.validateNationalId(
                 val,
-                l10n.emptyValidationError,
-                l10n.nationalIdError,
-              ),
+              )?.toLocalizedMessage(context),
             ),
             const SizedBox(height: 14),
             FileUploadField(
               label: l10n.nidImageLabel,
               hint: l10n.nidImageHint,
               file: state.nidImage,
-              validator: (val) =>
-                  FormValidator.validateFile(val, l10n.nidImageRequiredError),
+              validator: (val) => AppValidators.validateFile(
+                val,
+                ValidationError.nidFileRequired,
+              )?.toLocalizedMessage(context),
               onTap: () => _cubit.doEvent(const PickNidImageEvent()),
             ),
           ],
@@ -278,18 +271,13 @@ class _ApplyAsDriverViewState extends State<ApplyAsDriverView>
         return PasswordFieldsRow(
           passwordController: _passwordController,
           confirmPasswordController: _confirmPasswordController,
-          validatorPassword: (val) => FormValidator.validatePasswordValue(
-            val,
-            l10n.emptyValidationError,
-            l10n.weakPasswordError,
-          ),
+          validatorPassword: (val) =>
+              AppValidators.validatePassword(val)?.toLocalizedMessage(context),
           validatorConfirmPassword: (val) =>
-              FormValidator.validateConfirmPassword(
+              AppValidators.validateConfirmPassword(
                 val,
                 _passwordController.text,
-                l10n.emptyValidationError,
-                l10n.passwordMismatchError,
-              ),
+              )?.toLocalizedMessage(context),
           isPasswordVisible: state.isPasswordVisible,
           isConfirmPasswordVisible: state.isConfirmPasswordVisible,
           onTogglePassword: () =>

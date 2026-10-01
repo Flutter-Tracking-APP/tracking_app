@@ -48,10 +48,24 @@ void main() {
           equals('Please enter a valid 14-digit national ID'));
       expect(messages[ValidationError.weakPassword],
           contains('Password must be at least 8 characters'));
+      expect(messages[ValidationError.passwordTooShort],
+          equals('Password must be at least 8 characters'));
+      expect(messages[ValidationError.passwordMissingUppercase],
+          equals('Password must contain an uppercase letter'));
+      expect(messages[ValidationError.passwordMissingLowercase],
+          equals('Password must contain a lowercase letter'));
+      expect(messages[ValidationError.passwordMissingNumber],
+          equals('Password must contain a number'));
+      expect(messages[ValidationError.passwordMissingSpecialChar],
+          equals('Password must contain a special character'));
       expect(messages[ValidationError.passwordMismatch],
           equals('Passwords do not match'));
       expect(messages[ValidationError.fileRequired],
           equals('Please upload your vehicle license photo'));
+      expect(messages[ValidationError.licenseFileRequired],
+          equals('Please upload your vehicle license photo'));
+      expect(messages[ValidationError.nidFileRequired],
+          equals('Please upload your ID photo'));
       expect(messages[ValidationError.dropdownRequired],
           equals('Please select a vehicle type'));
     });
@@ -75,8 +89,26 @@ void main() {
           equals('يرجى إدخال رقم هاتف مصري صالح'));
       expect(messages[ValidationError.invalidNationalId],
           equals('يرجى إدخال رقم قومي صالح مكون من 14 رقماً'));
+      expect(messages[ValidationError.weakPassword],
+          contains('يجب أن تتكون كلمة المرور من 8 أحرف'));
+      expect(messages[ValidationError.passwordTooShort],
+          equals('يجب ألا تقل كلمة المرور عن 8 أحرف'));
+      expect(messages[ValidationError.passwordMissingUppercase],
+          equals('يجب أن تحتوي كلمة المرور على حرف كبير'));
+      expect(messages[ValidationError.passwordMissingLowercase],
+          equals('يجب أن تحتوي كلمة المرور على حرف صغير'));
+      expect(messages[ValidationError.passwordMissingNumber],
+          equals('يجب أن تحتوي كلمة المرور على رقم'));
+      expect(messages[ValidationError.passwordMissingSpecialChar],
+          equals('يجب أن تحتوي كلمة المرور على رمز خاص'));
       expect(messages[ValidationError.passwordMismatch],
           equals('كلمتا المرور غير متطابقتين'));
+      expect(messages[ValidationError.fileRequired],
+          equals('يرجى رفع صورة رخصة المركبة'));
+      expect(messages[ValidationError.licenseFileRequired],
+          equals('يرجى رفع صورة رخصة المركبة'));
+      expect(messages[ValidationError.nidFileRequired],
+          equals('يرجى رفع صورة بطاقة الرقم القومي'));
       expect(messages[ValidationError.dropdownRequired],
           equals('يرجى اختيار نوع المركبة'));
     });

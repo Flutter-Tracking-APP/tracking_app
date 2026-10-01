@@ -53,8 +53,27 @@ void main() {
       expect(AppValidators.validateConfirmPassword('P@ssw0rd123', 'P@ssw0rd123'), isNull);
     });
 
-    test('validateFile validates null file', () {
+    test('validatePasswordDetailed validates individual complexity rules', () {
+      expect(AppValidators.validatePasswordDetailed(null), equals(ValidationError.empty));
+      expect(AppValidators.validatePasswordDetailed(''), equals(ValidationError.empty));
+      expect(AppValidators.validatePasswordDetailed('short'), equals(ValidationError.passwordTooShort));
+      expect(AppValidators.validatePasswordDetailed('nouppercase1!'), equals(ValidationError.passwordMissingUppercase));
+      expect(AppValidators.validatePasswordDetailed('NOLOWERCASE1!'), equals(ValidationError.passwordMissingLowercase));
+      expect(AppValidators.validatePasswordDetailed('NoNumberSpecial!'), equals(ValidationError.passwordMissingNumber));
+      expect(AppValidators.validatePasswordDetailed('NoSpecial1234'), equals(ValidationError.passwordMissingSpecialChar));
+      expect(AppValidators.validatePasswordDetailed('P@ssw0rd123'), isNull);
+    });
+
+    test('validateFile validates null file with default and custom errors', () {
       expect(AppValidators.validateFile(null), equals(ValidationError.fileRequired));
+      expect(
+        AppValidators.validateFile(null, ValidationError.licenseFileRequired),
+        equals(ValidationError.licenseFileRequired),
+      );
+      expect(
+        AppValidators.validateFile(null, ValidationError.nidFileRequired),
+        equals(ValidationError.nidFileRequired),
+      );
       expect(AppValidators.validateFile(File('path')), isNull);
     });
 

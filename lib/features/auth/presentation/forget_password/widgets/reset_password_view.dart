@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/config/const/app_router.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
-
 import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
+import 'package:tracking_app/core/ui/extensions/validation_error_extension.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 
 import '../../../../../core/ui/widgets/app_text_field.dart';
 import '../view_model/forget_password_event.dart';
@@ -34,19 +34,9 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
     super.dispose();
   }
 
-  String? _validatePassword(String? value, AppLocalizations localizations) {
-    if (value == null || value.isEmpty) {
-      return localizations.enterNewPassword;
-    }
-
-    return switch (FormValidator.validatePassword(value)) {
-      Valid() => null,
-      LengthError() => localizations.passwordMustBeAtLeast8Characters,
-      UppercaseError() => localizations.passwordMustContainUppercase,
-      LowercaseError() => localizations.passwordMustContainLowercase,
-      NumberError() => localizations.passwordMustContainNumber,
-      SpecialCharError() => localizations.passwordMustContainSpecialCharacter,
-    };
+  String? _validatePassword(String? value, BuildContext context) {
+    return AppValidators.validatePasswordDetailed(value)
+        ?.toLocalizedMessage(context);
   }
 
   @override
@@ -93,7 +83,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               controller: _passwordController,
               localizations: localizations,
               obscureText: _obscurePassword,
-              validator: (value) => _validatePassword(value, localizations),
+              validator: (value) => _validatePassword(value, context),
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
@@ -116,17 +106,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               controller: _confirmPasswordController,
               localizations: localizations,
               obscureText: _obscureConfirmPassword,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return localizations.confirmYourPassword;
-                }
-
-                if (value != _passwordController.text) {
-                  return localizations.passwordsDoNotMatch;
-                }
-
-                return null;
-              },
+              validator: (value) => AppValidators.validateConfirmPassword(
+                value,
+                _passwordController.text,
+              )?.toLocalizedMessage(context),
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
