@@ -5,7 +5,7 @@ import 'package:tracking_app/features/driver_orders/data/models/response/order_d
 import 'package:tracking_app/features/driver_orders/data/models/response/order_history_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/update_order_status_response_dto.dart';
 
-abstract class DriverOrdersRemoteDataSource {
+abstract interface class DriverOrdersRemoteDataSource {
   Future<AvailableOrdersResponseDto> getAvailableOrders();
   Future<OrderActionResponseDto> claimOrder(String orderId);
   Future<OrderDetailsResponseDto> getOrderDetails(String orderId);

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 
-abstract class ImagePickerService {
+abstract interface class ImagePickerService {
   Future<File?> pickImageFromGallery();
   Future<File?> pickImageFromCamera();
 }
