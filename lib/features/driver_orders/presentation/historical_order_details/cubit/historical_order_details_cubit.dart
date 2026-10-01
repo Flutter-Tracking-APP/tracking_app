@@ -42,7 +42,7 @@ class HistoricalOrderDetailsCubit
       case Success(data: final details):
         if (isClosed) return;
         emit(state.copyWith(detailsState: BaseState.success(details)));
-      case Failure(error: final error, message: final msg):
+      case Failure(:final failure, error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         if (isClosed) return;
         emit(
@@ -50,12 +50,13 @@ class HistoricalOrderDetailsCubit
             detailsState: BaseState(
               isLoading: false,
               errorMessage: errorMsg,
+              failure: failure,
               data: state.detailsState.data,
             ),
           ),
         );
         if (isClosed) return;
-        emitEvent(DisplayError(errorMsg));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 }

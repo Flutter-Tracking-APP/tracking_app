@@ -6,6 +6,7 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_events.dart';
@@ -180,10 +181,14 @@ class ProfileView extends StatelessWidget {
     if (state.logoutState.data == true) {
       context.go(AppRoutes.login);
     }
-    if (state.profileState.errorMessage != null) {
+    if (state.profileState.failure != null ||
+        state.profileState.errorMessage != null) {
+      final message =
+          state.profileState.failure?.toLocalizedMessage(context) ??
+              state.profileState.errorMessage!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.profileState.errorMessage!),
+          content: Text(message),
           backgroundColor: AppColors.error,
         ),
       );

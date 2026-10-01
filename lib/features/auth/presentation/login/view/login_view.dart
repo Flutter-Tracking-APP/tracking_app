@@ -8,6 +8,7 @@ import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_dimensions.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/auth/presentation/login/cubit/login_cubit.dart';
@@ -54,15 +55,14 @@ class _LoginViewState extends State<LoginView> {
         return;
       }
       switch (event) {
-        case ShowMessage():
+        case ShowMessage(:final message, :final failure):
+          final text = failure != null
+              ? failure.toLocalizedMessage(context)
+              : (message == 'loginSuccessfully'
+                  ? AppLocalizations.of(context)!.loginSuccessfully
+                  : message);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                event.message == 'loginSuccessfully'
-                    ? AppLocalizations.of(context)!.loginSuccessfully
-                    : event.message,
-              ),
-            ),
+            SnackBar(content: Text(text)),
           );
 
         case LoginSuccess():

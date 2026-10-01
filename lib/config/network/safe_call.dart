@@ -3,6 +3,8 @@ import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/core/const/api_params.dart';
 
+import 'package:tracking_app/core/errors/app_failure.dart';
+
 Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
   try {
     return await call();
@@ -31,7 +33,10 @@ Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
         message = responseData;
       }
     }
-    return Failure(message, error);
+    final AppFailure failure = (message != null && message.trim().isNotEmpty)
+        ? ServerMessageFailure(message)
+        : NetworkFailure(error);
+    return Failure(message, error, failure);
   }
 }
 

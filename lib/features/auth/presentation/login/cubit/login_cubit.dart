@@ -73,11 +73,15 @@ class LoginCubit extends Cubit<LoginState> {
             login: state.login.copyWith(
               isLoading: false,
               errorMessage: result.message,
+              failure: result.failure,
             ),
           ),
         );
         _uiEventController.add(
-          ShowMessage(result.message ?? result.error.name),
+          ShowMessage(
+            result.message ?? result.error.name,
+            failure: result.failure,
+          ),
         );
     }
   }

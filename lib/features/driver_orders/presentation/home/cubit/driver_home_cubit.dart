@@ -100,19 +100,20 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         emit(
           state.copyWith(ordersState: BaseState.success(_sortOrders(orders))),
         );
-      case Failure(error: final error, message: final msg):
+      case Failure(:final failure, error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         emit(
           state.copyWith(
             ordersState: BaseState(
               isLoading: false,
               errorMessage: errorMsg,
+              failure: failure,
               data: state.ordersState.data,
             ),
           ),
         );
         if (isClosed) return;
-        emitEvent(DisplayError(errorMsg));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 
@@ -150,28 +151,31 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         );
         if (isClosed) return;
         emitEvent(OrderClaimedSuccessUiEvent(orderId));
-      case Failure(error: final error, message: final msg)
+      case Failure(:final failure, error: final error, message: final msg)
           when error == AppError.conflict:
         emit(
           state.copyWith(
             claimingOrderId: null,
-            claimOrderState: BaseState.error(msg ?? 'Conflict'),
+            claimOrderState: BaseState.error(
+              msg ?? 'Conflict',
+              failure: failure,
+            ),
           ),
         );
-        if (msg != null && msg.isNotEmpty && !isClosed) {
-          emitEvent(DisplayError(msg));
+        if (!isClosed) {
+          emitEvent(DisplayError(msg ?? 'Conflict', failure: failure));
         }
         await _handleConflictActiveOrder();
-      case Failure(error: final error, message: final msg):
+      case Failure(:final failure, error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         emit(
           state.copyWith(
             claimingOrderId: null,
-            claimOrderState: BaseState.error(errorMsg),
+            claimOrderState: BaseState.error(errorMsg, failure: failure),
           ),
         );
         if (isClosed) return;
-        emitEvent(DisplayError(errorMsg));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/presentation/historical_order_details/cubit/historical_order_details_cubit.dart';
@@ -66,10 +67,14 @@ class _HistoricalOrderDetailsContent extends StatelessWidget {
                   );
                 }
 
-                if (state.detailsState.errorMessage != null) {
+                if (state.detailsState.failure != null ||
+                    state.detailsState.errorMessage != null) {
+                  final message = state.detailsState.failure
+                          ?.toLocalizedMessage(context) ??
+                      state.detailsState.errorMessage!;
                   return _buildErrorState(
                     context,
-                    state.detailsState.errorMessage!,
+                    message,
                   );
                 }
 

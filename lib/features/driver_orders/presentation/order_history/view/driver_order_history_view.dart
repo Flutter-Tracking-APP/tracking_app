@@ -6,6 +6,7 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_history/cubit/driver_order_history_cubit.dart';
@@ -126,10 +127,14 @@ class _DriverOrderHistoryContent extends StatelessWidget {
           );
         }
 
-        if (state.historyState.errorMessage != null) {
+        if (state.historyState.failure != null ||
+            state.historyState.errorMessage != null) {
+          final message =
+              state.historyState.failure?.toLocalizedMessage(context) ??
+                  state.historyState.errorMessage!;
           return SliverFillRemaining(
             hasScrollBody: false,
-            child: _buildErrorState(context, state.historyState.errorMessage!),
+            child: _buildErrorState(context, message),
           );
         }
 

@@ -1,28 +1,27 @@
 import 'dart:io';
+import 'package:tracking_app/core/utils/app_validators.dart';
+
+export 'package:tracking_app/core/utils/app_validators.dart';
 
 abstract final class FormValidator {
-  // 3+ characters (letters, numbers, underscore, dot)
-  static const String usernamePattern = r'^[a-zA-Z0-9._]{3,}$';
+  static const String usernamePattern = AppValidators.usernamePattern;
+  static const String namePattern = AppValidators.namePattern;
+  static const String emailPattern = AppValidators.emailPattern;
 
-  // 3+ characters (letters and spaces only)
-  static const String namePattern = r'^[a-zA-Z\s]{3,}$';
-  static const String emailPattern =
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  static const String passwordUppercasePattern =
+      AppValidators.passwordUppercasePattern;
+  static const String passwordLowercasePattern =
+      AppValidators.passwordLowercasePattern;
+  static const String passwordNumberPattern =
+      AppValidators.passwordNumberPattern;
+  static const String passwordSpecialCharPattern =
+      AppValidators.passwordSpecialCharPattern;
 
-  // 8+ total chars, 1+ uppercase, 1+ lowercase, 1+ number, 1+ special char (#?!@$%^&*-)
-  static const String passwordUppercasePattern = r'[A-Z]';
-  static const String passwordLowercasePattern = r'[a-z]';
-  static const String passwordNumberPattern = r'[0-9]';
-  static const String passwordSpecialCharPattern = r'[#?!@$%^&*-]';
-
-  // Egyptian Phone Number
-  static const String phonePattern = r'^01[0125][0-9]{8}$';
-
-  // 14 digits National ID
-  static const String nationalIdPattern = r'^\d{14}$';
+  static const String phonePattern = AppValidators.phonePattern;
+  static const String nationalIdPattern = AppValidators.nationalIdPattern;
 
   static bool validate(String pattern, String input) {
-    return RegExp(pattern).hasMatch(input);
+    return AppValidators.validate(pattern, input);
   }
 
   static PasswordValidationResult validatePassword(String input) {
@@ -42,8 +41,7 @@ abstract final class FormValidator {
   }
 
   static String? validateRequired(String? val, String emptyMessage) {
-    if (val == null || val.trim().isEmpty) return emptyMessage;
-    return null;
+    return AppValidators.validateRequired(val) != null ? emptyMessage : null;
   }
 
   static String? validateEmail(
@@ -51,8 +49,9 @@ abstract final class FormValidator {
     String emptyMessage,
     String invalidMessage,
   ) {
-    if (val == null || val.trim().isEmpty) return emptyMessage;
-    if (!validate(emailPattern, val.trim())) return invalidMessage;
+    final res = AppValidators.validateEmail(val);
+    if (res == ValidationError.empty) return emptyMessage;
+    if (res == ValidationError.invalidEmail) return invalidMessage;
     return null;
   }
 
@@ -61,8 +60,9 @@ abstract final class FormValidator {
     String emptyMessage,
     String invalidMessage,
   ) {
-    if (val == null || val.trim().isEmpty) return emptyMessage;
-    if (!validate(phonePattern, val.trim())) return invalidMessage;
+    final res = AppValidators.validatePhone(val);
+    if (res == ValidationError.empty) return emptyMessage;
+    if (res == ValidationError.invalidPhone) return invalidMessage;
     return null;
   }
 
@@ -71,8 +71,9 @@ abstract final class FormValidator {
     String emptyMessage,
     String invalidMessage,
   ) {
-    if (val == null || val.trim().isEmpty) return emptyMessage;
-    if (!validate(nationalIdPattern, val.trim())) return invalidMessage;
+    final res = AppValidators.validateNationalId(val);
+    if (res == ValidationError.empty) return emptyMessage;
+    if (res == ValidationError.invalidNationalId) return invalidMessage;
     return null;
   }
 
@@ -81,9 +82,9 @@ abstract final class FormValidator {
     String emptyMessage,
     String weakMessage,
   ) {
-    if (val == null || val.isEmpty) return emptyMessage;
-    final result = validatePassword(val);
-    if (result is! Valid) return weakMessage;
+    final res = AppValidators.validatePassword(val);
+    if (res == ValidationError.empty) return emptyMessage;
+    if (res == ValidationError.weakPassword) return weakMessage;
     return null;
   }
 
@@ -93,19 +94,20 @@ abstract final class FormValidator {
     String emptyMessage,
     String mismatchMessage,
   ) {
-    if (val == null || val.isEmpty) return emptyMessage;
-    if (val != passwordToMatch) return mismatchMessage;
+    final res = AppValidators.validateConfirmPassword(val, passwordToMatch);
+    if (res == ValidationError.empty) return emptyMessage;
+    if (res == ValidationError.passwordMismatch) return mismatchMessage;
     return null;
   }
 
   static String? validateFile(File? file, String requiredMessage) {
-    if (file == null) return requiredMessage;
-    return null;
+    return AppValidators.validateFile(file) != null ? requiredMessage : null;
   }
 
   static String? validateDropdown<T>(T? value, String requiredMessage) {
-    if (value == null) return requiredMessage;
-    return null;
+    return AppValidators.validateDropdown(value) != null
+        ? requiredMessage
+        : null;
   }
 }
 

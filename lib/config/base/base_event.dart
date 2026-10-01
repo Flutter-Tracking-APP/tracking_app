@@ -1,10 +1,19 @@
+import 'package:tracking_app/core/errors/app_failure.dart';
+
 abstract base class BaseEvent {
   const BaseEvent();
 }
 
 final class DisplayError extends BaseEvent {
   final String errorMsg;
-  const DisplayError(this.errorMsg);
+  final AppFailure? failure;
+
+  const DisplayError(this.errorMsg, {this.failure});
+
+  factory DisplayError.fromFailure(AppFailure failure) => DisplayError(
+        failure is ServerMessageFailure ? failure.message : '',
+        failure: failure,
+      );
 }
 
 final class DisplaySuccess extends BaseEvent {

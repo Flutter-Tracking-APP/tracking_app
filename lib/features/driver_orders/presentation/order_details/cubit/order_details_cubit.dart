@@ -70,18 +70,19 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
           );
           _startPollingIfNeeded(details.status, details.id);
         }
-      case Failure(error: final error, message: final msg):
+      case Failure(:final failure, error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         emit(
           state.copyWith(
             orderDetailsState: BaseState(
               isLoading: false,
               errorMessage: errorMsg,
+              failure: failure,
               data: state.orderDetailsState.data,
             ),
           ),
         );
-        emitEvent(DisplayError(errorMsg));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 
@@ -116,15 +117,15 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
     switch (result) {
       case Success(data: final message):
         _onUpdateSuccess(message, nextStatus);
-      case Failure(error: final error, message: final msg):
+      case Failure(:final failure, error: final error, message: final msg):
         final errorMsg = msg ?? error.name;
         emit(
           state.copyWith(
             isUpdatingStatus: false,
-            updateStatusState: BaseState.error(errorMsg),
+            updateStatusState: BaseState.error(errorMsg, failure: failure),
           ),
         );
-        emitEvent(DisplayError(errorMsg));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 

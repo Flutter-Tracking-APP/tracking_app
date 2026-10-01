@@ -4,6 +4,8 @@ import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
+
 import '../../../../../core/ui/widgets/app_text_field.dart';
 import '../view_model/forget_password_event.dart';
 import '../view_model/forget_password_state.dart';
@@ -55,9 +57,19 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       listener: (context, state) {
         if (!state.isLoading &&
             state.operation == ForgetPasswordOperation.resetPassword) {
-          if (state.errorMessage == null || state.errorMessage!.isEmpty) {
+          if ((state.errorMessage == null || state.errorMessage!.isEmpty) &&
+              state.failure == null) {
             AppRouter.router.go(AppRoutes.login);
-          } else {}
+          } else {
+            final msg = state.failure?.toLocalizedMessage(context) ??
+                state.errorMessage ??
+                '';
+            if (msg.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(msg)),
+              );
+            }
+          }
         }
       },
       child: Form(

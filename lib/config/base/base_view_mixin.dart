@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracking_app/config/base/base_cubit.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 
 mixin BaseViewMixin<
   T extends StatefulWidget,
@@ -30,8 +31,11 @@ mixin BaseViewMixin<
 
   void _handleEvent(E event) {
     switch (event) {
-      case DisplayError(:final errorMsg):
-        showErrorSnackBar(errorMsg);
+      case DisplayError(:final errorMsg, :final failure):
+        final message = failure != null
+            ? failure.toLocalizedMessage(context)
+            : errorMsg;
+        showErrorSnackBar(message);
       case DisplaySuccess(:final successMsg):
         showSuccessSnackBar(successMsg);
       case NavigateEvent(:final routeName, :final extra):

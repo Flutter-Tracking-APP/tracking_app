@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_cubit.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_events.dart';
@@ -28,8 +29,12 @@ class AvailableOrdersListView extends StatelessWidget {
           );
         }
 
-        if (state.ordersState.errorMessage != null) {
-          return _buildErrorState(context, state.ordersState.errorMessage!);
+        if (state.ordersState.failure != null ||
+            state.ordersState.errorMessage != null) {
+          final message =
+              state.ordersState.failure?.toLocalizedMessage(context) ??
+                  state.ordersState.errorMessage!;
+          return _buildErrorState(context, message);
         }
 
         final orders = state.ordersState.data ?? [];
