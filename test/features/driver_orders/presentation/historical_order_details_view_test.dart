@@ -68,6 +68,13 @@ class FakeHistoricalDetailsRepo implements DriverOrdersRepository {
   @override
   Future<ApiResults<OrderDetailsEntity?>> getActiveOrder() async =>
       const Success(null);
+
+  @override
+  Future<ApiResults<void>> updateDriverLocation({
+    required double lat,
+    required double lng,
+    required DateTime recordedAt,
+  }) async => const Success(null);
 }
 
 Widget createHistoricalDetailsTestWidget({
