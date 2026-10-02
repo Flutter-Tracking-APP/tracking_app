@@ -20,4 +20,5 @@ abstract final class Endpoints {
   static const String driverAssignedOrder =
       'api/orders/drivers/me/assigned-order';
   static const String driverOrderHistory = 'api/orders/drivers/me/orders';
+  static const String updateDriverLocation = 'api/orders/drivers/me/location';
 }
