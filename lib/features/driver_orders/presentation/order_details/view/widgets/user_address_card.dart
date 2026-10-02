@@ -8,6 +8,7 @@ import 'package:tracking_app/features/driver_orders/presentation/order_details/v
 
 class UserAddressCard extends StatelessWidget {
   final UserAddressEntity user;
+  final VoidCallback? onTap;
   final VoidCallback? onCall;
   final VoidCallback? onWhatsApp;
   final bool showActions;
@@ -16,6 +17,7 @@ class UserAddressCard extends StatelessWidget {
   const UserAddressCard({
     super.key,
     required this.user,
+    this.onTap,
     this.onCall,
     this.onWhatsApp,
     this.showActions = true,
@@ -35,15 +37,18 @@ class UserAddressCard extends StatelessWidget {
         children: [
           Text(localizations.userAddress, style: AppStyles.regular14InterW500),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsetsDirectional.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.white[50],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.white[500]!.withValues(alpha: 0.4),
+          InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsetsDirectional.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.white[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.white[500]!.withValues(alpha: 0.4),
+                ),
               ),
-            ),
             child: Row(
               children: [
                 CircleAvatar(
@@ -117,6 +122,7 @@ class UserAddressCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
         ],
       ),
     );

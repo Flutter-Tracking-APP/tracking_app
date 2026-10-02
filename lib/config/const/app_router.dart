@@ -8,6 +8,7 @@ import 'package:tracking_app/features/auth/presentation/forget_password/view/for
 import 'package:tracking_app/features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
 import 'package:tracking_app/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:tracking_app/features/auth/presentation/login/view/login_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/navigation/view/user_location_view.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
 import 'package:tracking_app/features/profile/presentation/view/change_password_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/edit_profile_view.dart';
@@ -36,6 +37,7 @@ abstract final class AppRoutes {
   static const orderDetails = '/order-details';
   static const historicalOrderDetails = '/historical-order-details';
   static const pickupLocation = '/pickup-location';
+  static const userLocation = '/user-location';
   static const forgetPassword = '/forgot-password';
   static const onBoarding = '/onBoarding';
 }
@@ -155,6 +157,15 @@ abstract final class AppRouter {
           final orderId = state.pathParameters['orderId'] ?? '';
           final order = state.extra as OrderDetailsEntity?;
           return PickupLocationView(orderId: orderId, order: order);
+        },
+      ),
+      GoRoute(
+        path: '${AppRoutes.userLocation}/:orderId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'] ?? '';
+          final order = state.extra as OrderDetailsEntity?;
+          return UserLocationView(orderId: orderId, order: order);
         },
       ),
       GoRoute(

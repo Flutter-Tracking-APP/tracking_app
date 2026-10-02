@@ -32,6 +32,8 @@ extension UserAddressDtoMapper on UserAddressDto? {
       address: this?.effectiveAddress ?? '',
       phone: this?.effectivePhone,
       avatar: this?.effectiveAvatar,
+      lat: this?.effectiveLat ?? 30.0500,
+      lng: this?.effectiveLng ?? 31.2400,
     );
   }
 }
