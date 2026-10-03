@@ -1,100 +1,105 @@
 import 'package:dio/dio.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/core/const/api_params.dart';
 
 Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
   try {
     return await call();
-  } catch (e) {
-    final error = errorParser(e as Exception);
-    String? message;
-    if (e is DioException) {
-      final responseData = e.response?.data;
-      if (responseData is Map<String, dynamic>) {
-        message =
-            (responseData['message'] ??
-                    responseData['error'] ??
-                    responseData['msg'])
-                ?.toString();
-        if ((message == null || message.trim().isEmpty) &&
-            responseData['errors'] is List &&
-            (responseData['errors'] as List).isNotEmpty) {
-          final firstError = (responseData['errors'] as List).first;
-          if (firstError is Map<String, dynamic>) {
-            message = firstError['message']?.toString();
-          } else {
-            message = firstError?.toString();
-          }
-        }
-      } else if (responseData is String) {
-        message = responseData;
-      }
-    }
-    return Failure(message, error);
+  } on Exception catch (e) {
+    return FailureResponse(errorParser(e));
   }
 }
 
-AppError errorParser(Exception exception) {
+AppFailure errorParser(Exception exception) {
   if (exception is DioException) {
     switch (exception.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return AppError.timeout;
+        return const NetworkFailure(AppError.timeout);
 
       case DioExceptionType.badCertificate:
-        return AppError.security;
+        return const NetworkFailure(AppError.security);
 
       case DioExceptionType.badResponse:
         return _handleBadResponse(exception);
 
       case DioExceptionType.connectionError:
-        return AppError.noConnection;
+        return const NetworkFailure(AppError.noConnection);
 
       case DioExceptionType.cancel:
-        return AppError.cancelled;
+        return const NetworkFailure(AppError.cancelled);
 
       case DioExceptionType.unknown:
-      case DioExceptionType.transformTimeout:
-        return AppError.unknown;
+      default:
+        return const NetworkFailure(AppError.unknown);
     }
   }
 
-  return AppError.unknown;
+  return const NetworkFailure(AppError.unknown);
 }
 
-AppError _handleBadResponse(DioException exception) {
+AppFailure _handleBadResponse(DioException exception) {
   final statusCode = exception.response?.statusCode;
 
-  switch (statusCode) {
-    case 400:
-      return AppError.badRequest;
-
-    case 401:
-      return AppError.unauthorized;
-
-    case 403:
-      return AppError.forbidden;
-
-    case 404:
-      return AppError.notFound;
-
-    case 409:
-      return AppError.conflict;
-
-    case 422:
-      return AppError.validation;
-
-    case 429:
-      return AppError.tooManyRequests;
-
-    case 500:
-    case 502:
-    case 503:
-    case 504:
-      return AppError.server;
-
-    default:
-      return AppError.unknown;
+  if (statusCode != null && statusCode >= 500) {
+    return const ServerFailure(
+      error: AppError.server,
+      message: null,
+    );
   }
+
+  final error = _mapStatusCodeToAppError(statusCode);
+  final message = _extractErrorMessage(exception.response?.data);
+
+  return ServerFailure(
+    error: error,
+    message: message,
+  );
+}
+
+AppError _mapStatusCodeToAppError(int? statusCode) {
+  return switch (statusCode) {
+    400 => AppError.badRequest,
+    401 => AppError.unauthorized,
+    403 => AppError.forbidden,
+    404 => AppError.notFound,
+    409 => AppError.conflict,
+    422 => AppError.validation,
+    429 => AppError.tooManyRequests,
+    _ => AppError.unknown,
+  };
+}
+
+String? _extractErrorMessage(dynamic responseData) {
+  if (responseData is Map<String, dynamic>) {
+    final rawMessage = (responseData[ApiParams.message] ??
+            responseData[ApiParams.error] ??
+            responseData[ApiParams.msg])
+        ?.toString();
+    if (rawMessage != null && rawMessage.trim().isNotEmpty) {
+      return rawMessage;
+    }
+
+    final errors = responseData[ApiParams.errors];
+    if (errors is List && errors.isNotEmpty) {
+      final firstError = errors.first;
+      if (firstError is Map<String, dynamic>) {
+        final nestedMsg = firstError[ApiParams.message]?.toString();
+        if (nestedMsg != null && nestedMsg.trim().isNotEmpty) {
+          return nestedMsg;
+        }
+      } else if (firstError != null) {
+        final nestedMsg = firstError.toString();
+        if (nestedMsg.trim().isNotEmpty) {
+          return nestedMsg;
+        }
+      }
+    }
+  } else if (responseData is String && responseData.trim().isNotEmpty) {
+    return responseData;
+  }
+
+  return null;
 }

@@ -58,10 +58,12 @@ class EditVehicleCubit extends BaseCubit<EditVehicleState, BaseEvent> {
             selectedVehicleType: types.isNotEmpty ? types.first : null,
           ),
         );
-      case Failure(error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
-        emit(state.copyWith(vehicleTypesState: BaseState.error(errorMsg)));
-        emitEvent(DisplayError(errorMsg));
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
+        emit(state.copyWith(
+          vehicleTypesState: BaseState.failure(failure),
+        ));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 
@@ -72,10 +74,12 @@ class EditVehicleCubit extends BaseCubit<EditVehicleState, BaseEvent> {
       case Success(data: final message):
         emit(state.copyWith(updateVehicleState: BaseState.success(message)));
         emitEvent(DisplaySuccess(message));
-      case Failure(error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
-        emit(state.copyWith(updateVehicleState: BaseState.error(errorMsg)));
-        emitEvent(DisplayError(errorMsg));
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
+        emit(state.copyWith(
+          updateVehicleState: BaseState.failure(failure),
+        ));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 }

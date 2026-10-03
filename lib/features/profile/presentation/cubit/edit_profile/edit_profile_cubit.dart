@@ -49,10 +49,12 @@ class EditProfileCubit extends BaseCubit<EditProfileState, BaseEvent> {
       case Success(data: final message):
         emit(state.copyWith(updateProfileState: BaseState.success(message)));
         emitEvent(DisplaySuccess(message));
-      case Failure(error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
-        emit(state.copyWith(updateProfileState: BaseState.error(errorMsg)));
-        emitEvent(DisplayError(errorMsg));
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
+        emit(state.copyWith(
+          updateProfileState: BaseState.failure(failure),
+        ));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 }

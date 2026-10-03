@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
+import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/config/storage/secure_storage_service.dart';
 import 'package:tracking_app/core/localization/locale_cubit.dart';
@@ -17,28 +18,60 @@ import 'package:tracking_app/features/profile/domain/repositories/profile_reposi
 import 'package:tracking_app/features/profile/domain/use_cases/get_profile_use_case.dart';
 import 'package:tracking_app/features/profile/domain/use_cases/get_vehicle_info_use_case.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_cubit.dart';
+import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_events.dart';
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/widgets/language_bottom_sheet.dart';
 import 'package:tracking_app/features/profile/presentation/view/widgets/logout_dialog.dart';
+
+class FailureProfileRepo implements ProfileRepository {
+  final ApiResults<UserProfileEntity> profileResult;
+  FailureProfileRepo(this.profileResult);
+
+  @override
+  Future<ApiResults<UserProfileEntity>> getProfile() async => profileResult;
+
+  @override
+  Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
+      const Success('ok');
+
+  @override
+  Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async => const Success(
+        VehicleInfoEntity(
+          vehicleId: 'v-1',
+          vehicleTypeId: 'vt-1',
+          vehicleTypeName: 'Bike',
+          plateNumber: 'UP16DL0007',
+          capacity: 2,
+          licenseDocument: 'doc.png',
+        ),
+      );
+
+  @override
+  Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
+      const Success('ok');
+
+  @override
+  Future<ApiResults<String>> changePassword(
+    ChangePasswordParams params,
+  ) async =>
+      const Success('ok');
+}
 
 class FakeWidgetProfileRepo implements ProfileRepository {
   @override
   Future<ApiResults<UserProfileEntity>> getProfile() async {
     return const Success(
       UserProfileEntity(
-        id: 'p-1',
+        id: 'user-123',
         firstName: 'Nour',
         lastName: 'Mohamed',
         email: 'nour@test.com',
         phoneNumber: '01010522698',
-        gender: 0,
+        gender: 1,
+        profilePictureUrl: 'https://example.com/pic.jpg',
       ),
     );
   }
-
-  @override
-  Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
-      const Success('ok');
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async {
@@ -55,13 +88,18 @@ class FakeWidgetProfileRepo implements ProfileRepository {
   }
 
   @override
+  Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
+      const Success('ok');
+
+  @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
       const Success('ok');
 
   @override
   Future<ApiResults<String>> changePassword(
     ChangePasswordParams params,
-  ) async => const Success('ok');
+  ) async =>
+      const Success('ok');
 }
 
 class FakeWidgetSessionService implements SessionService {
@@ -69,10 +107,10 @@ class FakeWidgetSessionService implements SessionService {
   Future<void> clearSession() async {}
 
   @override
-  Future<String> getToken() async => '';
+  Future<String> getToken() async => 'token';
 
   @override
-  Future<String> getRefreshToken() async => '';
+  Future<String> getRefreshToken() async => 'refreshToken';
 
   @override
   Future<bool> isRemembered() async => false;
@@ -82,6 +120,9 @@ class FakeWidgetSessionService implements SessionService {
 
   @override
   Future<void> setGuestMode(bool value) async {}
+
+  @override
+  Future<void> setRememberMe(bool value) async {}
 
   @override
   Future<void> saveTokens({
@@ -95,9 +136,6 @@ class FakeWidgetSessionService implements SessionService {
     required String token,
     required String refreshToken,
   }) async {}
-
-  @override
-  Future<void> setRememberMe(bool value) async {}
 
   @override
   Future<void> clearActiveOrderId() async {}
@@ -120,7 +158,10 @@ class FakeStorageService implements SecureStorageService {
   Future<void> save(String key, String value) async {}
 }
 
-Widget createTestWidget({Locale locale = const Locale('en')}) {
+Widget createTestWidget({
+  required ProfileCubit cubit,
+  Locale locale = const Locale('en'),
+}) {
   return MaterialApp(
     theme: AppTheme.lightTheme,
     locale: locale,
@@ -131,46 +172,41 @@ Widget createTestWidget({Locale locale = const Locale('en')}) {
       GlobalCupertinoLocalizations.delegate,
     ],
     supportedLocales: const [Locale('en'), Locale('ar')],
-    home: const ProfileView(),
+    home: ProfileView(cubit: cubit),
   );
 }
 
 void main() {
+  late ProfileCubit defaultCubit;
+
   setUp(() {
     if (getIt.isRegistered<LocaleCubit>()) {
       getIt.unregister<LocaleCubit>();
     }
-    if (getIt.isRegistered<ProfileCubit>()) {
-      getIt.unregister<ProfileCubit>();
-    }
+    final fakeStorage = FakeStorageService();
+    getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit(fakeStorage));
 
     final fakeRepo = FakeWidgetProfileRepo();
     final fakeSession = FakeWidgetSessionService();
-    final fakeStorage = FakeStorageService();
-
-    getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit(fakeStorage));
-    getIt.registerFactory<ProfileCubit>(
-      () => ProfileCubit(
-        GetProfileUseCase(fakeRepo),
-        GetVehicleInfoUseCase(fakeRepo),
-        fakeSession,
-      ),
-    );
+    defaultCubit = ProfileCubit(
+      GetProfileUseCase(fakeRepo),
+      GetVehicleInfoUseCase(fakeRepo),
+      fakeSession,
+    )..doEvent(const GetProfileEvent())
+     ..doEvent(const GetVehicleInfoEvent());
   });
 
   tearDown(() {
+    defaultCubit.close();
     if (getIt.isRegistered<LocaleCubit>()) {
       getIt.unregister<LocaleCubit>();
-    }
-    if (getIt.isRegistered<ProfileCubit>()) {
-      getIt.unregister<ProfileCubit>();
     }
   });
 
   testWidgets('renders profile header, vehicle tile, and menu tiles', (
     tester,
   ) async {
-    await tester.pumpWidget(createTestWidget());
+    await tester.pumpWidget(createTestWidget(cubit: defaultCubit));
     await tester.pumpAndSettle();
 
     expect(find.text('Profile'), findsOneWidget);
@@ -188,7 +224,7 @@ void main() {
   testWidgets('opens LanguageBottomSheet when language tile is tapped', (
     tester,
   ) async {
-    await tester.pumpWidget(createTestWidget());
+    await tester.pumpWidget(createTestWidget(cubit: defaultCubit));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Language'));
@@ -207,7 +243,7 @@ void main() {
   });
 
   testWidgets('opens LogoutDialog when logout tile is tapped', (tester) async {
-    await tester.pumpWidget(createTestWidget());
+    await tester.pumpWidget(createTestWidget(cubit: defaultCubit));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -222,7 +258,9 @@ void main() {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.0;
 
-    await tester.pumpWidget(createTestWidget(locale: const Locale('ar')));
+    await tester.pumpWidget(
+      createTestWidget(cubit: defaultCubit, locale: const Locale('ar')),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('الملف الشخصي'), findsOneWidget);
@@ -234,5 +272,32 @@ void main() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     });
+  });
+
+  testWidgets('displays localized SnackBar on NetworkFailure', (tester) async {
+    final failRepo = FailureProfileRepo(
+      const FailureResponse(
+        NetworkFailure(AppError.noConnection),
+      ),
+    );
+    final failCubit = ProfileCubit(
+      GetProfileUseCase(failRepo),
+      GetVehicleInfoUseCase(failRepo),
+      FakeWidgetSessionService(),
+    );
+
+    await tester.pumpWidget(createTestWidget(cubit: failCubit));
+    failCubit.doEvent(const GetProfileEvent());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(
+      find.text(
+        'No internet connection. Please check your network and try again.',
+      ),
+      findsOneWidget,
+    );
+
+    failCubit.close();
   });
 }

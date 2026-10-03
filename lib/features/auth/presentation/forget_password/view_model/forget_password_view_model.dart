@@ -58,16 +58,18 @@ class ForgetPasswordBloc
           email: event.email,
           remainingSeconds: 30,
           errorMessage: null,
+          failure: null,
         ),
       );
 
       add(const StartOtpTimerEvent());
-    } else if (result is Failure) {
+    } else if (result is FailureResponse) {
       emit(
         state.copyWith(
           isLoading: false,
           operation: ForgetPasswordOperation.checkEmail,
-          errorMessage: result.message,
+          errorMessage: result.failure.message,
+          failure: result.failure,
         ),
       );
     }
@@ -86,6 +88,7 @@ class ForgetPasswordBloc
         isLoading: true,
         operation: ForgetPasswordOperation.resendOtp,
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -100,16 +103,18 @@ class ForgetPasswordBloc
           operation: ForgetPasswordOperation.resendOtp,
           remainingSeconds: 30,
           errorMessage: null,
+          failure: null,
         ),
       );
 
       add(const StartOtpTimerEvent());
-    } else if (result is Failure) {
+    } else if (result is FailureResponse) {
       emit(
         state.copyWith(
           isLoading: false,
           operation: ForgetPasswordOperation.resendOtp,
-          errorMessage: result.message,
+          errorMessage: result.failure.message,
+          failure: result.failure,
         ),
       );
     }
@@ -129,6 +134,7 @@ class ForgetPasswordBloc
         operation: ForgetPasswordOperation.verifyOtp,
         otp: event.otp,
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -145,14 +151,16 @@ class ForgetPasswordBloc
           operation: ForgetPasswordOperation.verifyOtp,
           otpToken: result.data['otpToken'],
           errorMessage: null,
+          failure: null,
         ),
       );
-    } else if (result is Failure<Map<String, dynamic>>) {
+    } else if (result is FailureResponse<Map<String, dynamic>>) {
       emit(
         state.copyWith(
           isLoading: false,
           operation: ForgetPasswordOperation.verifyOtp,
-          errorMessage: result.message,
+          errorMessage: result.failure.message,
+          failure: result.failure,
         ),
       );
     }
@@ -171,6 +179,7 @@ class ForgetPasswordBloc
         isLoading: true,
         operation: ForgetPasswordOperation.resetPassword,
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -188,14 +197,16 @@ class ForgetPasswordBloc
           isLoading: false,
           operation: ForgetPasswordOperation.resetPassword,
           errorMessage: null,
+          failure: null,
         ),
       );
-    } else if (result is Failure) {
+    } else if (result is FailureResponse) {
       emit(
         state.copyWith(
           isLoading: false,
           operation: ForgetPasswordOperation.resetPassword,
-          errorMessage: result.message,
+          errorMessage: result.failure.message,
+          failure: result.failure,
         ),
       );
     }

@@ -5,10 +5,11 @@ import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/di/di.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/validation_error_extension.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/view/widgets/gender_radio_group.dart';
@@ -193,10 +194,8 @@ class _EditProfileViewState extends State<EditProfileView>
                 hint: l10n.firstNameHint,
                 controller: _firstNameController,
                 localizations: l10n,
-                validator: (val) => FormValidator.validateRequired(
-                  val,
-                  l10n.emptyValidationError,
-                ),
+                validator: (val) => AppValidators.validateRequired(val)
+                    ?.toLocalizedMessage(context),
               ),
             ),
             const SizedBox(width: 16),
@@ -206,10 +205,8 @@ class _EditProfileViewState extends State<EditProfileView>
                 hint: l10n.lastNameHint,
                 controller: _lastNameController,
                 localizations: l10n,
-                validator: (val) => FormValidator.validateRequired(
-                  val,
-                  l10n.emptyValidationError,
-                ),
+                validator: (val) => AppValidators.validateRequired(val)
+                    ?.toLocalizedMessage(context),
               ),
             ),
           ],
@@ -229,11 +226,8 @@ class _EditProfileViewState extends State<EditProfileView>
           controller: _phoneController,
           keyboardType: TextInputType.phone,
           localizations: l10n,
-          validator: (val) => FormValidator.validatePhone(
-            val,
-            l10n.emptyValidationError,
-            l10n.invalidPhoneError,
-          ),
+          validator: (val) =>
+              AppValidators.validatePhone(val)?.toLocalizedMessage(context),
         ),
         const SizedBox(height: 14),
         AppTextField(
@@ -352,6 +346,6 @@ class _EditProfileSubmitButton extends StatelessWidget {
     if (firstName.isEmpty || lastName.isEmpty || phone.isEmpty) {
       return false;
     }
-    return FormValidator.validate(FormValidator.phonePattern, phone);
+    return AppValidators.validatePhone(phone) == null;
   }
 }

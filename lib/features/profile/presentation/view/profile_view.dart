@@ -6,6 +6,7 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:tracking_app/features/profile/presentation/cubit/profile/profile_events.dart';
@@ -17,19 +18,16 @@ import 'package:tracking_app/features/profile/presentation/view/widgets/profile_
 import 'package:tracking_app/features/profile/presentation/view/widgets/vehicle_info_tile.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  final ProfileCubit? cubit;
+  const ProfileView({super.key, this.cubit});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>()
-        ..doEvent(const GetProfileEvent())
-        ..doEvent(const GetVehicleInfoEvent()),
-      child: BlocConsumer<ProfileCubit, ProfileState>(
-        listenWhen: (prev, curr) =>
-            prev.logoutState != curr.logoutState ||
-            prev.profileState.errorMessage != curr.profileState.errorMessage,
-        listener: _handleListener,
+    final consumer = BlocConsumer<ProfileCubit, ProfileState>(
+      listenWhen: (prev, curr) =>
+          prev.logoutState != curr.logoutState ||
+          prev.profileState != curr.profileState,
+      listener: _handleListener,
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
           final isArabic = Localizations.localeOf(context).languageCode == 'ar';
@@ -114,7 +112,20 @@ class ProfileView extends StatelessWidget {
             ),
           );
         },
-      ),
+    );
+
+    if (cubit != null) {
+      return BlocProvider<ProfileCubit>.value(
+        value: cubit!,
+        child: consumer,
+      );
+    }
+
+    return BlocProvider(
+      create: (_) => getIt<ProfileCubit>()
+        ..doEvent(const GetProfileEvent())
+        ..doEvent(const GetVehicleInfoEvent()),
+      child: consumer,
     );
   }
 
@@ -179,11 +190,15 @@ class ProfileView extends StatelessWidget {
   void _handleListener(BuildContext context, ProfileState state) {
     if (state.logoutState.data == true) {
       context.go(AppRoutes.login);
+      return;
     }
-    if (state.profileState.errorMessage != null) {
+    final failure = state.profileState.failure;
+    final errorMessage = state.profileState.errorMessage;
+    final message = failure?.toLocalizedMessage(context) ?? errorMessage;
+    if (message != null && message.trim().isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.profileState.errorMessage!),
+          content: Text(message),
           backgroundColor: AppColors.error,
         ),
       );

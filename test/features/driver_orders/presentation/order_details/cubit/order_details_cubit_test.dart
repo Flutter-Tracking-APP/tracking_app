@@ -41,9 +41,12 @@ class MockDriverOrdersRepository implements DriverOrdersRepository {
     String? note,
   }) async {
     if (shouldFailUpdate) {
-      return Failure(
-        failMessage ?? 'An order cannot go from Placed to OutForDelivery.',
-        AppError.conflict,
+      return FailureResponse(
+        ServerFailure(
+          error: AppError.conflict,
+          message:
+              failMessage ?? 'An order cannot go from Placed to OutForDelivery.',
+        ),
       );
     }
     lastUpdatedStatus = status;

@@ -4,7 +4,7 @@ import 'package:tracking_app/features/driver_orders/domain/entities/order_detail
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
 
-abstract class DriverOrdersRepository {
+abstract interface class DriverOrdersRepository {
   Future<ApiResults<List<OrderEntity>>> getAvailableOrders();
   Future<ApiResults<String>> claimOrder(String orderId);
   Future<ApiResults<OrderDetailsEntity>> getOrderDetails(String orderId);

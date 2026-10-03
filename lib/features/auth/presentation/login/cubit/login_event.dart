@@ -1,3 +1,5 @@
+import 'package:tracking_app/core/errors/app_failure.dart';
+
 sealed class LoginEvent {}
 
 class LoginSubmitted extends LoginEvent {
@@ -23,9 +25,12 @@ sealed class LoginUIEvent {}
 
 class ShowMessage extends LoginUIEvent {
   final String message;
+  final AppFailure? failure;
 
-  ShowMessage(this.message);
+  ShowMessage(this.message, {this.failure});
 }
+
+class LoginSuccessMessage extends LoginUIEvent {}
 
 class LoginSuccess extends LoginUIEvent {}
 

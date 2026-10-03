@@ -25,7 +25,12 @@ class FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>

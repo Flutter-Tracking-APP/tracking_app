@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracking_app/config/const/app_router.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_dimensions.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/auth/presentation/login/cubit/login_cubit.dart';
@@ -54,18 +55,27 @@ class _LoginViewState extends State<LoginView> {
         return;
       }
       switch (event) {
-        case ShowMessage():
+        case ShowMessage(:final message, :final failure):
+          if (!context.mounted) return;
+          final text = failure != null
+              ? failure.toLocalizedMessage(context)
+              : message;
+          if (text.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(text)),
+            );
+          }
+
+        case LoginSuccessMessage():
+          if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                event.message == 'loginSuccessfully'
-                    ? AppLocalizations.of(context)!.loginSuccessfully
-                    : event.message,
-              ),
+              content: Text(AppLocalizations.of(context)!.loginSuccessfully),
             ),
           );
 
         case LoginSuccess():
+          if (!context.mounted) return;
           context.go(AppRoutes.home);
 
         //   case GuestLoginSuccess():
@@ -98,9 +108,7 @@ class _LoginViewState extends State<LoginView> {
                       hint: localizations.emailHint,
                       keyboardType: TextInputType.emailAddress,
                       controller: emailController,
-                      validationPattern: FormValidator.emailPattern,
-                      validationErrorMessage:
-                          localizations.generalValidationError,
+                      errorValidator: AppValidators.validateEmail,
                       localizations: localizations,
                       onChange: (_) => checkFormValidity(),
                     ),

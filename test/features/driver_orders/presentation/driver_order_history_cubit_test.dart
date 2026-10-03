@@ -24,7 +24,12 @@ class MockOrderHistoryRepository implements DriverOrdersRepository {
     String? status,
   }) async {
     if (returnError) {
-      return const Failure('Network error', AppError.noConnection);
+      return const FailureResponse(
+        ServerFailure(
+          error: AppError.noConnection,
+          message: 'Network error',
+        ),
+      );
     }
     return Success(ordersToReturn);
   }

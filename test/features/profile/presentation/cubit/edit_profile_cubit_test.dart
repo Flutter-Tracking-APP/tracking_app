@@ -20,7 +20,12 @@ class FakeEditProfileRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<UserProfileEntity>> getProfile() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
@@ -28,7 +33,12 @@ class FakeEditProfileRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -106,11 +116,13 @@ void main() {
     );
 
     blocTest<EditProfileCubit, EditProfileState>(
-      'emits loading then error on SubmitEditProfileEvent failure',
+      'emits loading then error on SubmitEditProfileEvent failure and extracts ServerFailure message',
       build: () {
-        fakeRepo.updateResult = const Failure(
-          'Failed to update',
-          AppError.server,
+        fakeRepo.updateResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.server,
+            message: 'Failed to update',
+          ),
         );
         return EditProfileCubit(updateProfileUseCase, fakeImagePicker);
       },
@@ -118,7 +130,13 @@ void main() {
       expect: () => [
         predicate<EditProfileState>((s) => s.updateProfileState.isLoading),
         predicate<EditProfileState>(
-          (s) => s.updateProfileState.errorMessage == 'Failed to update',
+          (s) =>
+              s.updateProfileState.errorMessage == 'Failed to update' &&
+              s.updateProfileState.failure ==
+                  const ServerFailure(
+                    error: AppError.server,
+                    message: 'Failed to update',
+                  ),
         ),
       ],
     );

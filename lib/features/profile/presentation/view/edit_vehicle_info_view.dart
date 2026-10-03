@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/di/di.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/validation_error_extension.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/presentation/view/widgets/file_upload_field.dart';
@@ -92,10 +93,9 @@ class _EditVehicleInfoViewState extends State<EditVehicleInfoView>
                     hint: l10n.vehicleNumberHint,
                     controller: _plateNumberController,
                     localizations: l10n,
-                    validator: (val) => FormValidator.validateRequired(
+                    validator: (val) => AppValidators.validateRequired(
                       val,
-                      l10n.emptyValidationError,
-                    ),
+                    )?.toLocalizedMessage(context),
                   ),
                   const SizedBox(height: 16),
                   BlocBuilder<EditVehicleCubit, EditVehicleState>(

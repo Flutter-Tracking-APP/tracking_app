@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:tracking_app/core/const/api_params.dart';
 import 'package:tracking_app/features/profile/data/models/request/change_password_request_dto.dart';
 import 'package:tracking_app/features/profile/data/models/response/user_profile_response_dto.dart';
 import 'package:tracking_app/features/profile/data/models/response/vehicle_info_response_dto.dart';
@@ -39,21 +40,21 @@ extension UpdateProfileParamsMapper on UpdateProfileParams {
   Future<Map<String, dynamic>> toPartMap() async {
     final map = <String, dynamic>{};
     if (firstName != null && firstName!.isNotEmpty) {
-      map['firstName'] = firstName;
+      map[ApiParams.firstName] = firstName;
     }
     if (lastName != null && lastName!.isNotEmpty) {
-      map['lastName'] = lastName;
+      map[ApiParams.lastName] = lastName;
     }
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
-      map['phoneNumber'] = phoneNumber;
+      map[ApiParams.phoneNumber] = phoneNumber;
     }
     if (gender != null) {
-      map['gender'] = gender;
+      map[ApiParams.gender] = gender;
     }
     if (profilePicture != null) {
       final fileName = profilePicture!.path.split(RegExp(r'[/\\]')).last;
       final ext = fileName.split('.').last.toLowerCase();
-      map['profilePicture'] = await MultipartFile.fromFile(
+      map[ApiParams.profilePicture] = await MultipartFile.fromFile(
         profilePicture!.path,
         filename: fileName,
         contentType: DioMediaType('image', ext == 'png' ? 'png' : 'jpeg'),
@@ -77,13 +78,13 @@ extension UpdateVehicleParamsMapper on UpdateVehicleParams {
   Future<FormData> toFormData() async {
     final map = <String, dynamic>{};
     if (vehicleTypeId != null && vehicleTypeId!.isNotEmpty) {
-      map['vehicleTypeId'] = vehicleTypeId;
+      map[ApiParams.vehicleTypeId] = vehicleTypeId;
     }
     if (plateNumber != null && plateNumber!.isNotEmpty) {
-      map['plateNumber'] = plateNumber;
+      map[ApiParams.plateNumber] = plateNumber;
     }
     if (licenseDocument != null) {
-      map['licenseDocument'] = await MultipartFile.fromFile(
+      map[ApiParams.licenseDocument] = await MultipartFile.fromFile(
         licenseDocument!.path,
         filename: licenseDocument!.path.split(RegExp(r'[/\\]')).last,
       );

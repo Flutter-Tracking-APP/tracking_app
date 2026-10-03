@@ -23,7 +23,12 @@ class MockHistoricalDetailsRepository implements DriverOrdersRepository {
     String orderId,
   ) async {
     if (returnError) {
-      return const Failure('Details error', AppError.server);
+      return const FailureResponse(
+        ServerFailure(
+          error: AppError.server,
+          message: 'Details error',
+        ),
+      );
     }
     return Success(detailsToReturn!);
   }

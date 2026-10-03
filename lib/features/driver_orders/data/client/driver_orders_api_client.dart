@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:tracking_app/core/const/api_params.dart';
 import 'package:tracking_app/core/const/endpoints.dart';
 import 'package:tracking_app/features/driver_orders/data/models/request/update_order_status_request_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
@@ -21,16 +22,18 @@ abstract class DriverOrdersApiClient {
   Future<AvailableOrdersResponseDto> getAvailableOrders();
 
   @POST(Endpoints.claimOrder)
-  Future<OrderActionResponseDto> claimOrder(@Path('orderId') String orderId);
+  Future<OrderActionResponseDto> claimOrder(
+    @Path(ApiParams.orderId) String orderId,
+  );
 
   @GET(Endpoints.driverOrderDetails)
   Future<OrderDetailsResponseDto> getOrderDetails(
-    @Path('orderId') String orderId,
+    @Path(ApiParams.orderId) String orderId,
   );
 
   @PATCH(Endpoints.updateOrderStatus)
   Future<UpdateOrderStatusResponseDto> updateOrderStatus(
-    @Path('orderId') String orderId,
+    @Path(ApiParams.orderId) String orderId,
     @Body() UpdateOrderStatusRequestDto request,
   );
 
@@ -39,8 +42,8 @@ abstract class DriverOrdersApiClient {
 
   @GET(Endpoints.driverOrderHistory)
   Future<OrderHistoryResponseDto> getDriverOrderHistory({
-    @Query('page') int page = 1,
-    @Query('pageSize') int pageSize = 20,
-    @Query('status') String? status,
+    @Query(ApiParams.page) int page = 1,
+    @Query(ApiParams.pageSize) int pageSize = 20,
+    @Query(ApiParams.status) String? status,
   });
 }

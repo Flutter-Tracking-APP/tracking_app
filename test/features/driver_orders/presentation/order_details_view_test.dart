@@ -39,9 +39,11 @@ class FakeOrderDetailsRepository implements DriverOrdersRepository {
   @override
   Future<ApiResults<OrderDetailsEntity>> getOrderDetails(String orderId) async {
     if (returnError) {
-      return const Failure(
-        'Failed to load order details',
-        AppError.noConnection,
+      return const FailureResponse(
+        ServerFailure(
+          error: AppError.noConnection,
+          message: 'Failed to load order details',
+        ),
       );
     }
     return Success(details!);

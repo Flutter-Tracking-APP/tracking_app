@@ -33,7 +33,12 @@ class FakeHistoricalDetailsRepo implements DriverOrdersRepository {
     String orderId,
   ) async {
     if (returnError) {
-      return const Failure('Details failed', AppError.server);
+      return const FailureResponse(
+        ServerFailure(
+          error: AppError.server,
+          message: 'Details failed',
+        ),
+      );
     }
     return Success(details!);
   }

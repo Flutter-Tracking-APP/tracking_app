@@ -7,6 +7,7 @@ import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/network/network_constants.dart';
 import 'package:tracking_app/config/session/session_service.dart';
+import 'package:tracking_app/core/const/api_headers.dart';
 import 'package:tracking_app/core/const/endpoints.dart';
 import 'package:tracking_app/features/auth/data/models/refresh_token_request_dto.dart';
 import 'package:tracking_app/features/auth/data/models/refresh_token_response_dto.dart';
@@ -69,11 +70,11 @@ class TokenRefreshInterceptor extends Interceptor {
   }
 
   String? _extractBearerToken(RequestOptions options) {
-    final authHeader = options.headers['Authorization']?.toString();
-    if (authHeader == null || !authHeader.startsWith('Bearer ')) {
+    final authHeader = options.headers[ApiHeaders.authorization]?.toString();
+    if (authHeader == null || !authHeader.startsWith(ApiHeaders.bearerPrefix)) {
       return null;
     }
-    return authHeader.substring(7).trim();
+    return authHeader.substring(ApiHeaders.bearerPrefix.length).trim();
   }
 
   Future<bool> _orchestrateRefresh() async {
@@ -132,7 +133,8 @@ class TokenRefreshInterceptor extends Interceptor {
     String newToken,
     ErrorInterceptorHandler handler,
   ) async {
-    requestOptions.headers['Authorization'] = 'Bearer $newToken';
+    requestOptions.headers[ApiHeaders.authorization] =
+        '${ApiHeaders.bearerPrefix}$newToken';
     requestOptions.extra[NetworkConstants.isRetry] = true;
 
     try {

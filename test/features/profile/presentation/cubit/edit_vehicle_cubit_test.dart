@@ -26,7 +26,12 @@ class FakeVehicleApplyRepo implements ApplyDriverRepository {
   @override
   Future<ApiResults<DriverApplicationEntity>> applyAsDriver(
     ApplyDriverParams params,
-  ) async => const Failure('not needed', AppError.general);
+  ) async => const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<List<VehicleTypeEntity>>> getVehicleTypes() async =>
@@ -38,7 +43,12 @@ class FakeVehicleProfileRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<UserProfileEntity>> getProfile() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
@@ -46,7 +56,12 @@ class FakeVehicleProfileRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -160,6 +175,37 @@ void main() {
         predicate<EditVehicleState>((s) => s.updateVehicleState.isLoading),
         predicate<EditVehicleState>(
           (s) => s.updateVehicleState.data == 'Updated',
+        ),
+      ],
+    );
+
+    blocTest<EditVehicleCubit, EditVehicleState>(
+      'transitions updateVehicleState to BaseState.failure on SubmitVehicleInfoEvent failure',
+      build: () {
+        fakeProfileRepo.updateResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.server,
+            message: 'Vehicle update failed',
+          ),
+        );
+        return EditVehicleCubit(
+          getVehicleTypesUseCase,
+          updateVehicleUseCase,
+          fakeImagePicker,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const SubmitVehicleInfoEvent(testParams)),
+      expect: () => [
+        predicate<EditVehicleState>((s) => s.updateVehicleState.isLoading),
+        predicate<EditVehicleState>(
+          (s) =>
+              !s.updateVehicleState.isLoading &&
+              s.updateVehicleState.failure ==
+                  const ServerFailure(
+                    error: AppError.server,
+                    message: 'Vehicle update failed',
+                  ) &&
+              s.updateVehicleState.errorMessage == 'Vehicle update failed',
         ),
       ],
     );

@@ -1,4 +1,6 @@
-import 'package:tracking_app/config/network/app_error.dart';
+import 'package:tracking_app/core/errors/app_failure.dart';
+
+export 'package:tracking_app/core/errors/app_failure.dart';
 
 sealed class ApiResults<T> {
   const ApiResults();
@@ -9,8 +11,9 @@ class Success<T> extends ApiResults<T> {
   const Success(this.data);
 }
 
-class Failure<T> extends ApiResults<T> {
-  final String? message;
-  final AppError error;
-  const Failure(this.message, this.error);
+class FailureResponse<T> extends ApiResults<T> {
+  final AppFailure failure;
+  const FailureResponse(this.failure);
 }
+
+typedef Failure<T> = FailureResponse<T>;

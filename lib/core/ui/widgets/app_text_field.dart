@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/validation_error_extension.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 
 class AppTextField extends StatelessWidget {
   final String label;
@@ -11,6 +12,7 @@ class AppTextField extends StatelessWidget {
   final TextStyle hintStyle;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final ValidationError? Function(String?)? errorValidator;
   final String? validationPattern;
   final String? validationErrorMessage;
   final void Function(String)? onChange;
@@ -18,7 +20,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final bool readOnly;
   final TextInputType? keyboardType;
-  final AppLocalizations localizations;
+  final AppLocalizations? localizations;
 
   AppTextField({
     super.key,
@@ -28,6 +30,7 @@ class AppTextField extends StatelessWidget {
     TextStyle? hintStyle,
     this.controller,
     this.validator,
+    this.errorValidator,
     this.validationPattern,
     this.validationErrorMessage,
     this.onChange,
@@ -35,12 +38,12 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.readOnly = false,
     this.keyboardType,
-    required this.localizations,
-  }) : labelStyle = labelStyle ?? AppStyles.regular12Roboto,
-       hintStyle = hintStyle ?? AppStyles.regular14Roboto {
+    this.localizations,
+  })  : labelStyle = labelStyle ?? AppStyles.regular12Roboto,
+        hintStyle = hintStyle ?? AppStyles.regular14Roboto {
     assert(
       !((validationPattern != null || validationErrorMessage != null) &&
-          validator != null),
+          (validator != null || errorValidator != null)),
       "You can either provide a custom validator or provide the validation pattern and error.",
     );
   }
@@ -61,7 +64,7 @@ class AppTextField extends StatelessWidget {
         errorMaxLines: 3,
       ),
       controller: controller,
-      validator: validator ?? defaultValidator,
+      validator: (val) => _getValidationError(context, val),
       onChanged: onChange,
       obscureText: obscureText,
       readOnly: readOnly,
@@ -69,17 +72,29 @@ class AppTextField extends StatelessWidget {
     );
   }
 
-  String? defaultValidator(String? input) {
+  String? _getValidationError(BuildContext context, String? val) {
+    if (errorValidator != null) {
+      final err = errorValidator!(val);
+      return err?.toLocalizedMessage(context);
+    }
+    if (validator != null) {
+      return validator!(val);
+    }
+    return defaultValidator(context, val);
+  }
+
+  String? defaultValidator(BuildContext context, String? input) {
+    final l10n = localizations ?? AppLocalizations.of(context)!;
     if (input == null) {
-      return localizations.generalValidationError;
+      return l10n.generalValidationError;
     }
 
     if (input.isEmpty) {
-      return localizations.emptyValidationError;
+      return l10n.emptyValidationError;
     }
 
     if (validationPattern != null &&
-        !FormValidator.validate(validationPattern!, input)) {
+        !AppValidators.validate(validationPattern!, input)) {
       return validationErrorMessage;
     }
 

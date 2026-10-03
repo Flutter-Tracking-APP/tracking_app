@@ -66,20 +66,21 @@ class DriverOrderHistoryCubit
             completedCount: completed,
           ),
         );
-      case Failure(error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         if (isClosed) return;
         emit(
           state.copyWith(
             historyState: BaseState(
               isLoading: false,
               errorMessage: errorMsg,
+              failure: failure,
               data: state.historyState.data,
             ),
           ),
         );
         if (isClosed) return;
-        emitEvent(DisplayError(errorMsg));
+        emitEvent(DisplayError(errorMsg, failure: failure));
     }
   }
 

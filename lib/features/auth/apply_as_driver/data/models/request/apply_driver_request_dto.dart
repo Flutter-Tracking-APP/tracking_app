@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:tracking_app/core/const/api_params.dart';
 import 'package:tracking_app/features/auth/apply_as_driver/domain/params/apply_driver_params.dart';
 
 class ApplyDriverRequestDto {
@@ -61,26 +62,26 @@ class ApplyDriverRequestDto {
         .last;
 
     return {
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'phone': phone,
-      'password': password,
-      'confirmPassword': confirmPassword,
-      'gender': gender,
-      'nid': nid,
-      'nidImage': await MultipartFile.fromFile(
+      ApiParams.firstName: firstName,
+      ApiParams.lastName: lastName,
+      ApiParams.email: email,
+      ApiParams.phone: phone,
+      ApiParams.password: password,
+      ApiParams.confirmPassword: confirmPassword,
+      ApiParams.gender: gender,
+      ApiParams.nid: nid,
+      ApiParams.nidImage: await MultipartFile.fromFile(
         nidImage.path,
         filename: nidFileName,
       ),
-      'vehicleTypeId': vehicleTypeId,
-      'vehiclePlateNumber': vehiclePlateNumber,
-      'vehicleCapacity': vehicleCapacity,
-      'licenceImage': await MultipartFile.fromFile(
+      ApiParams.vehicleTypeId: vehicleTypeId,
+      ApiParams.vehiclePlateNumber: vehiclePlateNumber,
+      ApiParams.vehicleCapacity: vehicleCapacity,
+      ApiParams.licenceImage: await MultipartFile.fromFile(
         licenceImage.path,
         filename: licenceFileName,
       ),
-      'fcmToken': fcmToken,
+      ApiParams.fcmToken: fcmToken,
     };
   }
 

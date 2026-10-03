@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_view_mixin.dart';
 import 'package:tracking_app/config/di/di.dart';
-import 'package:tracking_app/config/form_validator/form_validator.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/validation_error_extension.dart';
+import 'package:tracking_app/core/utils/app_validators.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/core/ui/widgets/app_text_field.dart';
 import 'package:tracking_app/features/profile/domain/params/change_password_params.dart';
@@ -109,7 +110,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
           obscureText: !state.isCurrentPasswordVisible,
           localizations: l10n,
           validator: (val) =>
-              FormValidator.validateRequired(val, l10n.emptyValidationError),
+              AppValidators.validateRequired(val)?.toLocalizedMessage(context),
           suffixIcon: IconButton(
             icon: Icon(
               state.isCurrentPasswordVisible
@@ -137,11 +138,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
           controller: _newPasswordController,
           obscureText: !state.isNewPasswordVisible,
           localizations: l10n,
-          validator: (val) => FormValidator.validatePasswordValue(
-            val,
-            l10n.emptyValidationError,
-            l10n.weakPasswordError,
-          ),
+          validator: (val) =>
+              AppValidators.validatePassword(val)?.toLocalizedMessage(context),
           suffixIcon: IconButton(
             icon: Icon(
               state.isNewPasswordVisible
@@ -169,12 +167,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView>
           controller: _confirmNewPasswordController,
           obscureText: !state.isConfirmNewPasswordVisible,
           localizations: l10n,
-          validator: (val) => FormValidator.validateConfirmPassword(
+          validator: (val) => AppValidators.validateConfirmPassword(
             val,
             _newPasswordController.text,
-            l10n.emptyValidationError,
-            l10n.passwordMismatchError,
-          ),
+          )?.toLocalizedMessage(context),
           suffixIcon: IconButton(
             icon: Icon(
               state.isConfirmNewPasswordVisible

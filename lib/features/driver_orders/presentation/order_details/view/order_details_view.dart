@@ -8,6 +8,7 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/const/app_colors.dart';
 import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/core/ui/extensions/app_failure_extension.dart';
 import 'package:tracking_app/core/ui/widgets/app_button.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_cubit.dart';
@@ -151,8 +152,12 @@ class _OrderDetailsContentState extends State<_OrderDetailsContent>
           );
         }
 
-        if (state.orderDetailsState.errorMessage != null) {
-          return _buildErrorState(state.orderDetailsState.errorMessage!);
+        if (state.orderDetailsState.failure != null ||
+            state.orderDetailsState.errorMessage != null) {
+          final message =
+              state.orderDetailsState.failure?.toLocalizedMessage(context) ??
+                  state.orderDetailsState.errorMessage!;
+          return _buildErrorState(message);
         }
 
         final order = state.orderDetailsState.data;

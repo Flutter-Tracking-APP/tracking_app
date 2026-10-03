@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:tracking_app/core/errors/app_failure.dart';
 
 import '../../../../../config/base/base_state.dart';
 
@@ -30,6 +31,7 @@ class ForgetPasswordState extends BaseState<dynamic> with Equatable {
     this.remainingSeconds = 30,
     super.isLoading = false,
     super.errorMessage,
+    super.failure,
     super.data,
   });
 
@@ -46,6 +48,7 @@ class ForgetPasswordState extends BaseState<dynamic> with Equatable {
     int? remainingSeconds,
     bool? isLoading,
     Object? errorMessage = unset,
+    Object? failure = unset,
     Object? data = unset,
   }) {
     return ForgetPasswordState(
@@ -59,20 +62,23 @@ class ForgetPasswordState extends BaseState<dynamic> with Equatable {
       errorMessage: identical(errorMessage, unset)
           ? this.errorMessage
           : errorMessage as String?,
+      failure:
+          identical(failure, unset) ? this.failure : failure as AppFailure?,
       data: identical(data, unset) ? this.data : data,
     );
   }
 
   @override
   List<Object?> get props => [
-    step,
-    operation,
-    otp,
-    otpToken,
-    email,
-    remainingSeconds,
-    isLoading,
-    errorMessage,
-    data,
-  ];
+        step,
+        operation,
+        otp,
+        otpToken,
+        email,
+        remainingSeconds,
+        isLoading,
+        errorMessage,
+        failure,
+        data,
+      ];
 }

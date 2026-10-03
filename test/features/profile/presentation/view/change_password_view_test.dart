@@ -20,7 +20,12 @@ import 'package:tracking_app/features/profile/presentation/view/change_password_
 class FakeChangePasswordTestRepo implements ProfileRepository {
   @override
   Future<ApiResults<UserProfileEntity>> getProfile() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
@@ -28,7 +33,12 @@ class FakeChangePasswordTestRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -157,6 +167,33 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('This field is required'), findsWidgets);
+  });
+
+  testWidgets('validates weak password and mismatched confirm password', (
+    tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget());
+    await tester.pumpAndSettle();
+
+    final textFields = find.byType(TextField);
+    // Current password
+    await tester.enterText(textFields.at(0), 'OldPass123!');
+    // Weak new password
+    await tester.enterText(textFields.at(1), 'short');
+    // Mismatched confirm password
+    await tester.enterText(textFields.at(2), 'different');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Update'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Password must be at least 8 characters with uppercase, lowercase, number and special character',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Passwords do not match'), findsOneWidget);
   });
 
   testWidgets('renders properly in Arabic (RTL)', (tester) async {
