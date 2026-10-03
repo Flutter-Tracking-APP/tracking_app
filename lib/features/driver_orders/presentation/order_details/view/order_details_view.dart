@@ -163,8 +163,24 @@ class _OrderDetailsContentState extends State<_OrderDetailsContent>
         return ListView(
           children: [
             OrderStatusCard(order: order),
-            StoreAddressCard(store: order.store),
-            UserAddressCard(user: order.user),
+            StoreAddressCard(
+              store: order.store,
+              onTap: () {
+                context.push(
+                  '${AppRoutes.pickupLocation}/${widget.orderId}',
+                  extra: order,
+                );
+              },
+            ),
+            UserAddressCard(
+              user: order.user,
+              onTap: () {
+                context.push(
+                  '${AppRoutes.userLocation}/${widget.orderId}',
+                  extra: order,
+                );
+              },
+            ),
             if (order.items.isNotEmpty) OrderItemsListView(items: order.items),
             OrderSummarySection(order: order),
             const SizedBox(height: 16),

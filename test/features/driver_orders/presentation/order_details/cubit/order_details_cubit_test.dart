@@ -66,6 +66,13 @@ class MockDriverOrdersRepository implements DriverOrdersRepository {
   Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
     String orderId,
   ) async => throw UnimplementedError();
+
+  @override
+  Future<ApiResults<void>> updateDriverLocation({
+    required double lat,
+    required double lng,
+    required DateTime recordedAt,
+  }) async => const Success(null);
 }
 
 void main() {

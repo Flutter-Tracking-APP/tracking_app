@@ -96,6 +96,10 @@ class StoreAddressDto {
   final String? whatsAppNumber;
   final String? avatar;
   final String? image;
+  final num? lat;
+  final num? lng;
+  final num? latitude;
+  final num? longitude;
 
   const StoreAddressDto({
     this.name,
@@ -107,6 +111,10 @@ class StoreAddressDto {
     this.whatsAppNumber,
     this.avatar,
     this.image,
+    this.lat,
+    this.lng,
+    this.latitude,
+    this.longitude,
   });
 
   factory StoreAddressDto.fromJson(Map<String, dynamic> json) =>
@@ -117,6 +125,8 @@ class StoreAddressDto {
   String? get effectivePhone => phoneNumber ?? phone ?? whatsAppNumber;
   String? get effectiveWhatsApp => whatsAppNumber ?? phoneNumber ?? phone;
   String? get effectiveAvatar => avatar ?? image;
+  double get effectiveLat => (lat ?? latitude ?? 30.0444).toDouble();
+  double get effectiveLng => (lng ?? longitude ?? 31.2357).toDouble();
 }
 
 @JsonSerializable(createToJson: false)
@@ -130,6 +140,10 @@ class UserAddressDto {
   final String? phoneNumber;
   final String? avatar;
   final String? profilePictureUrl;
+  final num? lat;
+  final num? lng;
+  final num? latitude;
+  final num? longitude;
 
   const UserAddressDto({
     this.name,
@@ -141,6 +155,10 @@ class UserAddressDto {
     this.phoneNumber,
     this.avatar,
     this.profilePictureUrl,
+    this.lat,
+    this.lng,
+    this.latitude,
+    this.longitude,
   });
 
   factory UserAddressDto.fromJson(Map<String, dynamic> json) =>
@@ -155,4 +173,6 @@ class UserAddressDto {
   String get effectiveAddress => addressLine ?? address ?? '';
   String? get effectivePhone => phone ?? phoneNumber;
   String? get effectiveAvatar => avatar ?? profilePictureUrl;
+  double get effectiveLat => (lat ?? latitude ?? 30.0500).toDouble();
+  double get effectiveLng => (lng ?? longitude ?? 31.2400).toDouble();
 }

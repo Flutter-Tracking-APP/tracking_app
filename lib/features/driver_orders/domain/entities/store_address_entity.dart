@@ -6,6 +6,8 @@ class StoreAddressEntity extends Equatable {
   final String? phone;
   final String? avatar;
   final String? whatsAppNumber;
+  final double lat;
+  final double lng;
 
   const StoreAddressEntity({
     required this.name,
@@ -13,11 +15,21 @@ class StoreAddressEntity extends Equatable {
     this.phone,
     this.avatar,
     this.whatsAppNumber,
+    this.lat = 30.0444,
+    this.lng = 31.2357,
   });
 
   String get addressLine => address;
   String? get phoneNumber => phone;
 
   @override
-  List<Object?> get props => [name, address, phone, avatar, whatsAppNumber];
+  List<Object?> get props => [
+        name,
+        address,
+        phone,
+        avatar,
+        whatsAppNumber,
+        lat,
+        lng,
+      ];
 }

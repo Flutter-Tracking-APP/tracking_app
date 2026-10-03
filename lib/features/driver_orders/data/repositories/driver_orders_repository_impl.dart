@@ -5,6 +5,7 @@ import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/safe_call.dart';
 import 'package:tracking_app/features/driver_orders/data/data_sources/contract/driver_orders_remote_data_source.dart';
 import 'package:tracking_app/features/driver_orders/data/mapper/order_mapper.dart';
+import 'package:tracking_app/features/driver_orders/data/models/request/update_driver_location_request_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/request/update_order_status_request_dto.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
@@ -132,6 +133,24 @@ class DriverOrdersRepositoryImpl implements DriverOrdersRepository {
         throw Exception('Historical order details not found');
       }
       return Success(data.toHistoricalEntity());
+    });
+  }
+
+  @override
+  Future<ApiResults<void>> updateDriverLocation({
+    required double lat,
+    required double lng,
+    required DateTime recordedAt,
+  }) {
+    return safeCall(() async {
+      await _remoteDataSource.updateDriverLocation(
+        UpdateDriverLocationRequestDto(
+          lat: lat,
+          lng: lng,
+          recordedAt: recordedAt.toUtc().toIso8601String(),
+        ),
+      );
+      return const Success(null);
     });
   }
 }
