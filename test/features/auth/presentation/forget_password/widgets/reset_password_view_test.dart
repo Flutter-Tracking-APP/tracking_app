@@ -61,9 +61,13 @@ Widget createTestWidget(ForgetPasswordBloc bloc) {
 void main() {
   group('ResetPasswordView Widget Tests', () {
     late ForgetPasswordBloc bloc;
+    late FakeResetPasswordAuthRepo fakeRepo;
+
+    final newPassFinder = find.byKey(const Key('reset_new_password_field'));
+    final confirmPassFinder = find.byKey(const Key('reset_confirm_password_field'));
 
     setUp(() {
-      final fakeRepo = FakeResetPasswordAuthRepo();
+      fakeRepo = FakeResetPasswordAuthRepo();
       bloc = ForgetPasswordBloc(
         ForgetPasswordUseCase(fakeRepo),
         VerifyOtpUseCase(fakeRepo),
@@ -99,9 +103,8 @@ void main() {
       await tester.pumpWidget(createTestWidget(bloc));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(0), 'short');
-      await tester.enterText(textFields.at(1), 'short');
+      await tester.enterText(newPassFinder, 'short');
+      await tester.enterText(confirmPassFinder, 'short');
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
@@ -114,9 +117,8 @@ void main() {
       await tester.pumpWidget(createTestWidget(bloc));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(0), 'nouppercase123!');
-      await tester.enterText(textFields.at(1), 'nouppercase123!');
+      await tester.enterText(newPassFinder, 'nouppercase123!');
+      await tester.enterText(confirmPassFinder, 'nouppercase123!');
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
@@ -129,9 +131,8 @@ void main() {
       await tester.pumpWidget(createTestWidget(bloc));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(0), 'NOLOWERCASE123!');
-      await tester.enterText(textFields.at(1), 'NOLOWERCASE123!');
+      await tester.enterText(newPassFinder, 'NOLOWERCASE123!');
+      await tester.enterText(confirmPassFinder, 'NOLOWERCASE123!');
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
@@ -144,9 +145,8 @@ void main() {
       await tester.pumpWidget(createTestWidget(bloc));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(0), 'NoNumbersHere!');
-      await tester.enterText(textFields.at(1), 'NoNumbersHere!');
+      await tester.enterText(newPassFinder, 'NoNumbersHere!');
+      await tester.enterText(confirmPassFinder, 'NoNumbersHere!');
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
@@ -159,9 +159,8 @@ void main() {
       await tester.pumpWidget(createTestWidget(bloc));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(0), 'NoSpecialChar123');
-      await tester.enterText(textFields.at(1), 'NoSpecialChar123');
+      await tester.enterText(newPassFinder, 'NoSpecialChar123');
+      await tester.enterText(confirmPassFinder, 'NoSpecialChar123');
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
@@ -174,15 +173,31 @@ void main() {
       await tester.pumpWidget(createTestWidget(bloc));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(0), 'ValidP@ssw0rd');
-      await tester.enterText(textFields.at(1), 'DifferentP@ssw0rd');
+      await tester.enterText(newPassFinder, 'ValidP@ssw0rd');
+      await tester.enterText(confirmPassFinder, 'DifferentP@ssw0rd');
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
       await tester.pumpAndSettle();
 
       expect(find.text('Passwords do not match'), findsOneWidget);
+    });
+
+    testWidgets('happy path: enters matching valid passwords and submits successfully', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestWidget(bloc));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(newPassFinder, 'P@ssw0rd123');
+      await tester.enterText(confirmPassFinder, 'P@ssw0rd123');
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Reset Password'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Passwords do not match'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
   });
 }

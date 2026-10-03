@@ -17,7 +17,7 @@ import 'package:tracking_app/features/auth/presentation/login/cubit/login_cubit.
 import 'package:tracking_app/features/auth/presentation/login/view/login_view.dart';
 
 class FakeAuthRepository implements AuthRepository {
-  ApiResults<LoginEntity>? loginResult;
+  final ApiResults<LoginEntity>? loginResult;
 
   FakeAuthRepository({this.loginResult});
 
@@ -26,14 +26,14 @@ class FakeAuthRepository implements AuthRepository {
     return loginResult ??
         const Success(
           LoginEntity(
+            token: 'test-token',
+            refreshToken: 'test-refresh-token',
             user: UserEntity(
               id: '1',
-              name: 'Test User',
-              email: 'test@example.com',
+              name: 'John Doe',
+              email: 'john.doe@example.com',
               phone: '01012345678',
             ),
-            token: 'token',
-            refreshToken: 'refresh',
           ),
         );
   }
@@ -95,9 +95,15 @@ Widget createTestWidget({
 
 void main() {
   group('LoginView Widget Tests', () {
+    late LoginCubit cubit;
+
+    tearDown(() {
+      cubit.close();
+    });
+
     testWidgets('renders login form elements properly', (tester) async {
       final fakeRepo = FakeAuthRepository();
-      final cubit = LoginCubit(LoginUseCase(fakeRepo));
+      cubit = LoginCubit(LoginUseCase(fakeRepo));
 
       await tester.pumpWidget(createTestWidget(loginCubit: cubit));
       await tester.pumpAndSettle();
@@ -107,13 +113,11 @@ void main() {
       expect(find.text('Password'), findsOneWidget);
       expect(find.text('Remember me'), findsOneWidget);
       expect(find.text('Forget Password?'), findsOneWidget);
-
-      await cubit.close();
     });
 
     testWidgets('displays validation errors on invalid inputs', (tester) async {
       final fakeRepo = FakeAuthRepository();
-      final cubit = LoginCubit(LoginUseCase(fakeRepo));
+      cubit = LoginCubit(LoginUseCase(fakeRepo));
 
       await tester.pumpWidget(createTestWidget(loginCubit: cubit));
       await tester.pumpAndSettle();
@@ -123,15 +127,11 @@ void main() {
       await tester.enterText(textFields.at(1), '');
       await tester.pumpAndSettle();
 
-      final formFinder = find.byType(Form);
-      final formState = tester.state<FormState>(formFinder);
-      formState.validate();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid email address'), findsOneWidget);
       expect(find.text('This field is required'), findsOneWidget);
-
-      await cubit.close();
     });
 
     testWidgets('displays localized SnackBar on NetworkFailure', (tester) async {
@@ -140,7 +140,7 @@ void main() {
           NetworkFailure(AppError.noConnection),
         ),
       );
-      final cubit = LoginCubit(LoginUseCase(fakeRepo));
+      cubit = LoginCubit(LoginUseCase(fakeRepo));
 
       await tester.pumpWidget(createTestWidget(loginCubit: cubit));
       await tester.pumpAndSettle();
@@ -161,8 +161,6 @@ void main() {
         ),
         findsOneWidget,
       );
-
-      await cubit.close();
     });
 
     testWidgets('displays localized SnackBar on ServerFailure', (
@@ -176,7 +174,7 @@ void main() {
           ),
         ),
       );
-      final cubit = LoginCubit(LoginUseCase(fakeRepo));
+      cubit = LoginCubit(LoginUseCase(fakeRepo));
 
       await tester.pumpWidget(createTestWidget(loginCubit: cubit));
       await tester.pumpAndSettle();
@@ -191,15 +189,13 @@ void main() {
 
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text('Invalid credentials'), findsOneWidget);
-
-      await cubit.close();
     });
 
     testWidgets('displays localized success SnackBar and navigates to home on successful login', (
       tester,
     ) async {
       final fakeRepo = FakeAuthRepository();
-      final cubit = LoginCubit(LoginUseCase(fakeRepo));
+      cubit = LoginCubit(LoginUseCase(fakeRepo));
 
       await tester.pumpWidget(createTestWidget(loginCubit: cubit));
       await tester.pumpAndSettle();
@@ -214,8 +210,6 @@ void main() {
 
       expect(find.text('Login Successfully'), findsOneWidget);
       expect(find.text('Home Screen'), findsOneWidget);
-
-      await cubit.close();
     });
   });
 }

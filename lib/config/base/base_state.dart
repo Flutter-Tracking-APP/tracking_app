@@ -53,9 +53,7 @@ class BaseState<T> {
     final newFailure =
         identical(failure, unset) ? this.failure : failure as AppFailure?;
     final newErrorMessage = identical(errorMessage, unset)
-        ? (identical(failure, unset)
-            ? this.errorMessage
-            : (newFailure is ServerFailure ? newFailure.message : null))
+        ? (identical(failure, unset) ? this.errorMessage : newFailure?.message)
         : errorMessage as String?;
 
     return BaseState<T>(

@@ -64,7 +64,7 @@ class AppTextField extends StatelessWidget {
         errorMaxLines: 3,
       ),
       controller: controller,
-      validator: (val) => _resolveValidator(context, val),
+      validator: (val) => _getValidationError(context, val),
       onChanged: onChange,
       obscureText: obscureText,
       readOnly: readOnly,
@@ -72,7 +72,7 @@ class AppTextField extends StatelessWidget {
     );
   }
 
-  String? _resolveValidator(BuildContext context, String? val) {
+  String? _getValidationError(BuildContext context, String? val) {
     if (errorValidator != null) {
       final err = errorValidator!(val);
       return err?.toLocalizedMessage(context);

@@ -6,6 +6,8 @@ import 'package:tracking_app/features/driver_orders/domain/entities/historical_o
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_history_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/store_address_entity.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/user_address_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/repositories/driver_orders_repository.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/claim_order_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_available_orders_use_case.dart';
@@ -68,6 +70,20 @@ OrderEntity createDummyOrder({required String id, String? createdAt}) {
     customerName: 'Test Customer',
     customerAddress: 'Test Customer Address',
     createdAt: createdAt,
+  );
+}
+
+OrderDetailsEntity createDummyOrderDetails({required String id}) {
+  return OrderDetailsEntity(
+    id: id,
+    orderNumber: 'ORD-$id',
+    status: OrderFulfillmentStatus.accepted,
+    formattedDate: '2026-10-01',
+    store: const StoreAddressEntity(name: 'Store', address: 'Store St'),
+    user: const UserAddressEntity(name: 'User', address: 'User St'),
+    items: const [],
+    total: 100,
+    paymentMethod: 'Cash',
   );
 }
 
@@ -186,5 +202,33 @@ void main() {
         '1',
       ]);
     });
+
+    test(
+      'handles AppError.conflict on claim order by checking active order and navigating if found',
+      () async {
+        const failure = ServerFailure(
+          error: AppError.conflict,
+          message: 'Order already claimed',
+        );
+        repo.claimOrderResult = const FailureResponse(failure);
+        final activeOrder = createDummyOrderDetails(id: 'active-456');
+        repo.activeOrderResult = Success(activeOrder);
+
+        final events = <BaseEvent>[];
+        final subscription = cubit.eventStream.listen(events.add);
+
+        cubit.doEvent(const ClaimOrderEvent('order-123'));
+        await pumpEventQueue();
+
+        expect(cubit.state.claimOrderState.isLoading, isFalse);
+        expect(cubit.state.claimOrderState.failure, equals(failure));
+        expect(cubit.state.activeOrder, equals(activeOrder));
+        expect(events, contains(isA<NavigateToActiveOrderEvent>()));
+        final navEvent = events.whereType<NavigateToActiveOrderEvent>().first;
+        expect(navEvent.orderId, equals('active-456'));
+
+        await subscription.cancel();
+      },
+    );
   });
 }

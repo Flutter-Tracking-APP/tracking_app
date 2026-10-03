@@ -176,7 +176,13 @@ void main() {
       expect: () => [
         predicate<ProfileState>((s) => s.profileState.isLoading),
         predicate<ProfileState>(
-          (s) => s.profileState.errorMessage == 'Failed to fetch',
+          (s) =>
+              s.profileState.errorMessage == 'Failed to fetch' &&
+              s.profileState.failure ==
+                  const ServerFailure(
+                    error: AppError.server,
+                    message: 'Failed to fetch',
+                  ),
         ),
       ],
     );
@@ -219,7 +225,13 @@ void main() {
       expect: () => [
         predicate<ProfileState>((s) => s.vehicleInfoState.isLoading),
         predicate<ProfileState>(
-          (s) => s.vehicleInfoState.errorMessage == 'Failed to fetch vehicle',
+          (s) =>
+              s.vehicleInfoState.errorMessage == 'Failed to fetch vehicle' &&
+              s.vehicleInfoState.failure ==
+                  const ServerFailure(
+                    error: AppError.server,
+                    message: 'Failed to fetch vehicle',
+                  ),
         ),
       ],
     );

@@ -178,5 +178,36 @@ void main() {
         ),
       ],
     );
+
+    blocTest<EditVehicleCubit, EditVehicleState>(
+      'transitions updateVehicleState to BaseState.failure on SubmitVehicleInfoEvent failure',
+      build: () {
+        fakeProfileRepo.updateResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.server,
+            message: 'Vehicle update failed',
+          ),
+        );
+        return EditVehicleCubit(
+          getVehicleTypesUseCase,
+          updateVehicleUseCase,
+          fakeImagePicker,
+        );
+      },
+      act: (cubit) => cubit.doEvent(const SubmitVehicleInfoEvent(testParams)),
+      expect: () => [
+        predicate<EditVehicleState>((s) => s.updateVehicleState.isLoading),
+        predicate<EditVehicleState>(
+          (s) =>
+              !s.updateVehicleState.isLoading &&
+              s.updateVehicleState.failure ==
+                  const ServerFailure(
+                    error: AppError.server,
+                    message: 'Vehicle update failed',
+                  ) &&
+              s.updateVehicleState.errorMessage == 'Vehicle update failed',
+        ),
+      ],
+    );
   });
 }

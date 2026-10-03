@@ -56,6 +56,7 @@ class _LoginViewState extends State<LoginView> {
       }
       switch (event) {
         case ShowMessage(:final message, :final failure):
+          if (!context.mounted) return;
           final text = failure != null
               ? failure.toLocalizedMessage(context)
               : message;
@@ -66,6 +67,7 @@ class _LoginViewState extends State<LoginView> {
           }
 
         case LoginSuccessMessage():
+          if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.loginSuccessfully),
@@ -73,6 +75,7 @@ class _LoginViewState extends State<LoginView> {
           );
 
         case LoginSuccess():
+          if (!context.mounted) return;
           context.go(AppRoutes.home);
 
         //   case GuestLoginSuccess():

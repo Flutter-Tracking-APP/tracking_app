@@ -12,7 +12,7 @@ final class DisplayError extends BaseEvent {
 
   factory DisplayError.fromFailure(
     AppFailure failure, [
-    String fallback = 'An error occurred',
+    String? fallback,
   ]) => DisplayError(
         failure is ServerFailure ? (failure.message ?? fallback) : fallback,
         failure: failure,

@@ -18,22 +18,16 @@ import 'package:tracking_app/features/profile/presentation/view/widgets/profile_
 import 'package:tracking_app/features/profile/presentation/view/widgets/vehicle_info_tile.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  final ProfileCubit? cubit;
+  const ProfileView({super.key, this.cubit});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>()
-        ..doEvent(const GetProfileEvent())
-        ..doEvent(const GetVehicleInfoEvent()),
-      child: BlocConsumer<ProfileCubit, ProfileState>(
-        listenWhen: (prev, curr) =>
-            prev.logoutState != curr.logoutState ||
-            (prev.profileState.failure != curr.profileState.failure &&
-                curr.profileState.failure != null) ||
-            (prev.profileState.errorMessage != curr.profileState.errorMessage &&
-                curr.profileState.errorMessage != null),
-        listener: _handleListener,
+    final consumer = BlocConsumer<ProfileCubit, ProfileState>(
+      listenWhen: (prev, curr) =>
+          prev.logoutState != curr.logoutState ||
+          prev.profileState != curr.profileState,
+      listener: _handleListener,
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
           final isArabic = Localizations.localeOf(context).languageCode == 'ar';
@@ -118,7 +112,20 @@ class ProfileView extends StatelessWidget {
             ),
           );
         },
-      ),
+    );
+
+    if (cubit != null) {
+      return BlocProvider<ProfileCubit>.value(
+        value: cubit!,
+        child: consumer,
+      );
+    }
+
+    return BlocProvider(
+      create: (_) => getIt<ProfileCubit>()
+        ..doEvent(const GetProfileEvent())
+        ..doEvent(const GetVehicleInfoEvent()),
+      child: consumer,
     );
   }
 
@@ -187,17 +194,14 @@ class ProfileView extends StatelessWidget {
     }
     final failure = state.profileState.failure;
     final errorMessage = state.profileState.errorMessage;
-    if (failure != null || (errorMessage != null && errorMessage.isNotEmpty)) {
-      final message =
-          failure?.toLocalizedMessage(context) ?? errorMessage ?? '';
-      if (message.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
+    final message = failure?.toLocalizedMessage(context) ?? errorMessage;
+    if (message != null && message.trim().isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
   }
 }

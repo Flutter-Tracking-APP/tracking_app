@@ -116,7 +116,7 @@ void main() {
     );
 
     blocTest<EditProfileCubit, EditProfileState>(
-      'emits loading then error on SubmitEditProfileEvent failure',
+      'emits loading then error on SubmitEditProfileEvent failure and extracts ServerFailure message',
       build: () {
         fakeRepo.updateResult = const FailureResponse(
           ServerFailure(
@@ -130,7 +130,13 @@ void main() {
       expect: () => [
         predicate<EditProfileState>((s) => s.updateProfileState.isLoading),
         predicate<EditProfileState>(
-          (s) => s.updateProfileState.errorMessage == 'Failed to update',
+          (s) =>
+              s.updateProfileState.errorMessage == 'Failed to update' &&
+              s.updateProfileState.failure ==
+                  const ServerFailure(
+                    error: AppError.server,
+                    message: 'Failed to update',
+                  ),
         ),
       ],
     );

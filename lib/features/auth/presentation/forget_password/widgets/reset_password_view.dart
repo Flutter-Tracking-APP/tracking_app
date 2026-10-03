@@ -76,6 +76,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
             const SizedBox(height: 40),
 
             AppTextField(
+              key: const Key('reset_new_password_field'),
               label: localizations.newPassword,
               hint: localizations.enterNewPassword,
               controller: _passwordController,
@@ -99,6 +100,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
             const SizedBox(height: 20),
 
             AppTextField(
+              key: const Key('reset_confirm_password_field'),
               label: localizations.confirmPassword,
               hint: localizations.confirmYourPassword,
               controller: _confirmPasswordController,
