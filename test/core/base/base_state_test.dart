@@ -29,15 +29,26 @@ void main() {
       expect(state.failure, isNull);
     });
 
-    test('error factory populates failure with ServerMessageFailure if omitted', () {
+    test('error factory populates failure with ServerFailure if omitted', () {
       final state = BaseState<String>.error('something broke');
       expect(state.isLoading, isFalse);
       expect(state.errorMessage, equals('something broke'));
-      expect(state.failure, equals(const ServerMessageFailure('something broke')));
+      expect(
+        state.failure,
+        equals(
+          const ServerFailure(
+            error: AppError.general,
+            message: 'something broke',
+          ),
+        ),
+      );
     });
 
-    test('failure factory maps ServerMessageFailure message to errorMessage', () {
-      const failure = ServerMessageFailure('Server error');
+    test('failure factory maps ServerFailure message to errorMessage', () {
+      const failure = ServerFailure(
+        error: AppError.server,
+        message: 'Server error',
+      );
       final state = BaseState<String>.failure(failure);
       expect(state.isLoading, isFalse);
       expect(state.failure, equals(failure));
@@ -57,7 +68,10 @@ void main() {
         const state = BaseState<String>(
           isLoading: false,
           errorMessage: 'Old Error',
-          failure: ServerMessageFailure('Old Error'),
+          failure: ServerFailure(
+            error: AppError.general,
+            message: 'Old Error',
+          ),
           data: 'Initial data',
         );
 
@@ -66,14 +80,25 @@ void main() {
         expect(copy.isLoading, isTrue);
         expect(copy.data, equals('Initial data'));
         expect(copy.errorMessage, equals('Old Error'));
-        expect(copy.failure, equals(const ServerMessageFailure('Old Error')));
+        expect(
+          copy.failure,
+          equals(
+            const ServerFailure(
+              error: AppError.general,
+              message: 'Old Error',
+            ),
+          ),
+        );
       });
 
       test('clearing failure via failure: null clears both failure and errorMessage', () {
         const state = BaseState<String>(
           isLoading: false,
           errorMessage: 'Old Error',
-          failure: ServerMessageFailure('Old Error'),
+          failure: ServerFailure(
+            error: AppError.general,
+            message: 'Old Error',
+          ),
           data: 'Initial data',
         );
 
@@ -88,24 +113,46 @@ void main() {
         const state = BaseState<String>(
           isLoading: false,
           errorMessage: 'Old Error',
-          failure: ServerMessageFailure('Old Error'),
+          failure: ServerFailure(
+            error: AppError.general,
+            message: 'Old Error',
+          ),
           data: 'Initial data',
         );
 
         final copy = state.copyWith(errorMessage: null);
 
         expect(copy.errorMessage, isNull);
-        expect(copy.failure, equals(const ServerMessageFailure('Old Error')));
+        expect(
+          copy.failure,
+          equals(
+            const ServerFailure(
+              error: AppError.general,
+              message: 'Old Error',
+            ),
+          ),
+        );
       });
 
-      test('updating failure with ServerMessageFailure automatically aligns errorMessage', () {
+      test('updating failure with ServerFailure automatically aligns errorMessage', () {
         const state = BaseState<String>.initial();
 
         final copy = state.copyWith(
-          failure: const ServerMessageFailure('New failure message'),
+          failure: const ServerFailure(
+            error: AppError.badRequest,
+            message: 'New failure message',
+          ),
         );
 
-        expect(copy.failure, equals(const ServerMessageFailure('New failure message')));
+        expect(
+          copy.failure,
+          equals(
+            const ServerFailure(
+              error: AppError.badRequest,
+              message: 'New failure message',
+            ),
+          ),
+        );
         expect(copy.errorMessage, equals('New failure message'));
       });
 

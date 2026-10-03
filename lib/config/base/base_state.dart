@@ -1,3 +1,4 @@
+import 'package:tracking_app/config/network/app_error.dart';
 import 'package:tracking_app/core/errors/app_failure.dart';
 
 class Unset {
@@ -32,17 +33,16 @@ class BaseState<T> {
       BaseState(
         isLoading: false,
         errorMessage: message,
-        failure: failure ?? ServerMessageFailure(message),
+        failure: failure ?? ServerFailure(error: AppError.general, message: message),
         data: data,
       );
 
   factory BaseState.failure(AppFailure failure, {T? data}) => BaseState(
         isLoading: false,
-        errorMessage: failure is ServerMessageFailure ? failure.message : null,
+        errorMessage: failure is ServerFailure ? failure.message : null,
         failure: failure,
         data: data,
       );
-
 
   BaseState<T> copyWith({
     bool? isLoading,
@@ -55,7 +55,7 @@ class BaseState<T> {
     final newErrorMessage = identical(errorMessage, unset)
         ? (identical(failure, unset)
             ? this.errorMessage
-            : (newFailure is ServerMessageFailure ? newFailure.message : null))
+            : (newFailure is ServerFailure ? newFailure.message : null))
         : errorMessage as String?;
 
     return BaseState<T>(

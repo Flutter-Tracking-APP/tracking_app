@@ -102,9 +102,9 @@ void main() {
 
         final result = await repository.getProfile();
 
-        expect(result, isA<Failure>());
-        final failure = result as Failure;
-        expect(failure.error, AppError.timeout);
+        expect(result, isA<FailureResponse>());
+        final failure = result as FailureResponse;
+        expect(failure.failure.error, AppError.timeout);
       },
     );
 

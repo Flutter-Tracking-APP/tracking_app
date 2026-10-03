@@ -32,7 +32,12 @@ class FakeOrderHistoryRepo implements DriverOrdersRepository {
     String? status,
   }) async {
     if (returnError) {
-      return const Failure('Failed to load history', AppError.server);
+      return const FailureResponse(
+        ServerFailure(
+          error: AppError.server,
+          message: 'Failed to load history',
+        ),
+      );
     }
     return Success(orders);
   }

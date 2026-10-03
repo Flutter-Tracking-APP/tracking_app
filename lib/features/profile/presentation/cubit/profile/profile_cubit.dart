@@ -49,8 +49,8 @@ class ProfileCubit extends BaseCubit<ProfileState, BaseEvent> {
     switch (result) {
       case Success(data: final data):
         emit(state.copyWith(profileState: BaseState.success(data)));
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         emit(
           state.copyWith(
             profileState: BaseState(
@@ -79,8 +79,8 @@ class ProfileCubit extends BaseCubit<ProfileState, BaseEvent> {
     switch (result) {
       case Success(data: final data):
         emit(state.copyWith(vehicleInfoState: BaseState.success(data)));
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         emit(
           state.copyWith(
             vehicleInfoState: BaseState(

@@ -112,9 +112,11 @@ void main() {
     blocTest<ApplyDriverCubit, ApplyDriverState>(
       'emits loading then error when GetVehicleTypesEvent fails',
       build: () {
-        fakeRepo.vehicleTypesResult = const Failure(
-          'Network failure',
-          AppError.noConnection,
+        fakeRepo.vehicleTypesResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.noConnection,
+            message: 'Network failure',
+          ),
         );
         return ApplyDriverCubit(
           applyUseCase,
@@ -151,9 +153,11 @@ void main() {
     blocTest<ApplyDriverCubit, ApplyDriverState>(
       'emits loading then error when SubmitApplyDriverEvent fails',
       build: () {
-        fakeRepo.applyResult = const Failure(
-          'Phone already in use',
-          AppError.conflict,
+        fakeRepo.applyResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.conflict,
+            message: 'Phone already in use',
+          ),
         );
         return ApplyDriverCubit(
           applyUseCase,

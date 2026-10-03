@@ -20,7 +20,12 @@ import 'package:tracking_app/features/profile/presentation/view/change_password_
 class FakeChangePasswordTestRepo implements ProfileRepository {
   @override
   Future<ApiResults<UserProfileEntity>> getProfile() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateProfile(UpdateProfileParams params) async =>
@@ -28,7 +33,12 @@ class FakeChangePasswordTestRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
-      const Failure('not needed', AppError.general);
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>

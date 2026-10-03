@@ -28,17 +28,43 @@ void main() {
   }
 
   group('AppFailureLocalization Extension Tests', () {
-    testWidgets('maps ServerMessageFailure to its raw message',
+    testWidgets('maps ServerFailure with message to its raw message',
         (tester) async {
       late String localized;
       await tester.pumpWidget(
         buildTestContext((context) {
-          const failure = ServerMessageFailure('Custom backend message');
+          const failure = ServerFailure(
+            error: AppError.badRequest,
+            message: 'Custom backend message',
+          );
           localized = failure.toLocalizedMessage(context);
         }),
       );
 
       expect(localized, equals('Custom backend message'));
+    });
+
+    testWidgets('maps ServerFailure with null/empty message to localized AppError',
+        (tester) async {
+      late String nullMsgLocalized;
+      late String emptyMsgLocalized;
+      await tester.pumpWidget(
+        buildTestContext((context) {
+          const failureNull = ServerFailure(
+            error: AppError.server,
+            message: null,
+          );
+          const failureEmpty = ServerFailure(
+            error: AppError.server,
+            message: '   ',
+          );
+          nullMsgLocalized = failureNull.toLocalizedMessage(context);
+          emptyMsgLocalized = failureEmpty.toLocalizedMessage(context);
+        }),
+      );
+
+      expect(nullMsgLocalized, contains('Server is temporarily unavailable'));
+      expect(emptyMsgLocalized, contains('Server is temporarily unavailable'));
     });
 
     testWidgets('maps NetworkFailure to localized string in English',

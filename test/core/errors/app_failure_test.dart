@@ -11,18 +11,38 @@ void main() {
 
       expect(failure1, equals(failure2));
       expect(failure1, isNot(equals(failure3)));
+      expect(failure1.error, equals(AppError.noConnection));
+      expect(failure1.message, isNull);
       expect(failure1.props, equals([AppError.noConnection]));
     });
 
-    test('ServerMessageFailure supports value equality', () {
-      const failure1 = ServerMessageFailure('Invalid credentials');
-      const failure2 = ServerMessageFailure('Invalid credentials');
-      const failure3 = ServerMessageFailure('Not found');
+    test('ServerFailure supports value equality with message and error', () {
+      const failure1 = ServerFailure(
+        error: AppError.badRequest,
+        message: 'Invalid credentials',
+      );
+      const failure2 = ServerFailure(
+        error: AppError.badRequest,
+        message: 'Invalid credentials',
+      );
+      const failure3 = ServerFailure(
+        error: AppError.notFound,
+        message: 'Not found',
+      );
+      const failureNullMessage = ServerFailure(
+        error: AppError.server,
+        message: null,
+      );
 
       expect(failure1, equals(failure2));
       expect(failure1, isNot(equals(failure3)));
+      expect(failure1.error, equals(AppError.badRequest));
       expect(failure1.message, equals('Invalid credentials'));
-      expect(failure1.props, equals(['Invalid credentials']));
+      expect(failure1.props, equals([AppError.badRequest, 'Invalid credentials']));
+
+      expect(failureNullMessage.error, equals(AppError.server));
+      expect(failureNullMessage.message, isNull);
+      expect(failureNullMessage.props, equals([AppError.server, null]));
     });
   });
 }

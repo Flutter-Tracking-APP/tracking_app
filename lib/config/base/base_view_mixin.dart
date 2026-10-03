@@ -32,10 +32,8 @@ mixin BaseViewMixin<
   void _handleEvent(E event) {
     switch (event) {
       case DisplayError(:final errorMsg, :final failure):
-        final message = failure != null
-            ? failure.toLocalizedMessage(context)
-            : errorMsg;
-        if (message.isNotEmpty) {
+        final message = failure?.toLocalizedMessage(context) ?? errorMsg;
+        if (message != null && message.isNotEmpty) {
           showErrorSnackBar(message);
         }
       case DisplaySuccess(:final successMsg):

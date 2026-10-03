@@ -5,7 +5,6 @@ import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/base/base_state.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
-import 'package:tracking_app/core/errors/app_failure.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/claim_order_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_available_orders_use_case.dart';
@@ -73,8 +72,8 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         return;
       case Success(data: final active):
         log('DriverHomeCubit: no active order found (active: $active)');
-      case Failure(error: final error, message: final msg):
-        log('DriverHomeCubit: getActiveOrder failure: msg=$msg, error=$error');
+      case FailureResponse(:final failure):
+        log('DriverHomeCubit: getActiveOrder failure: $failure');
     }
 
     if (isClosed) return;
@@ -101,9 +100,8 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         emit(
           state.copyWith(ordersState: BaseState.success(_sortOrders(orders))),
         );
-      case Failure(:final failure, message: final msg):
-        final errorMsg =
-            msg ?? (failure is ServerMessageFailure ? failure.message : '');
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         emit(
           state.copyWith(
             ordersState: BaseState(
@@ -153,28 +151,28 @@ class DriverHomeCubit extends BaseCubit<DriverHomeState, BaseEvent> {
         );
         if (isClosed) return;
         emitEvent(OrderClaimedSuccessUiEvent(orderId));
-      case Failure(:final failure, error: final error, message: final msg)
-          when error == AppError.conflict:
+      case FailureResponse(:final failure)
+          when failure.error == AppError.conflict:
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         emit(
           state.copyWith(
             claimingOrderId: null,
             claimOrderState: BaseState.error(
-              msg ?? 'Conflict',
+              errorMsg ?? 'Conflict',
               failure: failure,
             ),
           ),
         );
         if (!isClosed) {
-          emitEvent(DisplayError(msg ?? 'Conflict', failure: failure));
+          emitEvent(DisplayError(errorMsg ?? 'Conflict', failure: failure));
         }
         await _handleConflictActiveOrder();
-      case Failure(:final failure, message: final msg):
-        final errorMsg =
-            msg ?? (failure is ServerMessageFailure ? failure.message : '');
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         emit(
           state.copyWith(
             claimingOrderId: null,
-            claimOrderState: BaseState.error(errorMsg, failure: failure),
+            claimOrderState: BaseState.error(errorMsg ?? '', failure: failure),
           ),
         );
         if (isClosed) return;

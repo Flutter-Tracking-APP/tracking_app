@@ -7,7 +7,6 @@ import 'package:tracking_app/config/const/app_router.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
-import 'package:tracking_app/core/errors/app_failure.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
 import 'package:tracking_app/features/auth/domain/entities/login_entity.dart';
 import 'package:tracking_app/features/auth/domain/entities/user_entity.dart';
@@ -137,9 +136,7 @@ void main() {
 
     testWidgets('displays localized SnackBar on NetworkFailure', (tester) async {
       final fakeRepo = FakeAuthRepository(
-        loginResult: const Failure(
-          'No internet',
-          AppError.noConnection,
+        loginResult: const FailureResponse(
           NetworkFailure(AppError.noConnection),
         ),
       );
@@ -168,14 +165,15 @@ void main() {
       await cubit.close();
     });
 
-    testWidgets('displays localized SnackBar on ServerMessageFailure', (
+    testWidgets('displays localized SnackBar on ServerFailure', (
       tester,
     ) async {
       final fakeRepo = FakeAuthRepository(
-        loginResult: const Failure(
-          'Invalid credentials',
-          AppError.unauthorized,
-          ServerMessageFailure('Invalid credentials'),
+        loginResult: const FailureResponse(
+          ServerFailure(
+            error: AppError.unauthorized,
+            message: 'Invalid credentials',
+          ),
         ),
       );
       final cubit = LoginCubit(LoginUseCase(fakeRepo));

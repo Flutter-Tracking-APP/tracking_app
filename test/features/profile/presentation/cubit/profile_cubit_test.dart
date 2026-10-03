@@ -29,7 +29,13 @@ class FakeProfileRepo implements ProfileRepository {
 
   @override
   Future<ApiResults<VehicleInfoEntity>> getVehicleInfo() async =>
-      vehicleInfoResult ?? const Failure('not needed', AppError.general);
+      vehicleInfoResult ??
+      const FailureResponse(
+        ServerFailure(
+          error: AppError.general,
+          message: 'not needed',
+        ),
+      );
 
   @override
   Future<ApiResults<String>> updateVehicle(UpdateVehicleParams params) async =>
@@ -154,9 +160,11 @@ void main() {
     blocTest<ProfileCubit, ProfileState>(
       'emits loading then error when GetProfileEvent fails',
       build: () {
-        fakeRepo.profileResult = const Failure(
-          'Failed to fetch',
-          AppError.server,
+        fakeRepo.profileResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.server,
+            message: 'Failed to fetch',
+          ),
         );
         return ProfileCubit(
           getProfileUseCase,
@@ -195,9 +203,11 @@ void main() {
     blocTest<ProfileCubit, ProfileState>(
       'emits loading then error when GetVehicleInfoEvent fails',
       build: () {
-        fakeRepo.vehicleInfoResult = const Failure(
-          'Failed to fetch vehicle',
-          AppError.server,
+        fakeRepo.vehicleInfoResult = const FailureResponse(
+          ServerFailure(
+            error: AppError.server,
+            message: 'Failed to fetch vehicle',
+          ),
         );
         return ProfileCubit(
           getProfileUseCase,

@@ -5,7 +5,7 @@ abstract base class BaseEvent {
 }
 
 final class DisplayError extends BaseEvent {
-  final String errorMsg;
+  final String? errorMsg;
   final AppFailure? failure;
 
   const DisplayError(this.errorMsg, {this.failure});
@@ -14,7 +14,7 @@ final class DisplayError extends BaseEvent {
     AppFailure failure, [
     String fallback = 'An error occurred',
   ]) => DisplayError(
-        failure is ServerMessageFailure ? failure.message : fallback,
+        failure is ServerFailure ? (failure.message ?? fallback) : fallback,
         failure: failure,
       );
 }

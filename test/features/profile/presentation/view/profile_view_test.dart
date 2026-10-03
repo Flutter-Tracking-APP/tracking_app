@@ -5,7 +5,6 @@ import 'package:tracking_app/config/di/di.dart';
 import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
-import 'package:tracking_app/core/errors/app_failure.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 import 'package:tracking_app/config/storage/secure_storage_service.dart';
 import 'package:tracking_app/core/localization/locale_cubit.dart';
@@ -275,9 +274,7 @@ void main() {
   testWidgets('displays localized SnackBar on NetworkFailure', (tester) async {
     getIt.unregister<ProfileCubit>();
     final failRepo = FailureProfileRepo(
-      const Failure(
-        'no internet',
-        AppError.noConnection,
+      const FailureResponse(
         NetworkFailure(AppError.noConnection),
       ),
     );

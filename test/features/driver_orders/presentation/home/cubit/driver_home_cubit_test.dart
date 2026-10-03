@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/config/network/app_error.dart';
-import 'package:tracking_app/core/errors/app_failure.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/historical_order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_entity.dart';
@@ -94,11 +93,7 @@ void main() {
       'captures and emits NetworkFailure in ordersState and DisplayError event',
       () async {
         const failure = NetworkFailure(AppError.noConnection);
-        repo.availableOrdersResult = const Failure(
-          'No internet connection',
-          AppError.noConnection,
-          failure,
-        );
+        repo.availableOrdersResult = const FailureResponse(failure);
 
         final events = <BaseEvent>[];
         final subscription = cubit.eventStream.listen(events.add);
@@ -118,14 +113,13 @@ void main() {
     );
 
     test(
-      'captures and emits ServerMessageFailure in ordersState and DisplayError event',
+      'captures and emits ServerFailure in ordersState and DisplayError event',
       () async {
-        const failure = ServerMessageFailure('Internal server error');
-        repo.availableOrdersResult = const Failure(
-          'Internal server error',
-          AppError.server,
-          failure,
+        const failure = ServerFailure(
+          error: AppError.server,
+          message: 'Internal server error',
         );
+        repo.availableOrdersResult = const FailureResponse(failure);
 
         final events = <BaseEvent>[];
         final subscription = cubit.eventStream.listen(events.add);
@@ -152,12 +146,11 @@ void main() {
     test(
       'propagates AppFailure in claimOrderState and DisplayError on claim failure',
       () async {
-        const failure = ServerMessageFailure('Order already taken');
-        repo.claimOrderResult = const Failure(
-          'Order already taken',
-          AppError.badRequest,
-          failure,
+        const failure = ServerFailure(
+          error: AppError.badRequest,
+          message: 'Order already taken',
         );
+        repo.claimOrderResult = const FailureResponse(failure);
 
         final events = <BaseEvent>[];
         final subscription = cubit.eventStream.listen(events.add);

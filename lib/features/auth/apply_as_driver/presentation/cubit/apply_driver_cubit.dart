@@ -82,10 +82,9 @@ class ApplyDriverCubit extends BaseCubit<ApplyDriverState, BaseEvent> {
             selectedVehicleType: data.isNotEmpty ? data.first : null,
           ),
         );
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case FailureResponse(:final failure):
         emit(state.copyWith(
-          vehicleTypesState: BaseState.error(errorMsg, failure: failure),
+          vehicleTypesState: BaseState.failure(failure),
         ));
     }
   }
@@ -97,12 +96,14 @@ class ApplyDriverCubit extends BaseCubit<ApplyDriverState, BaseEvent> {
       case Success(data: final data):
         emit(state.copyWith(applyState: BaseState.success(data)));
         emitEvent(const NavigateEvent(AppRoutes.applyDriverSuccess));
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case FailureResponse(:final failure):
         emit(state.copyWith(
-          applyState: BaseState.error(errorMsg, failure: failure),
+          applyState: BaseState.failure(failure),
         ));
-        emitEvent(DisplayError(errorMsg, failure: failure));
+        emitEvent(DisplayError(
+          failure is ServerFailure ? failure.message : null,
+          failure: failure,
+        ));
     }
   }
 }

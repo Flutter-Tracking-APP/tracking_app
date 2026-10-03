@@ -110,9 +110,9 @@ void main() {
 
         final result = await repository.applyAsDriver(testParams);
 
-        expect(result, isA<Failure<DriverApplicationEntity>>());
-        final failure = result as Failure<DriverApplicationEntity>;
-        expect(failure.error, AppError.timeout);
+        expect(result, isA<FailureResponse<DriverApplicationEntity>>());
+        final failure = result as FailureResponse<DriverApplicationEntity>;
+        expect(failure.failure.error, AppError.timeout);
       },
     );
   });
@@ -145,9 +145,9 @@ void main() {
 
       final result = await repository.getVehicleTypes();
 
-      expect(result, isA<Failure<List<VehicleTypeEntity>>>());
-      final failure = result as Failure<List<VehicleTypeEntity>>;
-      expect(failure.error, AppError.noConnection);
+      expect(result, isA<FailureResponse<List<VehicleTypeEntity>>>());
+      final failure = result as FailureResponse<List<VehicleTypeEntity>>;
+      expect(failure.failure.error, AppError.noConnection);
     });
   });
 }

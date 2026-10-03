@@ -66,8 +66,8 @@ class DriverOrderHistoryCubit
             completedCount: completed,
           ),
         );
-      case Failure(:final failure, error: final error, message: final msg):
-        final errorMsg = msg ?? error.name;
+      case FailureResponse(:final failure):
+        final errorMsg = failure is ServerFailure ? failure.message : null;
         if (isClosed) return;
         emit(
           state.copyWith(

@@ -41,9 +41,11 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
   @override
   Future<ApiResults<List<OrderEntity>>> getAvailableOrders() async {
     if (returnError) {
-      return const Failure(
-        'Failed to fetch available orders',
-        AppError.noConnection,
+      return const FailureResponse(
+        ServerFailure(
+          error: AppError.noConnection,
+          message: 'Failed to fetch available orders',
+        ),
       );
     }
     return Success(orders);
@@ -56,7 +58,12 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
       return claimCompleter!.future;
     }
     if (claimError != null) {
-      return Failure(claimErrorMessage, claimError!);
+      return FailureResponse(
+        ServerFailure(
+          error: claimError!,
+          message: claimErrorMessage,
+        ),
+      );
     }
     return const Success('Order claimed successfully');
   }
