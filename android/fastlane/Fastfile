@@ -1,0 +1,24 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build Flutter Android release APK and deploy to Firebase App Distribution"
+  lane :deploy_firebase do
+    # 1. Fetch dependencies and run code generation from project root
+    sh("cd ../.. && flutter pub get")
+    sh("cd ../.. && dart run build_runner build --delete-conflicting-outputs")
+
+    # 2. Build Release APK
+    sh("cd ../.. && flutter build apk --release")
+
+    # 3. Upload to Firebase App Distribution
+    firebase_app_distribution(
+      app: ENV["FIREBASE_APP_ID_ANDROID"],
+#       service_credentials_file: ENV["FIREBASE_SERVICE_ACCOUNT_KEY_PATH"], # Or service_credentials_json_data for raw string
+      service_credentials_file: File.expand_path("../flowrist-driver-firebase-adminsdk-fbsvc-6758ff4387.json", __FILE__),
+      groups: "testers", # Your Firebase tester group alias
+      release_notes: "Automated release build via Fastlane",
+      android_artifact_type: "APK",
+      apk_path: "../build/app/outputs/flutter-apk/app-release.apk"
+    )
+  end
+end

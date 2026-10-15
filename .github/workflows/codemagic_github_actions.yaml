@@ -1,0 +1,36 @@
+name: Trigger Codemagic Build
+
+on:
+  push:
+    branches: [ main, 'release/*' ]
+  workflow_dispatch:
+
+jobs:
+  trigger_codemagic:
+    name: Trigger Codemagic Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Trigger Codemagic Build via REST API
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.codemagic.io/builds" \
+            -H "Content-Type: application/json" \
+            -H "x-auth-token: ${{ secrets.CODEMAGIC_API_TOKEN }}" \
+            -d '{
+              "appId": "${{ secrets.CODEMAGIC_APP_ID }}",
+              "workflowId": "default-workflow",
+              "branch": "${{ github.ref_name }}"
+            }')
+          
+          echo "Codemagic Response: $RESPONSE"
+          
+          BUILD_ID=$(echo $RESPONSE | jq -r '.buildId')
+          if [ "$BUILD_ID" == "null" ] || [ -z "$BUILD_ID" ]; then
+            echo "❌ Failed to trigger Codemagic build."
+            exit 1
+          fi
+          
+          echo "✅ Codemagic build successfully triggered! Build ID: $BUILD_ID"

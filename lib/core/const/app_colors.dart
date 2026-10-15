@@ -1,57 +1,49 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppColors {
-  static const MaterialColor white = MaterialColor(
-    0xFFFFFFFF,
-    <int, Color>{
-      50: Color(0xFFFEFEFE),
-      100: Color(0xFFFDFDFD),
-      200: Color(0xFFFCFCFC),
-      300: Color(0xFFFBFBFB),
-      400: Color(0xFFFAFAFA),
-      500: Color(0xFFD0D0D0),
-      600: Color(0xFFA6A6A6),
-      700: Color(0xFF7D7D7D),
-      800: Color(0xFF535353),
-      900: Color(0xFF323232),
-    },
-  );
+  static const MaterialColor white = MaterialColor(0xFFFFFFFF, <int, Color>{
+    50: Color(0xFFFEFEFE),
+    100: Color(0xFFFDFDFD),
+    200: Color(0xFFFCFCFC),
+    300: Color(0xFFFBFBFB),
+    400: Color(0xFFFAFAFA),
+    500: Color(0xFFD0D0D0),
+    600: Color(0xFFA6A6A6),
+    700: Color(0xFF7D7D7D),
+    800: Color(0xFF535353),
+    900: Color(0xFF323232),
+  });
 
   static const Color whiteBase = Color(0xFFF9F9F9);
 
-  static const MaterialColor purpleBase = MaterialColor(
-    0xFFD21E6A,
-    <int, Color>{
-      50: Color(0xFFF6D2E1),
-      100: Color(0xFFF0B4CD),
-      200: Color(0xFFE98FB5),
-      300: Color(0xFFE1699C),
-      400: Color(0xFFDA4483),
-      500: Color(0xFFD21E6A),
-      600: Color(0xFFAF1958),
-      700: Color(0xFF8C1447),
-      800: Color(0xFF690F35),
-      900: Color(0xFF460A23),
-    },
-  );
+  static const MaterialColor purpleBase =
+      MaterialColor(0xFFD21E6A, <int, Color>{
+        50: Color(0xFFF6D2E1),
+        100: Color(0xFFF0B4CD),
+        200: Color(0xFFE98FB5),
+        300: Color(0xFFE1699C),
+        400: Color(0xFFDA4483),
+        500: Color(0xFFD21E6A),
+        600: Color(0xFFAF1958),
+        700: Color(0xFF8C1447),
+        800: Color(0xFF690F35),
+        900: Color(0xFF460A23),
+      });
 
   static const Color purple100 = Color(0xFF2A0615);
 
-  static const MaterialColor black = MaterialColor(
-    0xFF000000,
-    <int, Color>{
-      50: Color(0xFFCECfd0),
-      100: Color(0xFFAEAFB1),
-      200: Color(0xFF86888A),
-      300: Color(0xFF5D6063),
-      400: Color(0xFF34383C),
-      500: Color(0xFF0C1015),
-      600: Color(0xFF0A0D12),
-      700: Color(0xFF080B0E),
-      800: Color(0xFF06080B),
-      900: Color(0xFF040507),
-    },
-  );
+  static const MaterialColor black = MaterialColor(0xFF000000, <int, Color>{
+    50: Color(0xFFCECfd0),
+    100: Color(0xFFAEAFB1),
+    200: Color(0xFF86888A),
+    300: Color(0xFF5D6063),
+    400: Color(0xFF34383C),
+    500: Color(0xFF0C1015),
+    600: Color(0xFF0A0D12),
+    700: Color(0xFF080B0E),
+    800: Color(0xFF06080B),
+    900: Color(0xFF040507),
+  });
 
   static const Color blackBase = Color(0xFF020304);
 
