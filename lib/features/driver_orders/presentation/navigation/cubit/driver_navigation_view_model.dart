@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:tracking_app/config/app_config/app_config.dart';
 import 'package:tracking_app/config/base/base_cubit.dart';
 import 'package:tracking_app/config/base/base_event.dart';
 import 'package:tracking_app/config/network/api_results.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/location_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
-import 'package:tracking_app/features/driver_orders/domain/services/driver_location_tracker_service.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_driver_order_details_use_case.dart';
+import 'package:tracking_app/features/driver_orders/domain/use_cases/track_driver_location_use_case.dart';
+import 'package:tracking_app/features/driver_orders/domain/use_cases/get_current_driver_location_use_case.dart';
 import 'package:tracking_app/features/driver_orders/presentation/navigation/cubit/driver_navigation_events.dart';
 import 'package:tracking_app/features/driver_orders/presentation/navigation/cubit/driver_navigation_state.dart';
 import 'package:tracking_app/features/tracking_order/domain/use_cases/get_route_use_case.dart';
@@ -16,25 +17,33 @@ import 'package:tracking_app/features/tracking_order/domain/use_cases/get_route_
 class DriverNavigationViewModel
     extends BaseCubit<DriverNavigationState, BaseEvent> {
   final GetDriverOrderDetailsUseCase _getOrderDetailsUseCase;
-  final DriverLocationTrackerService _locationTrackerService;
+  final TrackDriverLocationUseCase _trackDriverLocationUseCase;
+  final GetCurrentDriverLocationUseCase _getCurrentDriverLocationUseCase;
   final GetRouteUseCase _getRouteUseCase;
   final AppConfig _appConfig;
 
   String get mapTilerApiKey => _appConfig.mapTilerApiKey;
 
-  StreamSubscription<LatLng>? _locationSubscription;
+  StreamSubscription? _locationSubscription;
 
   DriverNavigationViewModel(
     this._getOrderDetailsUseCase,
-    this._locationTrackerService,
+    this._trackDriverLocationUseCase,
+    this._getCurrentDriverLocationUseCase,
     this._getRouteUseCase,
     this._appConfig,
   ) : super(
-          DriverNavigationState(
-            driverLocation: const LatLng(30.0444, 31.2357),
-            destinationLocation: const LatLng(30.0500, 31.2400),
+        DriverNavigationState(
+          driverLocation: const LocationEntity(
+            latitude: 30.0444,
+            longitude: 31.2357,
           ),
-        );
+          destinationLocation: const LocationEntity(
+            latitude: 30.0500,
+            longitude: 31.2400,
+          ),
+        ),
+      );
 
   void doEvent(DriverNavigationEvent event) {
     switch (event) {
@@ -48,19 +57,26 @@ class DriverNavigationViewModel
   Future<void> _initNavigation(InitNavigationEvent event) async {
     emit(state.copyWith(isLoading: true, isPickup: event.isPickup));
 
-    // Start live location tracking
-    await _locationTrackerService.startTracking();
-
-    final currentDriverPos = _locationTrackerService.currentLocation ??
-        const LatLng(30.0444, 31.2357);
+    final locationEntity = await _getCurrentDriverLocationUseCase();
+    final currentDriverPos = locationEntity != null
+        ? LocationEntity(
+            latitude: locationEntity.latitude,
+            longitude: locationEntity.longitude,
+          )
+        : const LocationEntity(latitude: 30.0444, longitude: 31.2357);
 
     // Subscribe to location updates
     _locationSubscription?.cancel();
-    _locationSubscription = _locationTrackerService.locationStream.listen(
-      (newDriverPos) {
-        doEvent(DriverLocationUpdatedEvent(newDriverPos));
-      },
-    );
+    _locationSubscription = _trackDriverLocationUseCase().listen((newLocation) {
+      doEvent(
+        DriverLocationUpdatedEvent(
+          LocationEntity(
+            latitude: newLocation.latitude,
+            longitude: newLocation.longitude,
+          ),
+        ),
+      );
+    });
 
     if (event.initialOrder != null) {
       await _applyOrderData(
@@ -86,11 +102,14 @@ class DriverNavigationViewModel
   Future<void> _applyOrderData(
     OrderDetailsEntity order,
     bool isPickup,
-    LatLng currentDriverPos,
+    LocationEntity currentDriverPos,
   ) async {
     final destLat = isPickup ? order.store.lat : order.user.lat;
     final destLng = isPickup ? order.store.lng : order.user.lng;
-    final destinationPos = LatLng(destLat, destLng);
+    final destinationPos = LocationEntity(
+      latitude: destLat,
+      longitude: destLng,
+    );
 
     emit(
       state.copyWith(
@@ -105,12 +124,15 @@ class DriverNavigationViewModel
     await _updateRoute(currentDriverPos, destinationPos);
   }
 
-  Future<void> _onDriverLocationUpdated(LatLng newPos) async {
+  Future<void> _onDriverLocationUpdated(LocationEntity newPos) async {
     emit(state.copyWith(driverLocation: newPos));
     await _updateRoute(newPos, state.destinationLocation);
   }
 
-  Future<void> _updateRoute(LatLng start, LatLng destination) async {
+  Future<void> _updateRoute(
+    LocationEntity start,
+    LocationEntity destination,
+  ) async {
     try {
       final routeEntity = await _getRouteUseCase(
         start: start,
@@ -136,15 +158,20 @@ class DriverNavigationViewModel
   }
 
   /// Generates a dummy route with intermediate turn between start and end as fallback.
-  List<LatLng> _generateStreetGridRoute(LatLng start, LatLng end) {
-    final double midLat = start.latitude + (end.latitude - start.latitude) * 0.6;
-    final double midLng = start.longitude + (end.longitude - start.longitude) * 0.4;
+  List<LocationEntity> _generateStreetGridRoute(
+    LocationEntity start,
+    LocationEntity end,
+  ) {
+    final double midLat =
+        start.latitude + (end.latitude - start.latitude) * 0.6;
+    final double midLng =
+        start.longitude + (end.longitude - start.longitude) * 0.4;
 
     return [
       start,
-      LatLng(start.latitude, midLng),
-      LatLng(midLat, midLng),
-      LatLng(midLat, end.longitude),
+      LocationEntity(latitude: start.latitude, longitude: midLng),
+      LocationEntity(latitude: midLat, longitude: midLng),
+      LocationEntity(latitude: midLat, longitude: end.longitude),
       end,
     ];
   }
@@ -152,7 +179,6 @@ class DriverNavigationViewModel
   @override
   Future<void> close() {
     _locationSubscription?.cancel();
-    _locationTrackerService.stopTracking();
     return super.close();
   }
 }

@@ -80,7 +80,7 @@ class _UserLocationContent extends StatelessWidget {
     return Positioned.fill(
       child: FlutterMap(
         options: MapOptions(
-          initialCenter: state.driverLocation,
+          initialCenter: state.driverLocation.toLatLng(),
           initialZoom: 14.5,
         ),
         children: [
@@ -98,7 +98,9 @@ class _UserLocationContent extends StatelessWidget {
             PolylineLayer(
               polylines: [
                 Polyline(
-                  points: state.routePoints,
+                  points: state.routePoints
+                      .map((entity) => entity.toLatLng())
+                      .toList(),
                   color: AppColors.purpleBase,
                   strokeWidth: 4.5,
                 ),
@@ -107,14 +109,14 @@ class _UserLocationContent extends StatelessWidget {
           MarkerLayer(
             markers: [
               Marker(
-                point: state.destinationLocation,
+                point: state.destinationLocation.toLatLng(),
                 width: 150,
                 height: 65,
                 alignment: Alignment.topCenter,
                 child: const UserMarkerWidget(label: 'Apartment'),
               ),
               Marker(
-                point: state.driverLocation,
+                point: state.driverLocation.toLatLng(),
                 width: 50,
                 height: 50,
                 alignment: Alignment.center,

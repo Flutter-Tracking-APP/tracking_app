@@ -1,4 +1,4 @@
-import 'package:latlong2/latlong.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/location_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 
 sealed class DriverNavigationEvent {
@@ -18,7 +18,7 @@ class InitNavigationEvent extends DriverNavigationEvent {
 }
 
 class DriverLocationUpdatedEvent extends DriverNavigationEvent {
-  final LatLng newLocation;
+  final LocationEntity newLocation;
 
   const DriverLocationUpdatedEvent(this.newLocation);
 }

@@ -7,6 +7,7 @@ import 'package:tracking_app/config/network/api_results.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_driver_order_details_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/update_order_status_use_case.dart';
+import 'package:tracking_app/features/driver_orders/domain/use_cases/report_driver_location_use_case.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_events.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_state.dart';
 
@@ -14,11 +15,13 @@ import 'package:tracking_app/features/driver_orders/presentation/order_details/c
 class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
   final GetDriverOrderDetailsUseCase _getOrderDetailsUseCase;
   final UpdateOrderStatusUseCase _updateOrderStatusUseCase;
+  final ReportDriverLocationUseCase _reportDriverLocationUseCase;
   Timer? _pollingTimer;
 
   OrderDetailsCubit(
     this._getOrderDetailsUseCase,
     this._updateOrderStatusUseCase,
+    this._reportDriverLocationUseCase,
   ) : super(const OrderDetailsState());
 
   void doEvent(OrderDetailsEvent event) {
@@ -50,6 +53,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
       case Success(data: final details):
         if (details.isFinalDelivered) {
           _pollingTimer?.cancel();
+          _reportDriverLocationUseCase.stopReporting();
           emit(
             state.copyWith(
               orderDetailsState: BaseState.success(details),
@@ -68,6 +72,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
               isDelivered: false,
             ),
           );
+          _reportDriverLocationUseCase.startReporting();
           _startPollingIfNeeded(details.status, details.id);
         }
       case Failure(error: final error, message: final msg):
@@ -182,6 +187,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
 
       if (polled.isFinalDelivered) {
         _pollingTimer?.cancel();
+        _reportDriverLocationUseCase.stopReporting();
         emit(
           state.copyWith(
             orderDetailsState: BaseState.success(polled),
@@ -209,6 +215,9 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
     _pollingTimer?.cancel();
     final currentData = state.orderDetailsState.data;
     final isDelivered = newStatus == OrderFulfillmentStatus.delivered;
+    if (isDelivered) {
+      _reportDriverLocationUseCase.stopReporting();
+    }
     if (currentData != null) {
       final updatedData = OrderDetailsEntity(
         id: currentData.id,
@@ -274,6 +283,7 @@ class OrderDetailsCubit extends BaseCubit<OrderDetailsState, BaseEvent> {
   @override
   Future<void> close() {
     _pollingTimer?.cancel();
+    _reportDriverLocationUseCase.stopReporting();
     return super.close();
   }
 }

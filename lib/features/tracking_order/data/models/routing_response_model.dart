@@ -1,9 +1,9 @@
-import 'package:latlong2/latlong.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/location_entity.dart';
 import 'package:tracking_app/features/tracking_order/domain/entities/route_entity.dart';
 
 class RoutingResponseModel {
   final String code;
-  final List<LatLng> points;
+  final List<LocationEntity> points;
 
   const RoutingResponseModel({required this.code, required this.points});
 
@@ -40,7 +40,7 @@ class RoutingResponseModel {
       final longitude = (pair[0] as num).toDouble();
       final latitude = (pair[1] as num).toDouble();
 
-      return LatLng(latitude, longitude);
+      return LocationEntity(latitude: latitude, longitude: longitude);
     }).toList();
 
     return RoutingResponseModel(code: code, points: points);

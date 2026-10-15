@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/location_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 
 class DriverNavigationState extends Equatable {
   final OrderDetailsEntity? order;
   final bool isPickup;
-  final LatLng driverLocation;
-  final LatLng destinationLocation;
-  final List<LatLng> routePoints;
+  final LocationEntity driverLocation;
+  final LocationEntity destinationLocation;
+  final List<LocationEntity> routePoints;
   final bool isLoading;
   final String? errorMessage;
 
@@ -24,9 +24,9 @@ class DriverNavigationState extends Equatable {
   DriverNavigationState copyWith({
     OrderDetailsEntity? order,
     bool? isPickup,
-    LatLng? driverLocation,
-    LatLng? destinationLocation,
-    List<LatLng>? routePoints,
+    LocationEntity? driverLocation,
+    LocationEntity? destinationLocation,
+    List<LocationEntity>? routePoints,
     bool? isLoading,
     String? errorMessage,
   }) {
@@ -43,12 +43,12 @@ class DriverNavigationState extends Equatable {
 
   @override
   List<Object?> get props => [
-        order,
-        isPickup,
-        driverLocation,
-        destinationLocation,
-        routePoints,
-        isLoading,
-        errorMessage,
-      ];
+    order,
+    isPickup,
+    driverLocation,
+    destinationLocation,
+    routePoints,
+    isLoading,
+    errorMessage,
+  ];
 }
