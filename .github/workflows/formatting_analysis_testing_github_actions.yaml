@@ -34,8 +34,8 @@
 name: Flutter Formatting, Analysis & Unit Tests
 
 on:
-  push:
-    branches: [ main, development, 'feature/*' ]
+#  push:
+#    branches: [ main, development, 'feature/*' ]
   pull_request:
     branches: [ main, development, 'feature/*' ]
 

@@ -9,12 +9,22 @@ import 'package:tracking_app/config/l10n/app_localizations.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
 import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await initFirebase();
   Bloc.observer = AppBlocObserver();
   runApp(const TrackingApp());
+}
+
+Future<void> initFirebase() async {
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase initialization failed: $e');
+  }
 }
 
 class TrackingApp extends StatelessWidget {

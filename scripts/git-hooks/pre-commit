@@ -45,7 +45,7 @@ print_step() {
   local title=$2
   echo ""
   echo -e "${BLUE}---------------------------------------------------------------------${NC}"
-  echo -e "${ARROW} ${BOLD}Step [${step_num}/5]:${NC} ${CYAN}${title}${NC}"
+  echo -e "${ARROW} ${BOLD}Step [${step_num}/3]:${NC} ${CYAN}${title}${NC}"
   echo -e "${BLUE}---------------------------------------------------------------------${NC}"
 }
 
@@ -53,32 +53,22 @@ print_step() {
 # START SCRIPT
 # ==============================================================================
 echo ""
-echo -e "${BOLD}${CYAN}🚀 [Pre-Commit Hook] Running Flutter Quality Pipeline${NC}"
+echo -e "${BOLD}${CYAN}🚀 [Pre-Commit Hook] Running Formatting & Analysis${NC}"
 
 # 1. Install Dependencies
 print_step "1" "Fetching Flutter Dependencies"
 flutter pub get
 echo -e "${CHECK} ${GREEN}Dependencies up to date.${NC}"
 
-# 2. Generate Code
-print_step "2" "Running Code Generation (build_runner)"
-dart run build_runner build --delete-conflicting-outputs
-echo -e "${CHECK} ${GREEN}Code generation complete.${NC}"
-
-# 3. Code Formatting Check
-print_step "3" "Checking Code Formatting"
+# 2. Code Formatting Check
+print_step "2" "Checking Code Formatting"
 dart format --set-exit-if-changed lib test
 echo -e "${CHECK} ${GREEN}Code formatting is clean.${NC}"
 
-# 4. Static Code Analysis
-print_step "4" "Running Static Code Analysis"
+# 3. Static Code Analysis
+print_step "3" "Running Static Code Analysis"
 flutter analyze --fatal-infos
 echo -e "${CHECK} ${GREEN}Static analysis clean (0 issues).${NC}"
-
-# 5. Unit Tests
-print_step "5" "Executing Unit Tests with Coverage"
-flutter test --coverage
-echo -e "${CHECK} ${GREEN}All unit tests passed.${NC}"
 
 # ==============================================================================
 # SUCCESS SUMMARY
