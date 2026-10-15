@@ -22,4 +22,9 @@ abstract class DriverOrdersRepository {
   Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
     String orderId,
   );
+  Future<ApiResults<void>> updateDriverLocation({
+    required double lat,
+    required double lng,
+    required DateTime recordedAt,
+  });
 }

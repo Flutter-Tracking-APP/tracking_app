@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:tracking_app/features/driver_orders/data/client/driver_orders_api_client.dart';
 import 'package:tracking_app/features/driver_orders/data/data_sources/contract/driver_orders_remote_data_source.dart';
+import 'package:tracking_app/features/driver_orders/data/models/request/update_driver_location_request_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/request/update_order_status_request_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/available_orders_response_dto.dart';
 import 'package:tracking_app/features/driver_orders/data/models/response/order_action_response_dto.dart';
@@ -53,5 +54,10 @@ class DriverOrdersRemoteDataSourceImpl implements DriverOrdersRemoteDataSource {
       pageSize: pageSize,
       status: status,
     );
+  }
+
+  @override
+  Future<dynamic> updateDriverLocation(UpdateDriverLocationRequestDto request) {
+    return _apiClient.updateDriverLocation(request);
   }
 }

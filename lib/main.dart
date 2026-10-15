@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tracking_app/app_bloc_observer.dart';
 import 'package:tracking_app/config/const/app_router.dart';
@@ -8,8 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tracking_app/core/localization/locale_cubit.dart';
 import 'package:tracking_app/core/ui/themes/app_theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _loadEnvironmentVariables();
   configureDependencies();
   Bloc.observer = AppBlocObserver();
   runApp(const TrackingApp());
@@ -41,5 +43,13 @@ class TrackingApp extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+Future<void> _loadEnvironmentVariables() async {
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    debugPrint('Error loading .env file: $e');
   }
 }

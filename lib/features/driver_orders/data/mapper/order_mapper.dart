@@ -19,6 +19,8 @@ extension StoreAddressDtoMapper on StoreAddressDto? {
       phone: this?.effectivePhone,
       whatsAppNumber: this?.effectiveWhatsApp,
       avatar: this?.effectiveAvatar,
+      lat: this?.effectiveLat ?? 30.0444,
+      lng: this?.effectiveLng ?? 31.2357,
     );
   }
 }
@@ -30,6 +32,8 @@ extension UserAddressDtoMapper on UserAddressDto? {
       address: this?.effectiveAddress ?? '',
       phone: this?.effectivePhone,
       avatar: this?.effectiveAvatar,
+      lat: this?.effectiveLat ?? 30.0500,
+      lng: this?.effectiveLng ?? 31.2400,
     );
   }
 }

@@ -20,13 +20,26 @@ import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driv
 import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_events.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/view/driver_home_view.dart';
 import 'package:tracking_app/features/driver_orders/presentation/home/view/widgets/available_order_card.dart';
-
 import 'package:tracking_app/features/driver_orders/domain/entities/store_address_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/entities/user_address_entity.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_driver_order_details_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/update_order_status_use_case.dart';
+import 'package:tracking_app/features/driver_orders/domain/use_cases/report_driver_location_use_case.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_cubit.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/view/order_details_view.dart';
+
+class _FakeReportDriverLocationUseCase implements ReportDriverLocationUseCase {
+  @override
+  void startReporting({
+    Duration throttleInterval = const Duration(seconds: 10),
+  }) {}
+
+  @override
+  void stopReporting() {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 class FakeDriverOrdersRepository implements DriverOrdersRepository {
   List<OrderEntity> orders = [];
@@ -107,6 +120,13 @@ class FakeDriverOrdersRepository implements DriverOrdersRepository {
   Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
     String orderId,
   ) async => throw UnimplementedError();
+
+  @override
+  Future<ApiResults<void>> updateDriverLocation({
+    required double lat,
+    required double lng,
+    required DateTime recordedAt,
+  }) async => const Success(null);
 }
 
 Widget createHomeTestWidget({Locale locale = const Locale('en')}) {
@@ -165,10 +185,14 @@ void main() {
     getIt.registerFactory(() => ClaimOrderUseCase(fakeRepo));
     getIt.registerFactory(() => GetDriverOrderDetailsUseCase(fakeRepo));
     getIt.registerFactory(() => UpdateOrderStatusUseCase(fakeRepo));
+    getIt.registerFactory<ReportDriverLocationUseCase>(
+      () => _FakeReportDriverLocationUseCase(),
+    );
     getIt.registerFactory(
       () => OrderDetailsCubit(
         getIt<GetDriverOrderDetailsUseCase>(),
         getIt<UpdateOrderStatusUseCase>(),
+        getIt<ReportDriverLocationUseCase>(),
       ),
     );
     getIt.registerFactory(

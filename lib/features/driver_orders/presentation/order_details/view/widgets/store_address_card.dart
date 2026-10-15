@@ -8,6 +8,7 @@ import 'package:tracking_app/features/driver_orders/presentation/order_details/v
 
 class StoreAddressCard extends StatelessWidget {
   final StoreAddressEntity store;
+  final VoidCallback? onTap;
   final VoidCallback? onCall;
   final VoidCallback? onWhatsApp;
   final bool showActions;
@@ -16,6 +17,7 @@ class StoreAddressCard extends StatelessWidget {
   const StoreAddressCard({
     super.key,
     required this.store,
+    this.onTap,
     this.onCall,
     this.onWhatsApp,
     this.showActions = true,
@@ -38,90 +40,95 @@ class StoreAddressCard extends StatelessWidget {
             style: AppStyles.regular14InterW500,
           ),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsetsDirectional.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.white[50],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.white[500]!.withValues(alpha: 0.4),
+          InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsetsDirectional.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.white[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.white[500]!.withValues(alpha: 0.4),
+                ),
               ),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppColors.purpleBase,
-                  child: const Icon(
-                    Icons.local_florist,
-                    color: AppColors.whiteBase,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        store.name.isNotEmpty
-                            ? store.name
-                            : localizations.floweryStore,
-                        style: AppStyles.regular13W500,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on_outlined,
-                            size: 14,
-                            color: AppColors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              store.address.isNotEmpty
-                                  ? store.address
-                                  : localizations.pickupAddress,
-                              style: AppStyles.regular12Inter,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                if (showActions) ...[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.phone_outlined,
-                      color: AppColors.purpleBase,
-                      size: 20,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: AppColors.purpleBase,
+                    child: const Icon(
+                      Icons.local_florist,
+                      color: AppColors.whiteBase,
+                      size: 22,
                     ),
-                    onPressed:
-                        onCall ??
-                        (store.phone != null && store.phone!.isNotEmpty
-                            ? () => _handleCall(context)
-                            : null),
-                    visualDensity: VisualDensity.compact,
                   ),
-                  IconButton(
-                    icon: const WhatsAppIcon(size: 20),
-                    onPressed:
-                        onWhatsApp ??
-                        ((store.whatsAppNumber != null &&
-                                    store.whatsAppNumber!.isNotEmpty) ||
-                                (store.phone != null && store.phone!.isNotEmpty)
-                            ? () => _handleWhatsApp(context)
-                            : null),
-                    visualDensity: VisualDensity.compact,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          store.name.isNotEmpty
+                              ? store.name
+                              : localizations.floweryStore,
+                          style: AppStyles.regular13W500,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 14,
+                              color: AppColors.grey,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                store.address.isNotEmpty
+                                    ? store.address
+                                    : localizations.pickupAddress,
+                                style: AppStyles.regular12Inter,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  if (showActions) ...[
+                    IconButton(
+                      icon: const Icon(
+                        Icons.phone_outlined,
+                        color: AppColors.purpleBase,
+                        size: 20,
+                      ),
+                      onPressed:
+                          onCall ??
+                          (store.phone != null && store.phone!.isNotEmpty
+                              ? () => _handleCall(context)
+                              : null),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    IconButton(
+                      icon: const WhatsAppIcon(size: 20),
+                      onPressed:
+                          onWhatsApp ??
+                          ((store.whatsAppNumber != null &&
+                                      store.whatsAppNumber!.isNotEmpty) ||
+                                  (store.phone != null &&
+                                      store.phone!.isNotEmpty)
+                              ? () => _handleWhatsApp(context)
+                              : null),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ],

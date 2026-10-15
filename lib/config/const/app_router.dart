@@ -8,6 +8,7 @@ import 'package:tracking_app/features/auth/presentation/forget_password/view/for
 import 'package:tracking_app/features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
 import 'package:tracking_app/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:tracking_app/features/auth/presentation/login/view/login_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/navigation/view/user_location_view.dart';
 import 'package:tracking_app/features/profile/domain/entities/user_profile_entity.dart';
 import 'package:tracking_app/features/profile/presentation/view/change_password_view.dart';
 import 'package:tracking_app/features/profile/presentation/view/edit_profile_view.dart';
@@ -15,8 +16,10 @@ import 'package:tracking_app/features/profile/presentation/view/edit_vehicle_inf
 import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/onboarding_view.dart';
 import 'package:tracking_app/features/splash/presentation/view/splash_view.dart';
-import 'package:tracking_app/features/driver_orders/presentation/main_shell/view/driver_main_shell_view.dart';
+import 'package:tracking_app/features/driver_orders/domain/entities/order_details_entity.dart';
 import 'package:tracking_app/features/driver_orders/presentation/historical_order_details/view/historical_order_details_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/main_shell/view/driver_main_shell_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/navigation/view/pickup_location_view.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/view/delivery_success_view.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/view/order_details_view.dart';
 
@@ -33,6 +36,8 @@ abstract final class AppRoutes {
   static const home = '/home';
   static const orderDetails = '/order-details';
   static const historicalOrderDetails = '/historical-order-details';
+  static const pickupLocation = '/pickup-location';
+  static const userLocation = '/user-location';
   static const forgetPassword = '/forgot-password';
   static const onBoarding = '/onBoarding';
 }
@@ -143,6 +148,24 @@ abstract final class AppRouter {
         builder: (context, state) {
           final orderId = state.pathParameters['orderId'] ?? '';
           return HistoricalOrderDetailsView(orderId: orderId);
+        },
+      ),
+      GoRoute(
+        path: '${AppRoutes.pickupLocation}/:orderId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'] ?? '';
+          final order = state.extra as OrderDetailsEntity?;
+          return PickupLocationView(orderId: orderId, order: order);
+        },
+      ),
+      GoRoute(
+        path: '${AppRoutes.userLocation}/:orderId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'] ?? '';
+          final order = state.extra as OrderDetailsEntity?;
+          return UserLocationView(orderId: orderId, order: order);
         },
       ),
       GoRoute(

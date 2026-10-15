@@ -8,6 +8,7 @@ import 'package:tracking_app/features/driver_orders/presentation/order_details/v
 
 class UserAddressCard extends StatelessWidget {
   final UserAddressEntity user;
+  final VoidCallback? onTap;
   final VoidCallback? onCall;
   final VoidCallback? onWhatsApp;
   final bool showActions;
@@ -16,6 +17,7 @@ class UserAddressCard extends StatelessWidget {
   const UserAddressCard({
     super.key,
     required this.user,
+    this.onTap,
     this.onCall,
     this.onWhatsApp,
     this.showActions = true,
@@ -35,86 +37,90 @@ class UserAddressCard extends StatelessWidget {
         children: [
           Text(localizations.userAddress, style: AppStyles.regular14InterW500),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsetsDirectional.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.white[50],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.white[500]!.withValues(alpha: 0.4),
+          InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsetsDirectional.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.white[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.white[500]!.withValues(alpha: 0.4),
+                ),
               ),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppColors.pink10,
-                  child: const Icon(
-                    Icons.person,
-                    color: AppColors.purpleBase,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name,
-                        style: AppStyles.regular13W500,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on_outlined,
-                            size: 14,
-                            color: AppColors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              user.address.isNotEmpty
-                                  ? user.address
-                                  : localizations.userAddress,
-                              style: AppStyles.regular12Inter,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                if (showActions) ...[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.phone_outlined,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: AppColors.pink10,
+                    child: const Icon(
+                      Icons.person,
                       color: AppColors.purpleBase,
-                      size: 20,
+                      size: 22,
                     ),
-                    onPressed:
-                        onCall ??
-                        (user.phone != null && user.phone!.isNotEmpty
-                            ? () => _handleCall(context)
-                            : null),
-                    visualDensity: VisualDensity.compact,
                   ),
-                  IconButton(
-                    icon: const WhatsAppIcon(size: 20),
-                    onPressed:
-                        onWhatsApp ??
-                        (user.phone != null && user.phone!.isNotEmpty
-                            ? () => _handleWhatsApp(context)
-                            : null),
-                    visualDensity: VisualDensity.compact,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.name,
+                          style: AppStyles.regular13W500,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 14,
+                              color: AppColors.grey,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                user.address.isNotEmpty
+                                    ? user.address
+                                    : localizations.userAddress,
+                                style: AppStyles.regular12Inter,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  if (showActions) ...[
+                    IconButton(
+                      icon: const Icon(
+                        Icons.phone_outlined,
+                        color: AppColors.purpleBase,
+                        size: 20,
+                      ),
+                      onPressed:
+                          onCall ??
+                          (user.phone != null && user.phone!.isNotEmpty
+                              ? () => _handleCall(context)
+                              : null),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    IconButton(
+                      icon: const WhatsAppIcon(size: 20),
+                      onPressed:
+                          onWhatsApp ??
+                          (user.phone != null && user.phone!.isNotEmpty
+                              ? () => _handleWhatsApp(context)
+                              : null),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ],

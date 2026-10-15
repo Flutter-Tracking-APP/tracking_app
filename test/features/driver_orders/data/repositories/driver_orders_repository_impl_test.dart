@@ -79,6 +79,9 @@ class FakeRemoteDataSource implements DriverOrdersRemoteDataSource {
           ],
         );
   }
+
+  @override
+  Future<dynamic> updateDriverLocation(dynamic request) async => null;
 }
 
 void main() {

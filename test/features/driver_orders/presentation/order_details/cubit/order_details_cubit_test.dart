@@ -11,8 +11,22 @@ import 'package:tracking_app/features/driver_orders/domain/entities/user_address
 import 'package:tracking_app/features/driver_orders/domain/repositories/driver_orders_repository.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/get_driver_order_details_use_case.dart';
 import 'package:tracking_app/features/driver_orders/domain/use_cases/update_order_status_use_case.dart';
+import 'package:tracking_app/features/driver_orders/domain/use_cases/report_driver_location_use_case.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_cubit.dart';
 import 'package:tracking_app/features/driver_orders/presentation/order_details/cubit/order_details_events.dart';
+
+class MockReportDriverLocationUseCase implements ReportDriverLocationUseCase {
+  @override
+  void startReporting({
+    Duration throttleInterval = const Duration(seconds: 10),
+  }) {}
+
+  @override
+  void stopReporting() {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 class MockDriverOrdersRepository implements DriverOrdersRepository {
   OrderDetailsEntity? details;
@@ -66,12 +80,20 @@ class MockDriverOrdersRepository implements DriverOrdersRepository {
   Future<ApiResults<HistoricalOrderDetailsEntity>> getHistoricalOrderDetails(
     String orderId,
   ) async => throw UnimplementedError();
+
+  @override
+  Future<ApiResults<void>> updateDriverLocation({
+    required double lat,
+    required double lng,
+    required DateTime recordedAt,
+  }) async => const Success(null);
 }
 
 void main() {
   late MockDriverOrdersRepository mockRepo;
   late GetDriverOrderDetailsUseCase getDetailsUseCase;
   late UpdateOrderStatusUseCase updateStatusUseCase;
+  late MockReportDriverLocationUseCase reportDriverLocationUseCase;
   late OrderDetailsCubit cubit;
 
   const baseOrder = OrderDetailsEntity(
@@ -91,7 +113,12 @@ void main() {
     mockRepo.details = baseOrder;
     getDetailsUseCase = GetDriverOrderDetailsUseCase(mockRepo);
     updateStatusUseCase = UpdateOrderStatusUseCase(mockRepo);
-    cubit = OrderDetailsCubit(getDetailsUseCase, updateStatusUseCase);
+    reportDriverLocationUseCase = MockReportDriverLocationUseCase();
+    cubit = OrderDetailsCubit(
+      getDetailsUseCase,
+      updateStatusUseCase,
+      reportDriverLocationUseCase,
+    );
   });
 
   tearDown(() {
