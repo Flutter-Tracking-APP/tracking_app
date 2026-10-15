@@ -23,10 +23,7 @@ class DriverLocationMarkerWidget extends StatelessWidget {
 class StoreMarkerWidget extends StatelessWidget {
   final String storeName;
 
-  const StoreMarkerWidget({
-    super.key,
-    this.storeName = 'Flower',
-  });
+  const StoreMarkerWidget({super.key, this.storeName = 'Flower'});
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +67,7 @@ class StoreMarkerWidget extends StatelessWidget {
             ],
           ),
         ),
-        const Icon(
-          Icons.location_on,
-          color: AppColors.purpleBase,
-          size: 26,
-        ),
+        const Icon(Icons.location_on, color: AppColors.purpleBase, size: 26),
       ],
     );
   }
@@ -83,10 +76,7 @@ class StoreMarkerWidget extends StatelessWidget {
 class UserMarkerWidget extends StatelessWidget {
   final String label;
 
-  const UserMarkerWidget({
-    super.key,
-    this.label = 'Apartment',
-  });
+  const UserMarkerWidget({super.key, this.label = 'Apartment'});
 
   @override
   Widget build(BuildContext context) {
@@ -109,11 +99,7 @@ class UserMarkerWidget extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.home,
-                color: AppColors.whiteBase,
-                size: 14,
-              ),
+              const Icon(Icons.home, color: AppColors.whiteBase, size: 14),
               const SizedBox(width: 4),
               Flexible(
                 child: Text(
