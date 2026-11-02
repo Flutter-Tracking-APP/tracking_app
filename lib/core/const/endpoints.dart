@@ -1,3 +1,24 @@
 abstract final class Endpoints {
   static const baseUrl = 'http://10.0.2.2:5000/';
-  }
+  static const applyDriver = 'api/identity/drivers/apply';
+  static const vehicleTypes = 'api/identity/vehicle-types';
+  static const getProfile = 'api/identity/users/me';
+  static const updateProfile = 'api/identity/users/profile';
+  static const getVehicleInfo = 'api/identity/vehicles/info';
+  static const updateVehicle = 'api/identity/vehicles/info';
+  static const changePassword = 'api/identity/users/change-password';
+  static const String forgetPassword = 'api/identity/auth/forget-password';
+  static const String verifyOTP = 'api/identity/auth/otp-verification';
+  static const String resetPassword = 'api/identity/auth/reset-password';
+  static const String refreshToken = 'api/identity/auth/refresh-token';
+  static const login = 'api/identity/auth/login';
+  static const String availableOrders = 'api/orders/drivers/available-orders';
+  static const String claimOrder = 'api/orders/{orderId}/claim';
+  static const String driverOrderDetails =
+      'api/orders/drivers/me/orders/{orderId}';
+  static const String updateOrderStatus = 'api/orders/{orderId}/status';
+  static const String driverAssignedOrder =
+      'api/orders/drivers/me/assigned-order';
+  static const String driverOrderHistory = 'api/orders/drivers/me/orders';
+  static const String updateDriverLocation = 'api/orders/drivers/me/location';
+}

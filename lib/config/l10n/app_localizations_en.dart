@@ -9,6 +9,165 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get floweryriderapp => 'Flowery rider app';
+
+  @override
+  String get applyNow => 'Apply now';
+
+  @override
+  String get welcomeTo => 'Welcome to';
+
+  @override
+  String get sendOtp => 'Send OTP';
+
+  @override
+  String get verifyOtp => 'Verify OTP';
+
+  @override
+  String get otp => 'OTP';
+
+  @override
+  String get enterOtp => 'Enter OTP';
+
+  @override
+  String otpSentTo(Object email) {
+    return 'Enter the OTP sent to $email';
+  }
+
+  @override
+  String get resendOtp => 'Resend OTP';
+
+  @override
+  String resendOtpIn(Object seconds) {
+    return 'Resend OTP in $seconds seconds';
+  }
+
+  @override
+  String get invalidOtp => 'OTP must contain 6 digits';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get createNewPassword => 'Create New Password';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get enterNewPassword => 'Enter new password';
+
+  @override
+  String get confirmYourPassword => 'Confirm your password';
+
+  @override
+  String get passwordMustBeAtLeast8Characters =>
+      'Password must be at least 8 characters';
+
+  @override
+  String get passwordMustContainUppercase =>
+      'Password must contain an uppercase letter';
+
+  @override
+  String get passwordMustContainLowercase =>
+      'Password must contain a lowercase letter';
+
+  @override
+  String get passwordMustContainNumber => 'Password must contain a number';
+
+  @override
+  String get passwordMustContainSpecialCharacter =>
+      'Password must contain a special character';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordResetSuccessfully => 'Password reset successfully';
+
+  @override
+  String get productDescription => 'Description';
+
+  @override
+  String get productIncludes => 'Includes';
+
+  @override
+  String get productInStock => 'In Stock';
+
+  @override
+  String get productOutOfStock => 'Out of Stock';
+
+  @override
+  String get productAvailableStock => 'Available Stock';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get signup => 'Sign up';
+
+  @override
+  String get loginRequired => 'Login required';
+
+  @override
+  String get loginRequiredMessage => 'Please login to use this feature.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get rememberMe => 'Remember me';
+
+  @override
+  String get forgetPassword => 'Forget Password?';
+
+  @override
+  String get continueAsGuest => 'Continue as guest';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have account? ';
+
+  @override
+  String get signUp => 'Sign up';
+
+  @override
+  String get loginSuccessfully => 'Login Successfully';
+
+  @override
+  String get emailHint => 'Enter you email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordHint => 'Enter password';
+
+  @override
+  String get forgotPassword => 'Forgot Password?';
+
+  @override
+  String get forgetPasswordText => 'Forgot Password';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Enter your email address and we will send you an OTP.';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get enterYourEmail => 'Enter your email';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email';
+
+  @override
   String get generalValidationError => 'Invalid input';
 
   @override
@@ -66,4 +225,328 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get addressNotFoundMessage =>
       'We couldn\'t find a specific address for this location. Please try entering it manually.';
+
+  @override
+  String get applyTitle => 'Apply';
+
+  @override
+  String get applyWelcomeTitle => 'Welcome!!';
+
+  @override
+  String get applyWelcomeSubtitle =>
+      'You want to be a delivery man?\nJoin our team';
+
+  @override
+  String get countryLabel => 'Country';
+
+  @override
+  String get countryEgypt => 'Egypt';
+
+  @override
+  String get firstNameLabel => 'First legal name';
+
+  @override
+  String get firstNameHint => 'Enter first legal name';
+
+  @override
+  String get lastNameLabel => 'Second legal name';
+
+  @override
+  String get lastNameHint => 'Enter second legal name';
+
+  @override
+  String get vehicleTypeLabel => 'Vehicle type';
+
+  @override
+  String get vehicleTypeSelectHint => 'Select vehicle type';
+
+  @override
+  String get vehicleNumberLabel => 'Vehicle number';
+
+  @override
+  String get vehicleNumberHint => 'Enter vehicle number';
+
+  @override
+  String get vehicleLicenseLabel => 'Vehicle license';
+
+  @override
+  String get vehicleLicenseHint => 'Upload license photo';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get phoneLabel => 'Phone number';
+
+  @override
+  String get phoneHint => 'Enter phone number';
+
+  @override
+  String get nidLabel => 'ID number';
+
+  @override
+  String get nidHint => 'Enter national ID number';
+
+  @override
+  String get nidImageLabel => 'ID image';
+
+  @override
+  String get nidImageHint => 'Upload ID image';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get confirmPasswordHint => 'Confirm password';
+
+  @override
+  String get genderLabel => 'Gender';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get successApplyHeadline => 'Your application has been submitted!';
+
+  @override
+  String get successApplyBody =>
+      'Thank you for providing your application, we will review your application and will get back to you soon.';
+
+  @override
+  String get loginButton => 'Login';
+
+  @override
+  String get invalidEmailError => 'Please enter a valid email address';
+
+  @override
+  String get invalidPhoneError => 'Please enter a valid Egyptian phone number';
+
+  @override
+  String get passwordMismatchError => 'Passwords do not match';
+
+  @override
+  String get weakPasswordError =>
+      'Password must be at least 8 characters with uppercase, lowercase, number and special character';
+
+  @override
+  String get nationalIdError => 'Please enter a valid 14-digit national ID';
+
+  @override
+  String get licenseImageRequiredError =>
+      'Please upload your vehicle license photo';
+
+  @override
+  String get nidImageRequiredError => 'Please upload your ID photo';
+
+  @override
+  String get vehicleTypeRequiredError => 'Please select a vehicle type';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get editProfileTitle => 'Edit Profile';
+
+  @override
+  String get editVehicleInfoTitle => 'Edit Vehicle Info';
+
+  @override
+  String get changePasswordTitle => 'Change Password';
+
+  @override
+  String get changeLanguageTitle => 'Change Language';
+
+  @override
+  String get vehicleInfoLabel => 'Vehicle Info';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get logoutLabel => 'Logout';
+
+  @override
+  String get logoutDialogTitle => 'LOGOUT';
+
+  @override
+  String get logoutDialogContent => 'Confirm logout!!';
+
+  @override
+  String get cancelButton => 'Cancel';
+
+  @override
+  String get updateButton => 'Update';
+
+  @override
+  String get changeButton => 'Change';
+
+  @override
+  String get currentPasswordLabel => 'Current password';
+
+  @override
+  String get currentPasswordHint => 'Enter current password';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get newPasswordHint => 'Enter new password';
+
+  @override
+  String get confirmNewPasswordLabel => 'Confirm new password';
+
+  @override
+  String get confirmNewPasswordHint => 'Confirm new password';
+
+  @override
+  String get languageArabic => 'Arabic';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get profileUpdatedSuccess => 'Profile updated successfully';
+
+  @override
+  String get vehicleUpdatedSuccess => 'Vehicle info updated successfully';
+
+  @override
+  String get passwordChangedSuccess => 'Password changed successfully';
+
+  @override
+  String get homeTab => 'Home';
+
+  @override
+  String get ordersTab => 'Orders';
+
+  @override
+  String get flowerOrder => 'Flower order';
+
+  @override
+  String get pickupAddress => 'Pickup address';
+
+  @override
+  String get userAddress => 'User address';
+
+  @override
+  String get floweryStore => 'Flowery store';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get orderDetails => 'Order details';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get orderId => 'Order ID';
+
+  @override
+  String get statusAccepted => 'Accepted';
+
+  @override
+  String get statusArrivedAtPickup => 'Arrived at pickup';
+
+  @override
+  String get statusPicked => 'Picked';
+
+  @override
+  String get statusOutForDelivery => 'Out for delivery';
+
+  @override
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get arrivedAtPickupPoint => 'Arrived at Pickup point';
+
+  @override
+  String get orderPickedButton => 'Picked';
+
+  @override
+  String get startDeliver => 'Start deliver';
+
+  @override
+  String get arrivedToUser => 'Arrived to the user';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get paymentMethod => 'Payment method';
+
+  @override
+  String get cashOnDelivery => 'Cash on delivery';
+
+  @override
+  String get noAvailableOrders => 'No available orders right now';
+
+  @override
+  String get orderClaimedSuccessfully => 'Order accepted successfully';
+
+  @override
+  String get orderStatusUpdatedSuccessfully =>
+      'Order status updated successfully';
+
+  @override
+  String get callingNotSupported => 'Could not initiate call';
+
+  @override
+  String get whatsappNotSupported => 'Could not open WhatsApp';
+
+  @override
+  String get statusArrived => 'Arrived';
+
+  @override
+  String get handOrderToUser => 'Hand order to user';
+
+  @override
+  String get waitingForConfirmation => 'Waiting for confirmation';
+
+  @override
+  String get waitingForStoreApproval => 'Waiting for store approval';
+
+  @override
+  String get thankYou => 'Thank you!!';
+
+  @override
+  String get orderDeliveredSuccessfullyTitle =>
+      'The order delivered successfully';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get myOrders => 'My orders';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get recentOrders => 'Recent orders';
+
+  @override
+  String get noOrdersFound => 'No orders found';
+
+  @override
+  String get retry => 'Retry';
 }

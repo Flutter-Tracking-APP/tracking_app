@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
 
 // ignore_for_file: type=lint
@@ -92,7 +93,310 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+  ];
+
+  /// No description provided for @floweryriderapp.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery rider app'**
+  String get floweryriderapp;
+
+  /// No description provided for @applyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply now'**
+  String get applyNow;
+
+  /// No description provided for @welcomeTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to'**
+  String get welcomeTo;
+
+  /// No description provided for @sendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send OTP'**
+  String get sendOtp;
+
+  /// No description provided for @verifyOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify OTP'**
+  String get verifyOtp;
+
+  /// No description provided for @otp.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP'**
+  String get otp;
+
+  /// No description provided for @enterOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP'**
+  String get enterOtp;
+
+  /// No description provided for @otpSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the OTP sent to {email}'**
+  String otpSentTo(Object email);
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP'**
+  String get resendOtp;
+
+  /// No description provided for @resendOtpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP in {seconds} seconds'**
+  String resendOtpIn(Object seconds);
+
+  /// No description provided for @invalidOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP must contain 6 digits'**
+  String get invalidOtp;
+
+  /// No description provided for @seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @createNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Password'**
+  String get createNewPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @enterNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get enterNewPassword;
+
+  /// No description provided for @confirmYourPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your password'**
+  String get confirmYourPassword;
+
+  /// No description provided for @passwordMustBeAtLeast8Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordMustBeAtLeast8Characters;
+
+  /// No description provided for @passwordMustContainUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain an uppercase letter'**
+  String get passwordMustContainUppercase;
+
+  /// No description provided for @passwordMustContainLowercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain a lowercase letter'**
+  String get passwordMustContainLowercase;
+
+  /// No description provided for @passwordMustContainNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain a number'**
+  String get passwordMustContainNumber;
+
+  /// No description provided for @passwordMustContainSpecialCharacter.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain a special character'**
+  String get passwordMustContainSpecialCharacter;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordResetSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset successfully'**
+  String get passwordResetSuccessfully;
+
+  /// No description provided for @productDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get productDescription;
+
+  /// No description provided for @productIncludes.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes'**
+  String get productIncludes;
+
+  /// No description provided for @productInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'In Stock'**
+  String get productInStock;
+
+  /// No description provided for @productOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get productOutOfStock;
+
+  /// No description provided for @productAvailableStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Stock'**
+  String get productAvailableStock;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @signup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get signup;
+
+  /// No description provided for @loginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Login required'**
+  String get loginRequired;
+
+  /// No description provided for @loginRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please login to use this feature.'**
+  String get loginRequiredMessage;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @rememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me'**
+  String get rememberMe;
+
+  /// No description provided for @forgetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget Password?'**
+  String get forgetPassword;
+
+  /// No description provided for @continueAsGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as guest'**
+  String get continueAsGuest;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have account? '**
+  String get dontHaveAccount;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get signUp;
+
+  /// No description provided for @loginSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Successfully'**
+  String get loginSuccessfully;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter you email'**
+  String get emailHint;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password'**
+  String get passwordHint;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgetPasswordText.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forgetPasswordText;
+
+  /// No description provided for @forgotPasswordDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we will send you an OTP.'**
+  String get forgotPasswordDescription;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @enterYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get enterYourEmail;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get invalidEmail;
 
   /// No description provided for @generalValidationError.
   ///
@@ -189,6 +493,642 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn\'t find a specific address for this location. Please try entering it manually.'**
   String get addressNotFoundMessage;
+
+  /// No description provided for @applyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get applyTitle;
+
+  /// No description provided for @applyWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!!'**
+  String get applyWelcomeTitle;
+
+  /// No description provided for @applyWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You want to be a delivery man?\nJoin our team'**
+  String get applyWelcomeSubtitle;
+
+  /// No description provided for @countryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get countryLabel;
+
+  /// No description provided for @countryEgypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Egypt'**
+  String get countryEgypt;
+
+  /// No description provided for @firstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First legal name'**
+  String get firstNameLabel;
+
+  /// No description provided for @firstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter first legal name'**
+  String get firstNameHint;
+
+  /// No description provided for @lastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Second legal name'**
+  String get lastNameLabel;
+
+  /// No description provided for @lastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter second legal name'**
+  String get lastNameHint;
+
+  /// No description provided for @vehicleTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle type'**
+  String get vehicleTypeLabel;
+
+  /// No description provided for @vehicleTypeSelectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select vehicle type'**
+  String get vehicleTypeSelectHint;
+
+  /// No description provided for @vehicleNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle number'**
+  String get vehicleNumberLabel;
+
+  /// No description provided for @vehicleNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter vehicle number'**
+  String get vehicleNumberHint;
+
+  /// No description provided for @vehicleLicenseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle license'**
+  String get vehicleLicenseLabel;
+
+  /// No description provided for @vehicleLicenseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload license photo'**
+  String get vehicleLicenseHint;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get phoneHint;
+
+  /// No description provided for @nidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number'**
+  String get nidLabel;
+
+  /// No description provided for @nidHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter national ID number'**
+  String get nidHint;
+
+  /// No description provided for @nidImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID image'**
+  String get nidImageLabel;
+
+  /// No description provided for @nidImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload ID image'**
+  String get nidImageHint;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @confirmPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordHint;
+
+  /// No description provided for @genderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get genderLabel;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @successApplyHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your application has been submitted!'**
+  String get successApplyHeadline;
+
+  /// No description provided for @successApplyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for providing your application, we will review your application and will get back to you soon.'**
+  String get successApplyBody;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginButton;
+
+  /// No description provided for @invalidEmailError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get invalidEmailError;
+
+  /// No description provided for @invalidPhoneError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid Egyptian phone number'**
+  String get invalidPhoneError;
+
+  /// No description provided for @passwordMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordMismatchError;
+
+  /// No description provided for @weakPasswordError.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters with uppercase, lowercase, number and special character'**
+  String get weakPasswordError;
+
+  /// No description provided for @nationalIdError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid 14-digit national ID'**
+  String get nationalIdError;
+
+  /// No description provided for @licenseImageRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your vehicle license photo'**
+  String get licenseImageRequiredError;
+
+  /// No description provided for @nidImageRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your ID photo'**
+  String get nidImageRequiredError;
+
+  /// No description provided for @vehicleTypeRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a vehicle type'**
+  String get vehicleTypeRequiredError;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @editVehicleInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Vehicle Info'**
+  String get editVehicleInfoTitle;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changeLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get changeLanguageTitle;
+
+  /// No description provided for @vehicleInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Info'**
+  String get vehicleInfoLabel;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageLabel;
+
+  /// No description provided for @logoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutLabel;
+
+  /// No description provided for @logoutDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGOUT'**
+  String get logoutDialogTitle;
+
+  /// No description provided for @logoutDialogContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm logout!!'**
+  String get logoutDialogContent;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateButton;
+
+  /// No description provided for @changeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get changeButton;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @currentPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter current password'**
+  String get currentPasswordHint;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @newPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get newPasswordHint;
+
+  /// No description provided for @confirmNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get confirmNewPasswordLabel;
+
+  /// No description provided for @confirmNewPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get confirmNewPasswordHint;
+
+  /// No description provided for @languageArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get languageArabic;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @profileUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccess;
+
+  /// No description provided for @vehicleUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle info updated successfully'**
+  String get vehicleUpdatedSuccess;
+
+  /// No description provided for @passwordChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed successfully'**
+  String get passwordChangedSuccess;
+
+  /// No description provided for @homeTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTab;
+
+  /// No description provided for @ordersTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get ordersTab;
+
+  /// No description provided for @flowerOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower order'**
+  String get flowerOrder;
+
+  /// No description provided for @pickupAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup address'**
+  String get pickupAddress;
+
+  /// No description provided for @userAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'User address'**
+  String get userAddress;
+
+  /// No description provided for @floweryStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery store'**
+  String get floweryStore;
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @egp.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egp;
+
+  /// No description provided for @orderDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Order details'**
+  String get orderDetails;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @orderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderId;
+
+  /// No description provided for @statusAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get statusAccepted;
+
+  /// No description provided for @statusArrivedAtPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at pickup'**
+  String get statusArrivedAtPickup;
+
+  /// No description provided for @statusPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get statusPicked;
+
+  /// No description provided for @statusOutForDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Out for delivery'**
+  String get statusOutForDelivery;
+
+  /// No description provided for @statusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// No description provided for @arrivedAtPickupPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at Pickup point'**
+  String get arrivedAtPickupPoint;
+
+  /// No description provided for @orderPickedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get orderPickedButton;
+
+  /// No description provided for @startDeliver.
+  ///
+  /// In en, this message translates to:
+  /// **'Start deliver'**
+  String get startDeliver;
+
+  /// No description provided for @arrivedToUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived to the user'**
+  String get arrivedToUser;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get paymentMethod;
+
+  /// No description provided for @cashOnDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on delivery'**
+  String get cashOnDelivery;
+
+  /// No description provided for @noAvailableOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No available orders right now'**
+  String get noAvailableOrders;
+
+  /// No description provided for @orderClaimedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order accepted successfully'**
+  String get orderClaimedSuccessfully;
+
+  /// No description provided for @orderStatusUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order status updated successfully'**
+  String get orderStatusUpdatedSuccessfully;
+
+  /// No description provided for @callingNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not initiate call'**
+  String get callingNotSupported;
+
+  /// No description provided for @whatsappNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open WhatsApp'**
+  String get whatsappNotSupported;
+
+  /// No description provided for @statusArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get statusArrived;
+
+  /// No description provided for @handOrderToUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand order to user'**
+  String get handOrderToUser;
+
+  /// No description provided for @waitingForConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for confirmation'**
+  String get waitingForConfirmation;
+
+  /// No description provided for @waitingForStoreApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for store approval'**
+  String get waitingForStoreApproval;
+
+  /// No description provided for @thankYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you!!'**
+  String get thankYou;
+
+  /// No description provided for @orderDeliveredSuccessfullyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The order delivered successfully'**
+  String get orderDeliveredSuccessfullyTitle;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @myOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'My orders'**
+  String get myOrders;
+
+  /// No description provided for @cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelled;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @recentOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent orders'**
+  String get recentOrders;
+
+  /// No description provided for @noOrdersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders found'**
+  String get noOrdersFound;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate
@@ -202,7 +1142,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -211,6 +1151,8 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
   }

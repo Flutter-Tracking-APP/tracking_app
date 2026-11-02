@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tracking_app/config/di/di.dart';
+import 'package:tracking_app/config/l10n/app_localizations.dart';
+import 'package:tracking_app/core/const/app_colors.dart';
+import 'package:tracking_app/core/const/app_styles.dart';
+import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_cubit.dart';
+import 'package:tracking_app/features/driver_orders/presentation/home/cubit/driver_home_state.dart';
+import 'package:tracking_app/features/driver_orders/presentation/home/view/driver_home_view.dart';
+import 'package:tracking_app/features/driver_orders/presentation/order_history/view/driver_order_history_view.dart';
+import 'package:tracking_app/features/profile/presentation/view/profile_view.dart';
+
+class DriverMainShellView extends StatefulWidget {
+  final int initialIndex;
+
+  const DriverMainShellView({super.key, this.initialIndex = 0});
+
+  @override
+  State<DriverMainShellView> createState() => _DriverMainShellViewState();
+}
+
+class _DriverMainShellViewState extends State<DriverMainShellView> {
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<DriverHomeCubit>(),
+      child: BlocBuilder<DriverHomeCubit, DriverHomeState>(
+        buildWhen: (previous, current) =>
+            (previous.activeOrder != null) != (current.activeOrder != null),
+        builder: (context, state) {
+          final localizations = AppLocalizations.of(context)!;
+          final hasActiveOrder = state.activeOrder != null;
+
+          final tabs = [
+            const DriverHomeView(),
+            const DriverOrderHistoryView(),
+            const ProfileView(),
+          ];
+
+          return Scaffold(
+            body: IndexedStack(index: _currentIndex, children: tabs),
+            bottomNavigationBar: hasActiveOrder
+                ? null
+                : _buildBottomNavigationBar(localizations),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar(AppLocalizations localizations) {
+    return BottomNavigationBar(
+      currentIndex: _currentIndex,
+      onTap: (index) => setState(() => _currentIndex = index),
+      selectedItemColor: AppColors.purpleBase,
+      unselectedItemColor: AppColors.grey,
+      selectedLabelStyle: AppStyles.regular12Inter.copyWith(
+        color: AppColors.purpleBase,
+        fontWeight: FontWeight.w600,
+      ),
+      unselectedLabelStyle: AppStyles.regular12Inter,
+      items: [
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.home_outlined),
+          activeIcon: const Icon(Icons.home),
+          label: localizations.homeTab,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.assignment_outlined),
+          activeIcon: const Icon(Icons.assignment),
+          label: localizations.ordersTab,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person_outline),
+          activeIcon: const Icon(Icons.person),
+          label: localizations.profileTitle,
+        ),
+      ],
+    );
+  }
+}

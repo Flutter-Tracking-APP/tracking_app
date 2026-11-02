@@ -7,8 +7,30 @@ Future<ApiResults<T>> safeCall<T>(Future<ApiResults<T>> Function() call) async {
     return await call();
   } catch (e) {
     final error = errorParser(e as Exception);
-
-    return Failure(null, error);
+    String? message;
+    if (e is DioException) {
+      final responseData = e.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        message =
+            (responseData['message'] ??
+                    responseData['error'] ??
+                    responseData['msg'])
+                ?.toString();
+        if ((message == null || message.trim().isEmpty) &&
+            responseData['errors'] is List &&
+            (responseData['errors'] as List).isNotEmpty) {
+          final firstError = (responseData['errors'] as List).first;
+          if (firstError is Map<String, dynamic>) {
+            message = firstError['message']?.toString();
+          } else {
+            message = firstError?.toString();
+          }
+        }
+      } else if (responseData is String) {
+        message = responseData;
+      }
+    }
+    return Failure(message, error);
   }
 }
 

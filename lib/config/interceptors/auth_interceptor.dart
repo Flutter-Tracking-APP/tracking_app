@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tracking_app/config/network/network_constants.dart';
 import 'package:tracking_app/config/session/session_service.dart';
 
 @lazySingleton
@@ -15,6 +16,10 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (options.extra[NetworkConstants.requiresToken] == false) {
+      return handler.next(options);
+    }
+
     try {
       final token = await _sessionService.getToken();
 
